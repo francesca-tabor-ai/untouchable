@@ -140,6 +140,7 @@ exports.Prisma.ProfileScalarFieldEnum = {
   yearOfBirth: 'yearOfBirth',
   sex: 'sex',
   region: 'region',
+  treatmentsConfirmedAt: 'treatmentsConfirmedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

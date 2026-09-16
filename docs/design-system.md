@@ -85,8 +85,14 @@ British English. Short sentences. Plain words.
 
 ## Primitives available
 
-`Button` · `Container` · `Card` · `Field` (with `Input`, `Textarea`) · `Callout` · `Badge` ·
-`VisuallyHidden` · `SiteHeader` · `SafetyFooter`
+`Button` · `Container` · `Card` · `Field` (with `Input`, `Textarea`) · `CheckboxRow` · `Select` ·
+`Callout` · `Badge` · `VisuallyHidden` · `SiteHeader` · `SafetyFooter`
+
+Form controls are **native elements**, not custom widgets built out of divs. A real
+`<input type="checkbox">` and a real `<select>` are keyboard reachable, announced correctly by
+screen readers, open the phone's own picker, and — the part that matters most here — they work
+before the JavaScript arrives. Consent is the most important screen in this product and it must
+not depend on a script loading.
 
 Need another? Ask the platform lead rather than building a one-off inside a feature — two slightly
 different buttons is how a design system dies.

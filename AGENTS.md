@@ -147,3 +147,28 @@ hashPassword(password) / verifyPassword(hash, password) / passwordProblem(passwo
 
 Call a guard at the top of **every** server component, server action and route handler in a
 protected area. Never rely on the caller having done it.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
+## 9. Two traps that have already cost us time
+
+**`"use server"` files may only export async functions.** Exporting a plain object or a
+constant from one fails at build time with a message that names a page rather than the file —
+"Failed to collect page data for /admin/…" — and sends you looking in the wrong place. Put
+shared form-state types and constants in a normal module next to the actions, not in the
+actions file.
+
+**Our type scale is named, not numbered** (`text-body`, `text-small`). tailwind-merge treats
+anything after `text-` that it does not recognise as a font size as a *colour*, so an
+unregistered size token silently deletes your text colour — this shipped white button text as
+dark ink on dark green, at 1.33:1, across the whole product before it was caught. Any new size
+token in `src/styles/tokens.css` must also be named in `src/lib/cn.ts`.
+`tests/unit/design-system.test.ts` fails if the two drift apart.

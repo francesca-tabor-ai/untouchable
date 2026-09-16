@@ -96,6 +96,12 @@ addresses or free text in analytics. Every access to an admin or research endpoi
 - Legal review of consent wording, disclaimers and the takedown policy
 - ICO registration and a named data controller
 - UK-region hosting confirmed and a data processing agreement with the host
+- **Close the sign-up enumeration gap.** Sign-in is safe: it does the Argon2 comparison even for
+  an unknown address, so response timing reveals nothing. Sign-up cannot be made safe the same
+  way — telling someone "that address is already registered" is how registration forms work, and
+  here it discloses that a named person has a health account. Fixing it properly means
+  email-verification sign-up (always answer "check your inbox", and say what happened in the
+  email), which needs a real email provider. Known, tracked, not fudged.
 - Penetration test
 - Retention schedule (we currently keep data until the person deletes it — defensible, but it has to
   be a decision on the record rather than a default)

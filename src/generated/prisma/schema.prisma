@@ -70,14 +70,19 @@ model User {
 }
 
 model Profile {
-  id          String  @id @default(cuid())
-  userId      String  @unique
-  displayName String?
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  displayName           String?
   /// Year only. A full date of birth is more precision than we need to be useful.
-  yearOfBirth Int?
-  sex         String?
+  yearOfBirth           Int?
+  sex                   String?
   /// Coarse region (e.g. "North West"), never a postcode.
-  region      String?
+  region                String?
+  /// When the person last confirmed their treatment list is up to date — including
+  /// confirming they are on nothing at all, which is a real answer and must be
+  /// distinguishable from never having been asked. Also gives us a "last reviewed your
+  /// medicines" date later, which is worth having on its own.
+  treatmentsConfirmedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

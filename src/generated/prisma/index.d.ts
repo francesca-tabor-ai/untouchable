@@ -6428,6 +6428,7 @@ export namespace Prisma {
     yearOfBirth: number | null
     sex: string | null
     region: string | null
+    treatmentsConfirmedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6439,6 +6440,7 @@ export namespace Prisma {
     yearOfBirth: number | null
     sex: string | null
     region: string | null
+    treatmentsConfirmedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6450,6 +6452,7 @@ export namespace Prisma {
     yearOfBirth: number
     sex: number
     region: number
+    treatmentsConfirmedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -6471,6 +6474,7 @@ export namespace Prisma {
     yearOfBirth?: true
     sex?: true
     region?: true
+    treatmentsConfirmedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6482,6 +6486,7 @@ export namespace Prisma {
     yearOfBirth?: true
     sex?: true
     region?: true
+    treatmentsConfirmedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6493,6 +6498,7 @@ export namespace Prisma {
     yearOfBirth?: true
     sex?: true
     region?: true
+    treatmentsConfirmedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6591,6 +6597,7 @@ export namespace Prisma {
     yearOfBirth: number | null
     sex: string | null
     region: string | null
+    treatmentsConfirmedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: ProfileCountAggregateOutputType | null
@@ -6621,6 +6628,7 @@ export namespace Prisma {
     yearOfBirth?: boolean
     sex?: boolean
     region?: boolean
+    treatmentsConfirmedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6633,6 +6641,7 @@ export namespace Prisma {
     yearOfBirth?: boolean
     sex?: boolean
     region?: boolean
+    treatmentsConfirmedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6645,6 +6654,7 @@ export namespace Prisma {
     yearOfBirth?: boolean
     sex?: boolean
     region?: boolean
+    treatmentsConfirmedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -6657,11 +6667,12 @@ export namespace Prisma {
     yearOfBirth?: boolean
     sex?: boolean
     region?: boolean
+    treatmentsConfirmedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "displayName" | "yearOfBirth" | "sex" | "region" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "displayName" | "yearOfBirth" | "sex" | "region" | "treatmentsConfirmedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6690,6 +6701,13 @@ export namespace Prisma {
        * Coarse region (e.g. "North West"), never a postcode.
        */
       region: string | null
+      /**
+       * When the person last confirmed their treatment list is up to date — including
+       * confirming they are on nothing at all, which is a real answer and must be
+       * distinguishable from never having been asked. Also gives us a "last reviewed your
+       * medicines" date later, which is worth having on its own.
+       */
+      treatmentsConfirmedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["profile"]>
@@ -7122,6 +7140,7 @@ export namespace Prisma {
     readonly yearOfBirth: FieldRef<"Profile", 'Int'>
     readonly sex: FieldRef<"Profile", 'String'>
     readonly region: FieldRef<"Profile", 'String'>
+    readonly treatmentsConfirmedAt: FieldRef<"Profile", 'DateTime'>
     readonly createdAt: FieldRef<"Profile", 'DateTime'>
     readonly updatedAt: FieldRef<"Profile", 'DateTime'>
   }
@@ -44657,6 +44676,7 @@ export namespace Prisma {
     yearOfBirth: 'yearOfBirth',
     sex: 'sex',
     region: 'region',
+    treatmentsConfirmedAt: 'treatmentsConfirmedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -45556,6 +45576,7 @@ export namespace Prisma {
     yearOfBirth?: IntNullableFilter<"Profile"> | number | null
     sex?: StringNullableFilter<"Profile"> | string | null
     region?: StringNullableFilter<"Profile"> | string | null
+    treatmentsConfirmedAt?: DateTimeNullableFilter<"Profile"> | Date | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -45568,6 +45589,7 @@ export namespace Prisma {
     yearOfBirth?: SortOrderInput | SortOrder
     sex?: SortOrderInput | SortOrder
     region?: SortOrderInput | SortOrder
+    treatmentsConfirmedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -45583,6 +45605,7 @@ export namespace Prisma {
     yearOfBirth?: IntNullableFilter<"Profile"> | number | null
     sex?: StringNullableFilter<"Profile"> | string | null
     region?: StringNullableFilter<"Profile"> | string | null
+    treatmentsConfirmedAt?: DateTimeNullableFilter<"Profile"> | Date | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -45595,6 +45618,7 @@ export namespace Prisma {
     yearOfBirth?: SortOrderInput | SortOrder
     sex?: SortOrderInput | SortOrder
     region?: SortOrderInput | SortOrder
+    treatmentsConfirmedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProfileCountOrderByAggregateInput
@@ -45614,6 +45638,7 @@ export namespace Prisma {
     yearOfBirth?: IntNullableWithAggregatesFilter<"Profile"> | number | null
     sex?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     region?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    treatmentsConfirmedAt?: DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
   }
@@ -48141,6 +48166,7 @@ export namespace Prisma {
     yearOfBirth?: number | null
     sex?: string | null
     region?: string | null
+    treatmentsConfirmedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProfileInput
@@ -48153,6 +48179,7 @@ export namespace Prisma {
     yearOfBirth?: number | null
     sex?: string | null
     region?: string | null
+    treatmentsConfirmedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -48163,6 +48190,7 @@ export namespace Prisma {
     yearOfBirth?: NullableIntFieldUpdateOperationsInput | number | null
     sex?: NullableStringFieldUpdateOperationsInput | string | null
     region?: NullableStringFieldUpdateOperationsInput | string | null
+    treatmentsConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -48175,6 +48203,7 @@ export namespace Prisma {
     yearOfBirth?: NullableIntFieldUpdateOperationsInput | number | null
     sex?: NullableStringFieldUpdateOperationsInput | string | null
     region?: NullableStringFieldUpdateOperationsInput | string | null
+    treatmentsConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48186,6 +48215,7 @@ export namespace Prisma {
     yearOfBirth?: number | null
     sex?: string | null
     region?: string | null
+    treatmentsConfirmedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -48196,6 +48226,7 @@ export namespace Prisma {
     yearOfBirth?: NullableIntFieldUpdateOperationsInput | number | null
     sex?: NullableStringFieldUpdateOperationsInput | string | null
     region?: NullableStringFieldUpdateOperationsInput | string | null
+    treatmentsConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -48207,6 +48238,7 @@ export namespace Prisma {
     yearOfBirth?: NullableIntFieldUpdateOperationsInput | number | null
     sex?: NullableStringFieldUpdateOperationsInput | string | null
     region?: NullableStringFieldUpdateOperationsInput | string | null
+    treatmentsConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51053,6 +51085,7 @@ export namespace Prisma {
     yearOfBirth?: SortOrder
     sex?: SortOrder
     region?: SortOrder
+    treatmentsConfirmedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51068,6 +51101,7 @@ export namespace Prisma {
     yearOfBirth?: SortOrder
     sex?: SortOrder
     region?: SortOrder
+    treatmentsConfirmedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51079,6 +51113,7 @@ export namespace Prisma {
     yearOfBirth?: SortOrder
     sex?: SortOrder
     region?: SortOrder
+    treatmentsConfirmedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -55859,6 +55894,7 @@ export namespace Prisma {
     yearOfBirth?: number | null
     sex?: string | null
     region?: string | null
+    treatmentsConfirmedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -55869,6 +55905,7 @@ export namespace Prisma {
     yearOfBirth?: number | null
     sex?: string | null
     region?: string | null
+    treatmentsConfirmedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -56540,6 +56577,7 @@ export namespace Prisma {
     yearOfBirth?: NullableIntFieldUpdateOperationsInput | number | null
     sex?: NullableStringFieldUpdateOperationsInput | string | null
     region?: NullableStringFieldUpdateOperationsInput | string | null
+    treatmentsConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56550,6 +56588,7 @@ export namespace Prisma {
     yearOfBirth?: NullableIntFieldUpdateOperationsInput | number | null
     sex?: NullableStringFieldUpdateOperationsInput | string | null
     region?: NullableStringFieldUpdateOperationsInput | string | null
+    treatmentsConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
