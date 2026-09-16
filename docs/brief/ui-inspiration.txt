@@ -1,0 +1,179 @@
+﻿From what’s visible on the Deliciously Ella homepage + the newsletter modal, the UI is built around a calm “heritage wellness” system: deep greens, warm neutrals, lots of whitespace, and a high-contrast serif headline paired with a clean sans for UI/body.
+Colour palette (practical tokens)
+Core
+* Deep evergreen (primary): used for primary buttons + accents
+--green-900: #2F3F39 (approx)
+* Forest/charcoal text: main heading/body text
+--ink-900: #24312C (approx)
+Neutrals
+   * Warm off-white background: modal panel + page background feel
+--cream-50: #F6F4EF (approx)
+   * White: inputs/panels (sometimes pure)
+--white: #FFFFFF
+   * Light grey border: input borders, subtle dividers
+--border-200: #D8D8D2 (approx)
+   * Muted grey text (legal copy / secondary)
+--muted-600: #6F7672 (approx)
+States
+      * Hover on primary: slightly darker green
+--green-950: #26352F (approx)
+      * Focus ring: soft green/grey glow (subtle, not loud)
+--focus: rgba(47,63,57,.25)
+Typography
+Pairing
+         * Display serif for headlines (high contrast, editorial feel). Likely something in the Canela / Baskerville / Georgia-ish family.
+         * Modern sans for UI + body (neutral, readable). Likely Inter / Helvetica / SF Pro / system-ui style.
+Sizing & rhythm (what the modal suggests)
+         * H1 / hero headline: 44–56px, serif, tight-ish line-height (~1.05–1.15)
+         * Subhead/section lead: 18–22px, sans, line-height 1.4–1.6
+         * Body: 16–18px, sans, line-height 1.5–1.7
+         * Legal/disclaimer: 12–13px, sans, line-height 1.4–1.6
+Font-weight
+         * Serif display: 400–500
+         * Sans UI/body: 400, with 500–600 for button labels
+Visual CSS guidelines (component rules)
+Layout & spacing
+         * Lots of breathing room: base spacing unit 8px
+         * Modal padding: 32–40px
+         * Section vertical spacing: 48–96px depending on density
+         * Max content width (typical): 1120–1200px
+Buttons
+         * Primary: filled deep green, white text, rounded pill
+         * Height: 48–56px
+         * Padding: 14–18px vertical, 24–36px horizontal
+         * Border radius: 999px (full pill)
+         * Hover: darken background slightly
+         * Active: tiny translate/press effect optional
+Inputs
+         * Rounded pill input with thin border
+         * Height: 48–56px
+         * Border: 1px solid var(--border-200)
+         * Padding: 0 18–22px
+         * Focus: subtle ring, not neon
+Links
+         * Underlined or subtle underline-on-hover in legal areas
+         * Colour usually inherits ink/green; avoid bright link blue
+Cards / surfaces
+         * Background: warm off-white / white
+         * Shadow: very soft (or none); emphasis comes from spacing
+         * Corners: 16–24px on cards; 999px on pills
+Imagery
+         * photography is bright, natural, slightly warm
+         * Use generous crops and minimal overlays
+         * Avoid heavy gradients; keep UI crisp and clean
+Starter CSS variables + base styles
+:root{
+  --green-900:#2F3F39;
+  --green-950:#26352F;
+
+
+  --cream-50:#F6F4EF;
+  --white:#FFFFFF;
+
+
+  --ink-900:#24312C;
+  --muted-600:#6F7672;
+  --border-200:#D8D8D2;
+
+
+  --radius-card:20px;
+  --radius-pill:999px;
+
+
+  --space-1:8px;
+  --space-2:16px;
+  --space-3:24px;
+  --space-4:32px;
+  --space-5:48px;
+
+
+  --focus:rgba(47,63,57,.25);
+}
+
+
+body{
+  background: var(--cream-50);
+  color: var(--ink-900);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+
+h1,h2,h3{
+  font-family: ui-serif, Georgia, "Times New Roman", serif; /* replace with actual brand serif */
+  font-weight: 450;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+
+.btn-primary{
+  background: var(--green-900);
+  color: var(--white);
+  border: 0;
+  border-radius: var(--radius-pill);
+  height: 52px;
+  padding: 0 28px;
+  font-weight: 600;
+}
+
+
+.btn-primary:hover{ background: var(--green-950); }
+
+
+.input-pill{
+  height: 52px;
+  padding: 0 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-200);
+  background: var(--white);
+}
+
+
+.input-pill:focus{
+  outline: none;
+  box-shadow: 0 0 0 4px var(--focus);
+  border-color: rgba(47,63,57,.35);
+}
+
+
+If you tell me what you’re creating (landing page, email signup modal, full design system, Tailwind config, etc.), I can turn this into a tighter set of tokens + component specs (buttons, inputs, cards, typography scale) in the format you need.
+
+
+
+
+Typography
+Primary Fonts
+         * Bebas Neue: Bold, condensed sans-serif for headings and brand elements; conveys authority and strong hierarchy
+
+         * Rubik: Modern, readable sans-serif for body text and UI components; balances professionalism with approachability
+
+Hierarchy
+            * H1 to H3: Bebas Neue, sized from 2xl to 4xl
+
+            * Body: Rubik in weights from 300 to 900
+
+            * Monospace: Used for technical and code content
+
+Layout and Spacing
+Component Structure
+               * Cards: Rounded corners (8-12px), soft shadows
+
+               * Buttons: Consistent sizing, accessible focus and hover states
+
+Visual Design Principles
+                  1. Minimalism and Clarity
+
+                     * Clean interfaces with generous white space
+
+                     * Emphasis on essential content and actions
+
+Interactive Elements
+
+                        * Subtle hover and shadow transitions
+
+
+Unique Brand Elements
+                           * Accent System: Used for CTAs, progress bars, active navigation, and focus indicators
+
+Micro-Interactions: Smooth transitions, hover effects, loading indicators, and subtle animations for engagement
