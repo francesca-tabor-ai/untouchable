@@ -401,3 +401,63 @@ contributing, Gift Aid, money and amounts, and `tests/unit/charity-support-varia
 the support block to markup and asserts the bytes contain no donate route, no referral origin, no
 string from `DONATION_COPY` and no giving language. A fourth test renders `DonateLink` through the
 same detector, so the assertion cannot pass because the detector is broken.
+
+---
+
+## Platform lead rulings — 2026-09-16, Wave 1 close
+
+Numbered `PL-` to avoid colliding with feature teams appending `D-` entries in parallel.
+
+### PL-1 · Charities appear on sensitive-topic pages, as support rather than as causes
+Overrules the original D-015. The stories team withheld the charity blocks entirely on
+sensitive-topic stories and condition pages, reasoning that a page carrying a content note and
+support contacts is a safety screen. The instinct was right and the conclusion was not: it left
+`/conditions/depression` with no charities at all, which removes exactly the signposting this
+platform exists to provide, from the page where someone is most likely to need it.
+
+We had conflated two different things. A donation **ask** beside a content note about suicide is
+unacceptable. Showing someone **where help is** is the opposite of a harm. So those surfaces now
+render `variant="support"`: helplines and support services, no donate affordance, no giving copy.
+The hand-off stays reachable from the charity's own page, which a person navigates to deliberately.
+
+### PL-2 · The no-pressure gate does not apply to the support variant — confirmed
+The charity team asked whether `donationPromptAllowed` should also gate `variant="support"`. It
+should not, and their reasoning was right: a support block contains no donation prompt, so the gate
+has nothing to suppress, and applying it would hide a helpline from someone with an open safety
+concern — reintroducing through a different door exactly the failure PL-1 just removed. The gate
+stays on `default` only.
+
+### PL-3 · The support variant makes no claim about any person — confirmed
+The charity team went beyond the brief and dropped the "charities they have publicly supported"
+attribution from the support variant. Kept. What someone reading a story about suicide needs from
+that block is a helpline, not a fact about whose cause it is — and it satisfies the sourcing rule
+by construction rather than by care.
+
+### PL-4 · A narrower header rule must be listed after the site-wide one
+The donation hand-off is meant to send `no-referrer`, so the charity learns nothing at all — our
+origin alone would disclose that the visitor uses a health platform, which on a single-condition
+charity is close to disclosing a diagnosis. The route-specific rule was originally listed *before*
+the site-wide rule, which reads more naturally and silently does nothing: Next applies every
+matching entry and, for a repeated header key, the last match wins. Caught by the charity team
+testing the actual response rather than reading the config. Now verified by request:
+`/charities/:slug/donate` returns `no-referrer`, other pages return `strict-origin-when-cross-origin`.
+
+### PL-5 · The lockfile is regenerated from scratch, not incrementally
+CI failed on `npm ci` with `@emnapi` packages missing. `@node-rs/argon2` ships per-platform native
+binaries, and a lockfile grown incrementally on macOS carried stale nested versions that no Linux
+resolution could satisfy. Deleting it and regenerating produced a consistent tree with all twelve
+platform variants. Worth remembering: a lockfile that works locally is not evidence it installs
+anywhere else, and only a clean `npm ci` proves it.
+
+### PL-6 · Form controls are promoted into the design system, not left in a feature folder
+The auth team built the only checkbox and select in the product inside
+`src/components/onboarding/`. Both are now `src/components/ui/checkbox.tsx` and `select.tsx`. They
+are native elements rather than custom widgets, which is the right call and is now written into the
+design system: consent is the most important screen here and must not depend on a script loading.
+
+### PL-7 · Onboarding completeness for "I take nothing"
+Counting `TreatmentCourse` rows made the treatments step impossible to finish for anyone who takes
+nothing — a real and common answer. Added `Profile.treatmentsConfirmedAt`: completeness is "you were
+asked and you answered", not "you have at least one medicine". It also gives us a genuine "last
+reviewed your medicines" date later. The two pending onboarding steps now live in modules owned by
+the teams that will finish them, so two teams completing two steps never edit the same file.

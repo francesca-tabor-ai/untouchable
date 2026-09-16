@@ -15,14 +15,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // The donation hand-off tells the charity nothing at all — not even that the person
-        // came from here. Our origin alone would disclose that this visitor uses a health
-        // platform, and on a single-condition charity that is close to disclosing a
-        // diagnosis. Must be listed before the site-wide rule, which is less strict.
-        source: "/charities/:slug/donate",
-        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
-      },
-      {
         source: "/:path*",
         headers: [
           { key: "X-Frame-Options", value: "DENY" },
@@ -34,6 +26,18 @@ const nextConfig: NextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
         ],
+      },
+      {
+        // The donation hand-off tells the charity nothing at all — not even that the person
+        // came from here. Our origin alone would disclose that this visitor uses a health
+        // platform, and on a single-condition charity that is close to disclosing a
+        // diagnosis.
+        //
+        // This must come AFTER the site-wide rule. Next applies every matching entry, and
+        // for a repeated header key the last match wins — so listing the narrower rule
+        // first, which reads more naturally, silently does nothing.
+        source: "/charities/:slug/donate",
+        headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
       },
     ];
   },
