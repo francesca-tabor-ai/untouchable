@@ -113,3 +113,37 @@ You are done when `npm run verify` passes, your feature's acceptance criteria in
 tested, and you have written a short summary of what you built, what you assumed, and what you
 deliberately left out. Do not report done on a red build. If you are blocked, say so with specifics —
 guessing is worse than waiting.
+
+## 7. Running tests in parallel
+
+Each workstream has its own test database so that two suites running at once do not truncate
+each other's fixtures. Use the env file for your area:
+
+```bash
+TEST_ENV=.env.test.stories npm test      # stories
+TEST_ENV=.env.test.charities npm test    # charity giving
+TEST_ENV=.env.test.auth npm test         # auth, onboarding, consent
+TEST_ENV=.env.test.tracking npm test     # questionnaires, daily log, treatments
+TEST_ENV=.env.test.scheduling npm test   # check-ins and reminders
+TEST_ENV=.env.test.dashboard npm test    # personal dashboard
+TEST_ENV=.env.test.safety npm test       # red flags and signposting
+TEST_ENV=.env.test.admin npm test        # admin and research view
+TEST_ENV=.env.test.rights npm test       # data rights and hardening
+```
+
+## 8. Auth is already built
+
+Do not build your own. `src/lib/auth/` is platform-owned and provides:
+
+```ts
+getCurrentUser(): Promise<CurrentUser | null>   // may be null
+requireUser(returnTo?): Promise<CurrentUser>    // or redirect to sign in
+requireAdult(returnTo?): Promise<CurrentUser>   // 18+ confirmed, or to onboarding
+requireEditor(): Promise<CurrentUser>           // 401 if signed out, 403 if not allowed
+requireAdmin(): Promise<CurrentUser>
+recordAudit(actorId, action, params)            // every admin and research action
+hashPassword(password) / verifyPassword(hash, password) / passwordProblem(password)
+```
+
+Call a guard at the top of **every** server component, server action and route handler in a
+protected area. Never rely on the caller having done it.

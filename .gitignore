@@ -58,3 +58,6 @@ prisma/*.db
 
 # keep the example env template
 !.env.example
+
+# per-workstream test env files
+.env.test.*
