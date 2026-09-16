@@ -461,3 +461,21 @@ nothing — a real and common answer. Added `Profile.treatmentsConfirmedAt`: com
 asked and you answered", not "you have at least one medicine". It also gives us a genuine "last
 reviewed your medicines" date later. The two pending onboarding steps now live in modules owned by
 the teams that will finish them, so two teams completing two steps never edit the same file.
+
+### PL-8 · Neither brand font was rendering, anywhere
+next/font puts its CSS variables on the element you give the class to; we had them on `<body>`.
+Our design tokens live in an `@theme` block, which Tailwind emits on `:root` — so
+`--font-display: var(--font-fraunces), …` was computed where `--font-fraunces` did not exist,
+the declaration became invalid, and every heading and every word of body text silently fell back
+to system sans. The build was green, the tests were green, and the product was wearing none of
+its own typography. The variables now go on `<html>`.
+
+Worth generalising: a design system can be entirely correct in the stylesheet and entirely absent
+in the browser, and nothing in a test suite will say so. Somebody has to look at it.
+
+### PL-9 · Navigation is visible on every screen size
+The header hid the whole navigation, and the sign-in link, below `md`. On a platform whose first
+principle is mobile-first, the phone had no way to reach stories, conditions or charities except
+the footer. The links now move to their own row underneath on small screens rather than
+collapsing into a menu button: it works before the JavaScript arrives, needs no state, and puts
+the destinations in front of someone who does not yet know what is here.
