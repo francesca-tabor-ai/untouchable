@@ -55,4 +55,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 const AREAS = [
   { href: "/admin/editorial", label: "Editorial" },
   { href: "/admin/charities", label: "Charities" },
+  { href: "/admin/questionnaires", label: "Questionnaires" },
 ];

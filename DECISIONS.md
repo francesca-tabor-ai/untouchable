@@ -479,3 +479,206 @@ principle is mobile-first, the phone had no way to reach stories, conditions or 
 the footer. The links now move to their own row underneath on small screens rather than
 collapsing into a menu button: it works before the JavaScript arrives, needs no state, and puts
 the destinations in front of someone who does not yet know what is here.
+
+### D-031 · Questionnaire item types, and what each one is answered with
+Seven types, one per brief 7.3: `likert`, `scale_0_10`, `single_choice`, `multi_choice`, `yes_no`,
+`date`, `text`. Each has exactly one answer shape — a Likert or 0–10 answer is a number, a single
+choice a code, a multiple choice a list of codes, yes/no a boolean, a date `YYYY-MM-DD`, free text a
+trimmed string. That is what lets validation, scoring and the red flag rules each be a short, dull
+function rather than a pile of type sniffing.
+
+Yes/no is two radio buttons, not a tick box. An unticked box cannot tell "no" apart from "I have not
+answered", and in a health record those are different facts. The 0–10 scale is eleven radio buttons,
+not a slider: a slider needs JavaScript to be readable, is miserable to land on with a thumb, and
+gives a screen reader a number with no meaning.
+
+### D-032 · A version is checked as a whole before it can be published
+Parsing each JSON column on its own is not enough. `readDefinition` also cross-checks them: a score
+cannot be built from a question that does not exist; a `sum` or `mean` cannot be taken over a
+question that is not answered with a number (use `map` to give worded answers numbers first); a red
+flag rule cannot watch a question that is not there, cannot compare a non-numeric answer as a number,
+and **cannot be pointed at a free-text question at all** — free text is only ever seen by the person
+who wrote it, so no rule may read it.
+
+This is what makes "an admin publishes a new version with no code change" safe rather than reckless.
+Every one of these is caught at the moment the admin presses save, not the first time somebody tired
+and frightened is shown a form the engine cannot score.
+
+### D-033 · A published version is immutable, enforced in the domain layer
+`updateDraftVersion` throws `PublishedVersionError` if the version has been published, and
+`publishVersion` refuses a second publish. There is no database constraint behind this because the
+schema is owned by the platform lead — **a partial unique or trigger-level guard would be better and
+is raised with them**. Until then the rule lives in `src/lib/questionnaires/versions.ts`, every admin
+path goes through it, and `tests/unit/questionnaire-versions.test.ts` proves it.
+
+Publishing also requires a licence note on the questionnaire. We cannot check a licence
+automatically, so we require that somebody has written the terms down, and the publish audit entry
+records who confirmed them.
+
+### D-034 · What makes a response "the baseline"
+The baseline version is whichever published version declares `schedule.baseline` — no questionnaire
+key is hard coded anywhere, so swapping the placeholder for a licensed instrument is publishing a
+version, not a deployment.
+
+Scoping completeness to that version is not enough on its own, because the general check-in cycle
+uses the *same* version: a check-in answered three months later would retroactively satisfy the
+baseline, which is exactly what acceptance criterion 6 forbids. So the baseline is the response to
+that version **with no `ScheduledCheckIn` attached**. Every other way of answering a questionnaire
+goes through a scheduled check-in, so `checkInId === null` is the marker.
+
+**For the scheduling milestone:** `schedule.baseline: true` means *asked during onboarding*. Do not
+create a `ScheduledCheckIn` for the baseline itself, or this distinction disappears and the baseline
+step can never be completed.
+
+### D-035 · The admin edits a version as JSON, with real validation and a preview
+Four textareas — questions, scoring, red flag rules, schedule — not a form builder. The definition is
+JSON; an admin loading a licensed instrument will be pasting one in, and a builder would be a lossy
+retyping of something they already have. What makes it safe is not the widget, it is D-032: every
+mistake is explained in English beside the box it is in, and the page renders the questions with the
+same components the real form uses so nobody publishes something they have not looked at.
+
+A published version has no form on its page at all — not a disabled one, no form. The only way to
+change what a questionnaire asks is a new version, and the screen should not suggest otherwise.
+
+### D-036 · Save and resume lives in a cookie, and should not
+A long questionnaire is often answered on a phone in a waiting room, and the person gets called in.
+Half-finished answers are kept in an `httpOnly` cookie scoped by `path` to the one page they belong
+to, capped at 3.5KB, and deleted the moment the answers are recorded for real.
+
+The database would be the right home, but there is no table for it and the schema is not ours. The
+alternative — writing a partial `Response` — was rejected outright: every later milestone reads
+`Response` as a real answer, and a draft sitting in there would quietly become somebody's record and
+somebody's research row. **A `QuestionnaireDraft` table is requested from the platform lead**; a
+cookie does not survive changing device, which is the one thing it cannot do honestly.
+
+### D-037 · Red flags are reported, never acted on
+`evaluateRedFlags(version, answers)` is pure, returns every matching rule in the order the version
+lists them, and decides nothing. It writes no `SafetyEvent`, alerts nobody and contacts nobody —
+brief 7.8 gives the signposting screen its own milestone, and that is the only thing that decides
+what a person sees.
+
+It throws rather than returning `[]` if a version's rules cannot be parsed. A safety rule that cannot
+be understood must stop the request, not quietly evaluate to "nothing wrong".
+
+Until the safety milestone lands, the "your answers are recorded" screen repeats the support contacts
+we already publish, quietly, when a rule matched — the rule's own wording of what it noticed, and
+NHS 111, 999 and Samaritans. That is signposting and nothing more. **Milestone 8 takes this surface
+over**, and adds the `SafetyEvent` write that this milestone deliberately does not make.
+
+### D-038 · The daily log's sliders start where the person left them, and the screen says so
+"Under thirty seconds" (brief 7.5) is an acceptance criterion, and the honest way to hit it is to
+remove decisions rather than to move them. So every slider opens holding a value: the last score
+recorded for that symptom, or the middle of the scale for a symptom never scored. A day where
+nothing has changed is then **one press and no typing**, measured in
+`tests/unit/daily-log-speed.test.tsx` by taking the form's `FormData` with nothing interacted with
+and asking the domain's own parser whether it is already a complete, valid log.
+
+The cost is real and worth naming. Carrying a value forward risks flat data from somebody who cannot
+face the screen — and the alternative, defaulting every slider to 5, fabricates a number just as
+readily while being slower. Neither is free; only one of them is also fast. So the screen states in
+words where the starting positions came from and which day they are from ("The sliders start where
+you left them on 14 September"), and a first-ever log says plainly that it starts in the middle.
+
+**For the research milestone:** a stored score is what the person submitted, and a submitted score
+may be a carried-forward one they did not touch. There is no "untouched" flag — `symptomScoresJson`
+has no room for one and the schema is not ours. If distinguishing them ever matters, that is a
+schema request, not something to infer.
+
+### D-039 · A slider primitive lives in the feature layer, and should not
+`src/components/tracking/score-slider.tsx` is a native `<input type="range">` with a real label, the
+current value in text, `aria-valuetext`, a 44px hit area and a 28px thumb. It belongs in
+`src/components/ui/` — the daily log needs it, the questionnaire engine's 0–10 items need one, and
+the check-in screens will. It is in the feature layer only because `src/components/ui/**` is
+single-writer. **Requested for promotion by the platform lead**, on the same reasoning as D-019.
+
+Two things about it are not decoration and should survive the move. It is a **native range input**,
+so the arrow keys, Home and End, the phone's own touch handling and the screen reader's slider role
+all come for free rather than being re-implemented out of divs. And it is **one colour at every
+value** — a track that turns red at 8 would be the interface telling somebody their day was bad,
+which is exactly what AGENTS.md rule 9 forbids. `tests/unit/tracking-rules.test.tsx` fails if a
+meaning colour appears in that file.
+
+### D-040 · "Show data, never interpret it" is enforced by a detector, not by good intentions
+A tracking UI breaks AGENTS.md rule 9 one label at a time — "getting better", "a good week", a trend
+arrow — and no behavioural test notices, because nobody writes a test for the heading they were about
+to write. `src/lib/tracking/no-interpretation.ts` holds the phrasings we reach for, and
+`tests/unit/tracking-rules.test.tsx` runs every tracking screen, component and domain module through
+it, with comments stripped so that explaining the rule does not trip it.
+
+It is a tripwire, not a proof: it catches the phrasings we thought of. Passing it is not permission
+to write a sentence that draws a conclusion for somebody. The same file carries the giving-language
+check, so no tracking surface can grow a donation prompt round the charity team's gate.
+
+### D-041 · Yellow Card is on the page at all times, and stamped at the moment of the write
+Brief 7.8 asks for the MHRA Yellow Card link after any logged side effect. Rendering it only once a
+report exists leaves a state — the response that saved the first one — where the record says we
+showed it and the screen may not have. So the note is part of the side effects section
+unconditionally, before, during and after; `yellowCardShownAt` is set by the same `create` that
+writes the report; and `tests/unit/treatment-side-effects.test.tsx` asserts **both halves together**,
+because asserting one would let a refactor break the other and stay green (the reasoning of D-015a).
+
+The note says plainly that recording something here is *not* reporting it to the MHRA. Somebody who
+believes it is will not report, and the signpost will have done harm rather than nothing.
+
+### D-042 · "I am not on any treatment" is a button, and finishes the step
+Brief 7.1's treatments step has to be completable by somebody who takes nothing — a real and common
+answer, and one that must not be harder to give than a list of four medicines. `/onboarding/treatments`
+therefore has two endings, both one tap and no typing: "I am not on any treatment at the moment" when
+nothing is recorded, and "That is all of them" when something is. The confirm button sits **above**
+the add form, so the person with nothing to add does not scroll past a form to say so.
+
+Both write `Profile.treatmentsConfirmedAt`, and null goes on meaning "we have never asked" — a
+distinction a count of `TreatmentCourse` rows cannot make, which is why D-016's original
+`count > 0` was replaced rather than kept. `TREATMENTS_STEP_STATUS` is now `"ready"`.
+
+**Note for the platform lead:** `tests/e2e/onboarding.spec.ts` still walks past treatments and
+baseline as "This part is not ready yet" and counts "4 of 4 done". Both steps are now built, so that
+journey needs updating; it is owned by the auth/onboarding area and two agents editing it at once is
+what the ownership rules exist to prevent, so it is reported rather than changed here.
+
+### D-043 · Anything can be recorded as a treatment, and nothing gets a code it has not earned
+The treatment name is an open text box with the seeded sample list offered through a `<datalist>`.
+A real medicine cabinet will not match our sample data, and "that is not on our list" is being told
+your own treatment does not count. Anything new becomes an `Intervention` with `dmdCode` **null** —
+a full dm+d import needs an NHS TRUD account and is a later task, and a guessed code would be wrong
+in a way that looks authoritative. The treatment page says so on screen.
+
+Matching is case-insensitive and whitespace-collapsed on (name, type), so "metformin" and "Metformin"
+do not become two rows and split a research cohort in half. Two people adding the same new treatment
+at the same moment is handled by reading back the row the unique constraint let through.
+
+### D-044 · The demo seed is built to make suppression visible, and to tell no story
+`prisma/seed/demo-tracking.ts` creates 37 invented patients across three cohorts, sized so that after
+consent filtering some groups sit comfortably over the small-group threshold of 10 and some sit
+comfortably under it: type 2 diabetes (16 people, 14 consented) and depression (15, 12) are
+disclosed; breast cancer (6, 4) is suppressed. By treatment, Metformin (12 consented) and Sertraline
+(11) are disclosed and everything else is not. The table is written out in the file, and
+`tests/unit/tracking-demo-seed.test.ts` runs the real `applySuppression` over it so that a change to
+the threshold is reported rather than discovered.
+
+Consent varies on purpose — granted, refused, and granted-then-withdrawn as a second consent row,
+which is how the real flow records it. Symptom scores are a **random walk with no drift term at
+all**, and the test asserts every series moves in both directions: a seeded recovery arc is a demo
+data set that will eventually be screenshotted as though it meant something.
+
+### PL-10 · The home page figure strip carries no photographs, and no auto-scroll
+A horizontally scrolling row of public figures sits under the hero, modelled on the member row
+of dohealth.co.
+
+**No photographs.** We hold a licence for none of the people on this platform, and three separate
+image URLs supplied so far — a Google thumbnail, a speaker agency's promotional file and an IMDb
+still — were all refused by `figure_image_requires_licence`. Each person gets an initials
+monogram instead, which the brief already anticipates ("initials or neutral illustration"). The
+card is laid out so a licensed image can replace the monogram later without touching anything
+else.
+
+**No auto-scrolling marquee**, which is what "a scroll of celebrities" often means. Moving
+content that contains links has to offer a way to pause it (WCAG 2.2.2), it is harder to read and
+harder to click, and on a page about people's diagnoses the calmer register is the right one.
+Scrolling is native overflow with scroll-snap, so it works by touch, trackpad and keyboard with
+no JavaScript; the arrows render only after mount, because a button that does nothing is worse
+than no button.
+
+The row reads through `listPublishedStories` like every other public surface, so a retracted
+story leaves the front page on the next request. `tests/unit/home-figure-strip.test.ts` fails if
+anyone later hand-rolls a query here and drops the published filter.

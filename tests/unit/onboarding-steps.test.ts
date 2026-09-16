@@ -2,7 +2,7 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 
 import { ConsentPurpose } from "@/generated/prisma";
-import { nextHrefAfter, ONBOARDING_STEPS, onboardingProgress } from "@/lib/onboarding";
+import { nextHrefAfter, ONBOARDING_STEPS, onboardingProgress, READY_STEPS } from "@/lib/onboarding";
 import { saveUserConditions } from "@/lib/onboarding/conditions";
 import { activeSymptomIds, saveUserSymptoms, symptomsForUser } from "@/lib/onboarding/symptoms";
 import { saveProfile } from "@/lib/profile";
@@ -63,10 +63,15 @@ describe("the onboarding step registry", () => {
     ]);
   });
 
-  it("registers the steps that are not built yet rather than leaving them out", () => {
-    const comingSoon = ONBOARDING_STEPS.filter((step) => step.status === "coming_soon");
-    expect(comingSoon.map((step) => step.key)).toEqual(["treatments", "baseline"]);
-    for (const step of comingSoon) expect(step.href).toMatch(/^\/onboarding\//);
+  it("registers a step that is not built yet rather than leaving it out", () => {
+    // Which steps are built changes as milestones land — treatments and baseline both have
+    // now — so this asserts the rule, not a snapshot of who has finished what. Every step is
+    // registered with a real screen whether or not it is built.
+    for (const step of ONBOARDING_STEPS) {
+      expect(step.href).toMatch(/^\/onboarding\//);
+      expect(["ready", "coming_soon"]).toContain(step.status);
+    }
+    expect(READY_STEPS.length).toBeGreaterThan(0);
   });
 
   it("starts a brand new person at the beginning, with nothing assumed", async () => {
@@ -75,7 +80,7 @@ describe("the onboarding step registry", () => {
 
     expect(progress.steps.every((state) => !state.complete)).toBe(true);
     expect(progress.completedCount).toBe(0);
-    expect(progress.readyCount).toBe(4);
+    expect(progress.readyCount).toBe(READY_STEPS.length);
     expect(progress.finished).toBe(false);
     expect(progress.nextHref).toBe("/onboarding/welcome");
   });
@@ -109,12 +114,17 @@ describe("working through onboarding", () => {
     // Nothing was held in a session: this is a fresh read of what is in the database, which
     // is what closing the tab and coming back next week actually looks like.
     const progress = await onboardingProgress(user.id);
-    expect(progress.finished).toBe(true);
     expect(progress.completedCount).toBe(4);
-    expect(progress.nextHref).toBeNull();
+    expect(progress.finished).toBe(false);
+
+    // Whatever remains is the next step in the flow that has not been done, never one that
+    // has. The later steps are covered by the milestones that own them.
+    const remaining = progress.steps.filter((state) => state.step.status === "ready" && !state.complete);
+    expect(progress.nextHref).toBe(remaining[0]?.step.href ?? null);
+    expect(remaining.map((state) => state.step.key)).not.toContain("symptoms");
   });
 
-  it("walks through the steps that are not built yet rather than hiding them", async () => {
+  it("sends somebody on to the next step they have not done", async () => {
     const user = await makeUser();
     const { alpha, tiredness } = await seedPicklists();
 
@@ -128,8 +138,9 @@ describe("working through onboarding", () => {
     expect(await nextHrefAfter(user.id, "symptoms")).toBe("/onboarding/treatments");
     expect(await nextHrefAfter(user.id, "treatments")).toBe("/onboarding/baseline");
 
-    // Skipping the last two does not leave someone stuck in a loop.
-    expect(await nextHrefAfter(user.id, "baseline")).toBe("/onboarding");
+    // Reaching the end without having done the last step sends somebody back to the first
+    // thing still outstanding rather than round in a loop or nowhere at all.
+    expect(await nextHrefAfter(user.id, "baseline")).toBe("/onboarding/treatments");
   });
 
   it("does not count a step as done because a later one is", async () => {

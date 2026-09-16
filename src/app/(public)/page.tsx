@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { FigureStrip } from "@/components/home/figure-strip";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
@@ -32,6 +34,8 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
+      <FigureStrip />
 
       <Container className="py-20">
         <h2 className="text-display">Three things, in one place</h2>

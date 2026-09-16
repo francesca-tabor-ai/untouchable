@@ -5,10 +5,10 @@ import { db } from "@/lib/db";
  * milestone. It lives here rather than inline in the step registry so that two teams
  * finishing two different steps never edit the same file.
  *
- * To finish this step: build the screen at `/onboarding/treatments`, make it set
- * `Profile.treatmentsConfirmedAt`, and flip `TREATMENTS_STEP_STATUS` to "ready".
+ * Built in milestone 5: the screen is `/onboarding/treatments`, it records the answer with
+ * `confirmTreatments`, and this status is now "ready".
  */
-export const TREATMENTS_STEP_STATUS: "ready" | "coming_soon" = "coming_soon";
+export const TREATMENTS_STEP_STATUS: "ready" | "coming_soon" = "ready";
 
 /**
  * Complete once the person has told us about their treatments — **including telling us
@@ -24,4 +24,31 @@ export async function hasConfirmedTreatments(userId: string): Promise<boolean> {
     select: { treatmentsConfirmedAt: true },
   });
   return profile?.treatmentsConfirmedAt != null;
+}
+
+/**
+ * Record that the person has answered the question, whatever the answer was.
+ *
+ * This is the only writer of `treatmentsConfirmedAt`, and it writes a timestamp for "I am
+ * not on anything at the moment" exactly as it does for "here are my four medicines". Null
+ * keeps meaning "we have never asked", which is the distinction the step depends on.
+ *
+ * Upserts the profile because somebody can reach this step having skipped the welcome
+ * screen, and a missing profile row should not be a dead end.
+ */
+export async function confirmTreatments(userId: string, at: Date = new Date()): Promise<void> {
+  await db.profile.upsert({
+    where: { userId },
+    create: { userId, treatmentsConfirmedAt: at },
+    update: { treatmentsConfirmedAt: at },
+  });
+}
+
+/** When the person last told us their treatment list was up to date. Null if never asked. */
+export async function treatmentsConfirmedAt(userId: string): Promise<Date | null> {
+  const profile = await db.profile.findUnique({
+    where: { userId },
+    select: { treatmentsConfirmedAt: true },
+  });
+  return profile?.treatmentsConfirmedAt ?? null;
 }
