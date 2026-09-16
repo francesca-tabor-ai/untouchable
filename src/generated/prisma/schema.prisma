@@ -1,0 +1,774 @@
+// UnTouchable data model.
+//
+// Read docs/brief/untouchables.md section 8 alongside this file.
+//
+// Two rules shape almost every table here:
+//   1. We hold UK GDPR special category data. Collect the minimum, and make it possible to
+//      remove a person completely. Note `yearOfBirth`, never a full date of birth.
+//   2. Free text written by a user (note, description, reason) can never reach a research
+//      export. Those fields are marked FREE TEXT below and are excluded by type in
+//      src/lib/research/.
+//
+// This schema is owned by the platform lead. Do not edit it directly — see AGENTS.md section 3.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Accounts and consent
+// ---------------------------------------------------------------------------
+
+enum Role {
+  patient
+  editor
+  admin
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  passwordHash   String?
+  role           Role      @default(patient)
+  /// Explicit 18-or-over confirmation. Null means never confirmed; tracking stays locked.
+  ageConfirmedAt DateTime?
+  emailVerified  DateTime?
+  /// Soft delete. Set by the erasure flow once identifiable data has been removed.
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  profile           Profile?
+  consents          ConsentRecord[]
+  accounts          Account[]
+  sessions          Session[]
+  savedStories      SavedStory[]
+  charityFollows    CharityFollow[]
+  donationNotes     DonationNote[]
+  conditions        UserCondition[]
+  symptoms          UserSymptom[]
+  treatmentCourses  TreatmentCourse[]
+  scheduledCheckIns ScheduledCheckIn[]
+  responses         Response[]
+  dailyLogs         DailyLog[]
+  sideEffectReports SideEffectReport[]
+  safetyEvents      SafetyEvent[]
+  reminderPrefs     ReminderPreference?
+  auditEntries      AuditLog[]          @relation("AuditActor")
+  storiesDrafted    Story[]             @relation("StoryDrafter")
+  storiesVerified   Story[]             @relation("StoryVerifier")
+  charitiesVerified Charity[]           @relation("CharityVerifier")
+
+  @@index([deletedAt])
+}
+
+model Profile {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  displayName String?
+  /// Year only. A full date of birth is more precision than we need to be useful.
+  yearOfBirth Int?
+  sex         String?
+  /// Coarse region (e.g. "North West"), never a postcode.
+  region      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum ConsentPurpose {
+  core_tracking
+  research_anonymised
+  commercial_research
+  contact_for_studies
+  marketing_email
+}
+
+/// Append-only. A change of mind writes a new row; the most recent row for a
+/// (user, purpose) pair is the current state. We keep the history because we must be able
+/// to show what someone agreed to, and when, and in which wording.
+model ConsentRecord {
+  id                 String         @id @default(cuid())
+  userId             String
+  purpose            ConsentPurpose
+  granted            Boolean
+  /// Version of the consent wording shown at the time, e.g. "2026-09-01".
+  consentTextVersion String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, createdAt])
+}
+
+// Auth.js tables. Credentials auth does not need them, but keeping them means magic link
+// can be switched on later without a migration.
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  createdAt DateTime @default(now())
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Stories hub
+// ---------------------------------------------------------------------------
+
+model Condition {
+  id               String  @id @default(cuid())
+  name             String
+  slug             String  @unique
+  snomedCode       String?
+  summary          String
+  /// Suicide, self-harm and eating disorders. Drives content notes and Samaritans
+  /// signposting under the Samaritans media guidelines.
+  isSensitiveTopic Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stories   StoryCondition[]
+  charities CharityCondition[]
+  symptoms  SymptomCondition[]
+  userLinks UserCondition[]
+}
+
+model PublicFigure {
+  id           String  @id @default(cuid())
+  name         String
+  slug         String  @unique
+  shortBio     String
+  imageUrl     String?
+  /// Licence terms for the image. An image with no licence recorded cannot be published.
+  imageLicence String?
+  isDeceased   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stories Story[]
+}
+
+enum StoryType {
+  public_figure
+  community
+}
+
+enum DisclosureType {
+  own
+  loved_one
+}
+
+enum StoryStatus {
+  draft
+  in_review
+  published
+  retracted
+}
+
+model Story {
+  id                           String         @id @default(cuid())
+  type                         StoryType
+  publicFigureId               String?
+  disclosureType               DisclosureType
+  title                        String
+  slug                         String         @unique
+  /// Written in our own words. Never a copy of source text.
+  summary                      String
+  /// Ordered timeline entries: [{ label, when, body }]
+  keyMomentsJson               Json           @default("[]")
+  /// At most 25 words, attributed, at most one per source.
+  quote                        String?
+  quoteSourceId                String?
+  /// Shown above the story where the subject matter needs a warning.
+  contentNote                  String?
+  /// Community stories only: written permission from the person whose story it is.
+  communityPermissionConfirmed Boolean?
+
+  status           StoryStatus @default(draft)
+  draftedById      String
+  /// Must be a different person from the drafter before publication.
+  verifiedById     String?
+  publishedAt      DateTime?
+  /// Stories are re-checked every 12 months; this drives the review queue.
+  lastReviewedAt   DateTime?
+  retractedAt      DateTime?
+  /// Internal only. FREE TEXT — never exported.
+  retractionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  publicFigure PublicFigure? @relation(fields: [publicFigureId], references: [id], onDelete: Restrict)
+  draftedBy    User          @relation("StoryDrafter", fields: [draftedById], references: [id], onDelete: Restrict)
+  verifiedBy   User?         @relation("StoryVerifier", fields: [verifiedById], references: [id], onDelete: Restrict)
+
+  conditions StoryCondition[]
+  sources    Source[]
+  charities  StoryCharity[]
+  savedBy    SavedStory[]
+  takedowns  TakedownRequest[]
+
+  @@index([status, publishedAt])
+  @@index([publicFigureId])
+}
+
+model StoryCondition {
+  storyId     String
+  conditionId String
+
+  createdAt DateTime @default(now())
+
+  story     Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  condition Condition @relation(fields: [conditionId], references: [id], onDelete: Cascade)
+
+  @@id([storyId, conditionId])
+}
+
+enum SourceType {
+  interview
+  own_social
+  book
+  podcast
+  statement
+  article
+}
+
+/// Every published story needs at least one. Enforced by a database trigger as well as in
+/// the domain layer — this is the rule that keeps us honest about real people.
+model Source {
+  id            String     @id @default(cuid())
+  storyId       String
+  url           String
+  title         String
+  publisher     String
+  publishedDate DateTime?
+  sourceType    SourceType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  story          Story          @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  storyCharities StoryCharity[]
+
+  @@index([storyId])
+}
+
+model SavedStory {
+  userId  String
+  storyId String
+
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, storyId])
+}
+
+enum TakedownType {
+  correction
+  removal
+}
+
+enum TakedownStatus {
+  open
+  actioned
+  declined
+}
+
+model TakedownRequest {
+  id             String         @id @default(cuid())
+  storyId        String
+  type           TakedownType   @default(removal)
+  requesterName  String
+  requesterEmail String
+  /// e.g. "the person in the story", "their representative", "a reader"
+  relationship   String
+  /// FREE TEXT — never exported.
+  reason         String
+  status         TakedownStatus @default(open)
+  /// Internal note from whoever handled it. FREE TEXT — never exported.
+  resolutionNote String?
+  resolvedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Charities and giving
+// ---------------------------------------------------------------------------
+
+enum Regulator {
+  CCEW
+  OSCR
+  CCNI
+}
+
+model Charity {
+  id               String    @id @default(cuid())
+  name             String
+  slug             String    @unique
+  registeredNumber String
+  regulator        Regulator
+  websiteUrl       String
+  donationUrl      String
+  /// In our own words, not copied from the charity.
+  description      String
+  logoUrl          String?
+  /// Without written permission we show the name as text only.
+  logoPermission   Boolean   @default(false)
+  /// An editor checked this against the official register. Null means never publicly visible.
+  verifiedById     String?
+  verifiedAt       DateTime?
+  active           Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  verifiedBy User? @relation("CharityVerifier", fields: [verifiedById], references: [id], onDelete: Restrict)
+
+  conditions CharityCondition[]
+  stories    StoryCharity[]
+  followers  CharityFollow[]
+  referrals  DonationReferral[]
+  notes      DonationNote[]
+
+  @@unique([regulator, registeredNumber])
+  @@index([verifiedAt, active])
+}
+
+model CharityCondition {
+  charityId   String
+  conditionId String
+
+  createdAt DateTime @default(now())
+
+  charity   Charity   @relation(fields: [charityId], references: [id], onDelete: Cascade)
+  condition Condition @relation(fields: [conditionId], references: [id], onDelete: Cascade)
+
+  @@id([charityId, conditionId])
+}
+
+/// A claim that a public figure supports a charity is a factual claim about them, so it
+/// carries its own source.
+model StoryCharity {
+  storyId   String
+  charityId String
+  sourceId  String?
+
+  createdAt DateTime @default(now())
+
+  story   Story   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  charity Charity @relation(fields: [charityId], references: [id], onDelete: Cascade)
+  source  Source? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  @@id([storyId, charityId])
+}
+
+/// Following a condition-specific charity reveals health information. Treated as sensitive:
+/// never shared with charities or anyone else.
+model CharityFollow {
+  userId    String
+  charityId String
+
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  charity Charity @relation(fields: [charityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, charityId])
+}
+
+/// Anonymous by design. No user id, no IP address, no health context — only which charity
+/// and which kind of page, so we can report how much support we send charities' way.
+model DonationReferral {
+  id         String   @id @default(cuid())
+  charityId  String
+  /// A page *kind* such as "condition" or "story", never a URL that identifies a person.
+  originPage String
+  createdAt  DateTime @default(now())
+
+  charity Charity @relation(fields: [charityId], references: [id], onDelete: Cascade)
+
+  @@index([charityId, createdAt])
+}
+
+/// A private note someone keeps for themselves. Never shown to the charity.
+model DonationNote {
+  id        String   @id @default(cuid())
+  userId    String
+  charityId String
+  amount    Decimal? @db.Decimal(10, 2)
+  donatedOn DateTime @db.Date
+  /// FREE TEXT — never exported.
+  note      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  charity Charity @relation(fields: [charityId], references: [id], onDelete: Cascade)
+
+  @@index([userId, donatedOn])
+}
+
+// ---------------------------------------------------------------------------
+// Tracking
+// ---------------------------------------------------------------------------
+
+model UserCondition {
+  id            String  @id @default(cuid())
+  userId        String
+  conditionId   String
+  diagnosedYear Int?
+  /// True when the person has not had a formal diagnosis. We record what they tell us and
+  /// never dispute it, but research needs to know the difference.
+  selfReported  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  condition Condition @relation(fields: [conditionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conditionId])
+}
+
+model Symptom {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  conditions SymptomCondition[]
+  userLinks  UserSymptom[]
+}
+
+model SymptomCondition {
+  symptomId   String
+  conditionId String
+
+  symptom   Symptom   @relation(fields: [symptomId], references: [id], onDelete: Cascade)
+  condition Condition @relation(fields: [conditionId], references: [id], onDelete: Cascade)
+
+  @@id([symptomId, conditionId])
+}
+
+model UserSymptom {
+  id        String  @id @default(cuid())
+  userId    String
+  symptomId String
+  /// Stopping tracking a symptom keeps the history but drops it off the daily log.
+  active    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symptom Symptom @relation(fields: [symptomId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, symptomId])
+}
+
+enum InterventionType {
+  rx
+  otc
+  supplement
+  device
+  non_drug
+}
+
+model Intervention {
+  id      String           @id @default(cuid())
+  name    String
+  type    InterventionType
+  /// dm+d code. Null until a full NHS TRUD import is in place.
+  dmdCode String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses TreatmentCourse[]
+
+  @@unique([name, type])
+}
+
+enum StopReason {
+  not_working
+  side_effects
+  cost
+  clinician_advice
+  other
+}
+
+model TreatmentCourse {
+  id              String      @id @default(cuid())
+  userId          String
+  interventionId  String
+  dose            String?
+  frequency       String?
+  route           String?
+  startDate       DateTime    @db.Date
+  endDate         DateTime?   @db.Date
+  stopReason      StopReason?
+  /// FREE TEXT — never exported. Only shown back to the person who wrote it.
+  stopReasonNote  String?
+  /// 0–10 self-rating of how consistently they took it.
+  adherenceRating Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  intervention Intervention @relation(fields: [interventionId], references: [id], onDelete: Restrict)
+
+  checkIns          ScheduledCheckIn[]
+  sideEffectReports SideEffectReport[]
+
+  @@index([userId, startDate])
+}
+
+model Questionnaire {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  title       String
+  /// Validated instruments such as EQ-5D and PROMIS carry licence terms. Record them here
+  /// before any such instrument is loaded.
+  licenceNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions QuestionnaireVersion[]
+}
+
+/// Questionnaires are data, not code. A new version is published without a deployment, and
+/// every response records exactly which version was answered.
+model QuestionnaireVersion {
+  id               String    @id @default(cuid())
+  questionnaireId  String
+  version          Int
+  /// [{ key, type, label, help?, required, options?, min?, max? }]
+  itemsJson        Json
+  /// { method: "sum" | "mean" | "map", items: [...], mapping?: {...} }
+  scoringJson      Json
+  /// [{ key, itemKey, operator, value, message }] — drives the safety signposting screen.
+  redFlagRulesJson Json      @default("[]")
+  /// { baseline: true, afterTreatmentDays: [14, 90, 180], thenEveryDays: 180, generalEveryDays: 28 }
+  scheduleJson     Json      @default("{}")
+  publishedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+
+  scheduledCheckIns ScheduledCheckIn[]
+  responses         Response[]
+
+  @@unique([questionnaireId, version])
+}
+
+enum CheckInStatus {
+  pending
+  completed
+  missed
+}
+
+model ScheduledCheckIn {
+  id                     String        @id @default(cuid())
+  userId                 String
+  questionnaireVersionId String
+  /// Set when this check-in is anchored to a treatment start date rather than the general cycle.
+  treatmentCourseId      String?
+  dueAt                  DateTime
+  status                 CheckInStatus @default(pending)
+  remindedAt             DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionnaireVersion QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id], onDelete: Restrict)
+  treatmentCourse      TreatmentCourse?     @relation(fields: [treatmentCourseId], references: [id], onDelete: Cascade)
+  response             Response?
+
+  @@index([userId, status, dueAt])
+  @@index([status, dueAt])
+}
+
+model Response {
+  id                     String   @id @default(cuid())
+  userId                 String
+  questionnaireVersionId String
+  checkInId              String?  @unique
+  /// { itemKey: value } — validated against the version's itemsJson on write.
+  answersJson            Json
+  score                  Float?
+  completedAt            DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionnaireVersion QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id], onDelete: Restrict)
+  checkIn              ScheduledCheckIn?    @relation(fields: [checkInId], references: [id], onDelete: SetNull)
+
+  @@index([userId, completedAt])
+}
+
+/// One per day, editable the same day. Must be completable in under thirty seconds.
+model DailyLog {
+  id                String   @id @default(cuid())
+  userId            String
+  date              DateTime @db.Date
+  /// { userSymptomId: 0-10 }
+  symptomScoresJson Json     @default("{}")
+  /// Context tags such as "poor sleep", "stress", "missed dose".
+  tags              String[] @default([])
+  /// FREE TEXT — never exported.
+  note              String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model SideEffectReport {
+  id                String    @id @default(cuid())
+  userId            String
+  treatmentCourseId String
+  /// FREE TEXT — never exported.
+  description       String
+  /// 1 mild – 5 severe.
+  severity          Int
+  /// Recorded so we can show that we pointed them at the MHRA Yellow Card scheme.
+  yellowCardShownAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  treatmentCourse TreatmentCourse @relation(fields: [treatmentCourseId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model ReminderPreference {
+  id                String  @id @default(cuid())
+  userId            String  @unique
+  /// none | weekly | fortnightly | on_due_date
+  frequency         String  @default("on_due_date")
+  dailyLogReminders Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Safety and audit
+// ---------------------------------------------------------------------------
+
+/// Recorded whenever the supportive signposting screen is shown, so we can tell whether the
+/// red-flag rules are working. Never used to contact anyone.
+model SafetyEvent {
+  id      String   @id @default(cuid())
+  userId  String
+  ruleKey String
+  shownAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, shownAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  paramsJson Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([action, createdAt])
+  @@index([actorId, createdAt])
+}
+
+/// Every research export, recorded before the file is produced. Who, when, what query, and
+/// which consent purpose it was taken under.
+model ResearchExport {
+  id               String         @id @default(cuid())
+  actorId          String
+  queryJson        Json
+  consentPurpose   ConsentPurpose
+  rowCount         Int
+  suppressedGroups Int            @default(0)
+  createdAt        DateTime       @default(now())
+
+  @@index([actorId, createdAt])
+}

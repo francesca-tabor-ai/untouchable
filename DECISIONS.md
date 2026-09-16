@@ -55,6 +55,23 @@ managed Postgres.
 Scaffolded from `create-next-app`. Tailwind 4 puts design tokens in CSS (`@theme`) rather than a JS
 config, so the token file is the single source of truth for the design system.
 
+### D-011 · The working copy lives on the internal SSD, not the external drive
+The project was started on an exFAT external volume. Measured there, five small file writes took
+**37 seconds**; the same writes on the internal SSD took **4 milliseconds**. `npm install` ran for
+over half an hour without completing and deleting a `node_modules` tree progressed at roughly one
+directory per minute. A Next.js build writes thousands of small files, so that volume cannot host
+this build at all.
+
+The working copy is now `~/Projects/untouchable`, pushed to the same GitHub repository, which is the
+source of truth. Nothing was deleted from the external drive. Worth flagging to the owner separately:
+write latency that bad is not normal for a healthy drive.
+
+### D-012 · Prisma pinned to 6.x
+`npm install prisma` resolved to **8.0.0-rc.15** — the `latest` dist-tag currently points at a release
+candidate with a completely redesigned CLI (`contract`, `migration`, `db` replacing `migrate`). An
+eleven-milestone health platform built by parallel agents is the wrong place to absorb an RC's churn,
+so both `prisma` and `@prisma/client` are pinned to the stable 6 line.
+
 ### D-010 · GitHub repository is private
 The repository is private at creation. The brand name, trademark position and legal review of consent
 and disclaimer wording are all unresolved (brief Section 12), and the repo contains the full data

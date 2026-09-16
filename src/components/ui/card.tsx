@@ -20,10 +20,32 @@ export function Card({
   );
 }
 
-export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn("text-title", className)} {...props} />;
+/**
+ * `as` exists so a card can sit at the right depth in the page's heading outline. A card
+ * inside an `h2` section needs an `h3`; the same card on a page where it is the top-level
+ * content needs an `h2`. Heading order is not decoration.
+ */
+export function CardTitle({
+  className,
+  children,
+  as: Tag = "h3",
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement> & { as?: "h2" | "h3" | "h4" }) {
+  return (
+    <Tag className={cn("text-title", className)} {...props}>
+      {children}
+    </Tag>
+  );
 }
 
-export function CardBody({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("text-muted mt-2", className)} {...props} />;
+export function CardBody({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p className={cn("mt-2 text-muted", className)} {...props}>
+      {children}
+    </p>
+  );
 }

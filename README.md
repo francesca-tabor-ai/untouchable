@@ -25,7 +25,7 @@ information. It will never tell you what to do about your health.
 Requires Node 20+ and PostgreSQL 14+.
 
 ```bash
-cp .env.example .env.local     # then fill in AUTH_SECRET: npx auth secret
+cp .env.example .env     # then fill in AUTH_SECRET: npx auth secret
 createdb untouchable_dev && createdb untouchable_shadow && createdb untouchable_test
 npm install
 npm run db:migrate
