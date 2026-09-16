@@ -1,0 +1,107 @@
+/* ---------------------------------------------------------------------------
+   UnTouchable design tokens.
+
+   Warm, open and community-led rather than clinical. The palette is grounded in
+   deep green and warm cream; clay is the accent that stops it feeling like a
+   hospital. Generous radii, generous space, one calm voice.
+
+   Owned by the platform lead — see AGENTS.md section 3. Every colour pairing
+   used for text meets WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI edges);
+   the ratio is noted where it is close.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* --- Surface: warm neutrals ------------------------------------------- */
+  --color-cream-50: #faf8f3;
+  --color-cream-100: #f6f4ef;
+  --color-cream-200: #efebe2;
+  --color-cream-300: #e4dfd3;
+  --color-line: #d8d3c7;
+  --color-line-strong: #bdb6a6;
+  --color-white: #ffffff;
+
+  /* --- Ink -------------------------------------------------------------- */
+  --color-ink: #1f2a26;        /* 14.1:1 on cream-100 */
+  --color-ink-soft: #3a4642;   /*  9.0:1 on cream-100 */
+  --color-muted: #5b6560;      /*  5.6:1 on cream-100 — the floor for body text */
+
+  /* --- Forest: the primary voice ---------------------------------------- */
+  --color-forest-50: #eef3f0;
+  --color-forest-100: #d9e5df;
+  --color-forest-200: #b4cbc0;
+  --color-forest-400: #5c8272;
+  --color-forest-600: #3d5a4c;  /* 6.6:1 on cream-100 — safe for text and links */
+  --color-forest-700: #334c41;
+  --color-forest-800: #2f3f39;  /* primary button fill, white text 10.4:1 */
+  --color-forest-900: #26352f;  /* hover */
+
+  /* --- Clay: warmth, community, the human accent ------------------------- */
+  /* clay-500 is a FILL colour only — 2.6:1 on cream, never used for text. */
+  --color-clay-100: #fbeae3;
+  --color-clay-200: #f5cfc1;
+  --color-clay-500: #e07a5f;
+  --color-clay-600: #c2603f;
+  --color-clay-700: #9e4a2e;   /* 5.3:1 on cream-100 — the text-safe clay */
+
+  /* --- Meaning ---------------------------------------------------------- */
+  /* Deliberately muted. Nothing on this platform should shout at a frightened
+     person, so "danger" is a deep clay rather than a siren red. */
+  --color-positive: #2f6b4f;
+  --color-caution: #8a6a1f;
+  --color-danger: #9e3b2e;
+  --color-info: #3f5f7d;
+
+  /* --- Data visualisation ------------------------------------------------ */
+  /* Five series, distinguishable in the common forms of colour blindness and
+     when printed in greyscale (each step changes lightness as well as hue). */
+  --color-series-1: #2f5d50;
+  --color-series-2: #c2603f;
+  --color-series-3: #4a6f97;
+  --color-series-4: #8a6ba1;
+  --color-series-5: #96842f;
+
+  /* --- Type ------------------------------------------------------------- */
+  /* Display is a soft, slightly wonky serif: warm rather than authoritative.
+     Body is Rubik — open apertures, friendly, highly legible at small sizes. */
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-rubik), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --text-hero: 2.75rem;        /* 44px, up to 56px at large viewports */
+  --text-hero--line-height: 1.08;
+  --text-hero--letter-spacing: -0.02em;
+  --text-display: 2rem;
+  --text-display--line-height: 1.15;
+  --text-display--letter-spacing: -0.015em;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.25;
+  --text-lead: 1.1875rem;      /* 19px */
+  --text-lead--line-height: 1.6;
+  --text-body: 1.0625rem;      /* 17px — a notch up from default; people read this tired */
+  --text-body--line-height: 1.65;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.55;
+  --text-legal: 0.8125rem;
+  --text-legal--line-height: 1.5;
+
+  /* --- Shape ------------------------------------------------------------ */
+  --radius-card: 1.25rem;
+  --radius-panel: 1.5rem;
+  --radius-field: 0.75rem;
+  --radius-pill: 999px;
+
+  /* --- Depth: emphasis comes from space, not shadow --------------------- */
+  --shadow-soft: 0 1px 2px rgba(31, 42, 38, 0.04), 0 8px 24px rgba(31, 42, 38, 0.06);
+  --shadow-lift: 0 2px 4px rgba(31, 42, 38, 0.06), 0 16px 40px rgba(31, 42, 38, 0.1);
+
+  /* --- Motion: present but never busy ----------------------------------- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-quick: 140ms;
+  --duration-calm: 240ms;
+}
+
+:root {
+  --focus-ring: 0 0 0 3px var(--color-cream-100), 0 0 0 5.5px var(--color-forest-600);
+  --content-width: 72rem;
+  --reading-width: 40rem;
+}
