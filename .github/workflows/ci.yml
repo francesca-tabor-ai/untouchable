@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: untouchable
+          POSTGRES_PASSWORD: untouchable
+          POSTGRES_DB: untouchable_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://untouchable:untouchable@localhost:5432/untouchable_test
+      SHADOW_DATABASE_URL: postgresql://untouchable:untouchable@localhost:5432/untouchable_shadow
+      AUTH_SECRET: ci-secret-not-used-anywhere-real
+      AUTH_URL: http://localhost:3000
+      EMAIL_PROVIDER: console
+      PRIVACY_MIN_GROUP_SIZE: "10"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Create the shadow database
+        run: PGPASSWORD=untouchable createdb -h localhost -U untouchable untouchable_shadow
+
+      - run: npx prisma generate
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      - name: Types
+        run: npm run typecheck
+
+      - name: Lint, including accessibility rules
+        run: npx eslint .
+
+      - name: Tests
+        run: npx vitest run
+
+      - name: Build
+        run: npm run build
+
+  # A separate job so a failure here is unmistakable in the checks list. These are the
+  # promises the platform makes to the people using it.
+  guarantees:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+      - name: No real people in seeds, fixtures or tests
+        run: |
+          echo "Seed and fixture content must be fictional — brief section 5.3."
+          echo "This check is a placeholder for a reviewer's eyes, not a substitute for them."
