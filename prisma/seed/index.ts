@@ -3,6 +3,7 @@ import { PrismaClient } from "../../src/generated/prisma";
 import { seedCharities } from "./charities";
 import { seedCore } from "./core";
 import { seedDemoTracking } from "./demo-tracking";
+import { seedMedicines } from "./medicines";
 import { seedStaff } from "./staff";
 import { seedStories } from "./stories";
 
@@ -24,6 +25,9 @@ async function main() {
 
   const { conditions } = await seedCore(db);
   console.info("  conditions, symptoms, interventions, questionnaire");
+
+  await seedMedicines(db);
+  console.info("  medicines");
 
   const staff = await seedStaff(db);
   console.info("  editor and admin accounts");

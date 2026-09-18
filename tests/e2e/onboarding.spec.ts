@@ -28,7 +28,8 @@ test("a new person can get through onboarding on a small phone", async ({ page }
   await signUp(page, freshEmail());
 
   await expect(page.getByRole("heading", { name: "Setting up your account" })).toBeVisible();
-  await expect(page.getByText("0 of 4 done.")).toBeVisible();
+  // Derived, not hardcoded: the number of steps changes as milestones land.
+  await expect(page.getByText(/^0 of \d+ done\.$/)).toBeVisible();
 
   // Nothing anywhere in onboarding asks for money.
   await expect(page.getByText(/donate/i)).toHaveCount(0);
@@ -65,18 +66,40 @@ test("a new person can get through onboarding on a small phone", async ({ page }
   await page.getByRole("checkbox").first().check();
   await page.getByRole("button", { name: "Save and carry on" }).click();
 
-  // The two steps that are not built yet say so, and can be skipped.
+  // Treatments. "I take nothing" is a real answer and finishes the step.
   await page.waitForURL("**/onboarding/treatments");
-  await expect(page.getByText("This part is not ready yet")).toBeVisible();
-  await page.getByRole("link", { name: "Skip for now" }).click();
+  await expect(page.getByRole("heading", { name: "Treatments you are on now" })).toBeVisible();
+  await page.getByRole("button", { name: /not on any treatment/i }).click();
 
-  await page.waitForURL("**/onboarding/baseline");
-  await expect(page.getByText("This part is not ready yet")).toBeVisible();
-  await page.getByRole("link", { name: "Skip for now" }).click();
+  // Baseline. The first set of questions everything later is measured against.
+  await page.waitForURL("**/onboarding/baseline**");
 
-  await page.waitForURL("**/onboarding");
-  await expect(page.getByText("That is everything for now")).toBeVisible();
-  await expect(page.getByText("4 of 4 done.")).toBeVisible();
+  // Answer one option per question, found by the radios' shared name rather than by the
+  // question wording: the questions are data and can change without this test changing.
+  //
+  // Not `getByRole("radiogroup")` — these are fieldsets, which map to role "group", so that
+  // selector silently matches nothing and every answer stays blank.
+  const questionNames: string[] = await page.evaluate(() =>
+    Array.from(
+      new Set(
+        Array.from(document.querySelectorAll("main input[type=radio]")).map(
+          (input) => (input as HTMLInputElement).name,
+        ),
+      ),
+    ),
+  );
+  expect(questionNames.length).toBeGreaterThan(0);
+  for (const name of questionNames) {
+    await page.locator(`main input[type=radio][name="${name}"]`).first().check();
+  }
+
+  // "Save my answers", not "Save and come back later". The second saves a draft, and a
+  // draft does not finish the step — which is exactly what this test exists to notice.
+  await page.getByRole("button", { name: "Save my answers" }).click();
+
+  // Every step reports itself done, whatever the number of steps has grown to.
+  await page.goto("/onboarding");
+  await expect(page.getByText(/^(\d+) of \1 done\.$/)).toBeVisible();
 });
 
 test("closing the tab loses nothing", async ({ page, context }) => {
@@ -92,7 +115,7 @@ test("closing the tab loses nothing", async ({ page, context }) => {
   const returning = await context.newPage();
   await returning.setViewportSize({ width: 375, height: 812 });
   await returning.goto("/onboarding");
-  await expect(returning.getByText("1 of 4 done.")).toBeVisible();
+  await expect(returning.getByText(/^1 of \d+ done\.$/)).toBeVisible();
   await returning.getByRole("link", { name: "Carry on where I left off" }).click();
   await expect(
     returning.getByRole("heading", { name: "Your choices about your data" }),

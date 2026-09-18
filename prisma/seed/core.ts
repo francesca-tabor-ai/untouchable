@@ -42,31 +42,48 @@ export async function seedCore(db: PrismaClient) {
   const bySlug = Object.fromEntries(conditions.map((c) => [c.slug, c]));
 
   const symptoms: { name: string; slug: string; conditions: string[] }[] = [
-    { name: "Fatigue", slug: "fatigue", conditions: ["breast-cancer", "type-2-diabetes", "depression"] },
-    { name: "Pain", slug: "pain", conditions: ["breast-cancer"] },
-    { name: "Nausea", slug: "nausea", conditions: ["breast-cancer"] },
-    { name: "Trouble sleeping", slug: "trouble-sleeping", conditions: ["breast-cancer", "type-2-diabetes", "depression"] },
-    { name: "Brain fog", slug: "brain-fog", conditions: ["breast-cancer", "depression"] },
-    { name: "Low mood", slug: "low-mood", conditions: ["depression", "breast-cancer"] },
-    { name: "Anxiety", slug: "anxiety", conditions: ["depression", "breast-cancer", "type-2-diabetes"] },
+    { name: "Fatigue", slug: "fatigue", conditions: ["breast-cancer", "type-2-diabetes", "depression", "encephalitis", "tinnitus", "hodgkin-lymphoma", "motor-neurone-disease", "multiple-sclerosis", "brain-tumour"] },
+    { name: "Pain", slug: "pain", conditions: ["breast-cancer", "hodgkin-lymphoma", "multiple-sclerosis", "brain-tumour"] },
+    { name: "Nausea", slug: "nausea", conditions: ["breast-cancer", "brain-tumour", "encephalitis", "hodgkin-lymphoma"] },
+    { name: "Trouble sleeping", slug: "trouble-sleeping", conditions: ["breast-cancer", "type-2-diabetes", "depression", "encephalitis", "tinnitus", "hodgkin-lymphoma", "motor-neurone-disease", "multiple-sclerosis", "brain-tumour"] },
+    { name: "Brain fog", slug: "brain-fog", conditions: ["breast-cancer", "depression", "encephalitis", "multiple-sclerosis", "brain-tumour", "hodgkin-lymphoma"] },
+    { name: "Low mood", slug: "low-mood", conditions: ["depression", "breast-cancer", "encephalitis", "tinnitus", "hodgkin-lymphoma", "motor-neurone-disease", "multiple-sclerosis", "brain-tumour"] },
+    { name: "Anxiety", slug: "anxiety", conditions: ["depression", "breast-cancer", "type-2-diabetes", "tinnitus", "encephalitis", "hodgkin-lymphoma", "motor-neurone-disease", "multiple-sclerosis", "brain-tumour"] },
     { name: "Loss of interest", slug: "loss-of-interest", conditions: ["depression"] },
     { name: "Thirst", slug: "thirst", conditions: ["type-2-diabetes"] },
-    { name: "Blurred vision", slug: "blurred-vision", conditions: ["type-2-diabetes"] },
-    { name: "Numbness or tingling in feet", slug: "numbness-feet", conditions: ["type-2-diabetes"] },
+    { name: "Blurred vision", slug: "blurred-vision", conditions: ["type-2-diabetes", "multiple-sclerosis", "brain-tumour"] },
+    { name: "Numbness or tingling", slug: "numbness-feet", conditions: ["type-2-diabetes", "multiple-sclerosis"] },
     { name: "Hot flushes", slug: "hot-flushes", conditions: ["breast-cancer"] },
+    { name: "Headaches", slug: "headaches", conditions: ["brain-tumour", "encephalitis", "multiple-sclerosis"] },
+    { name: "Memory problems", slug: "memory-problems", conditions: ["encephalitis", "brain-tumour", "multiple-sclerosis"] },
+    { name: "Ringing or noise in the ears", slug: "ringing-in-the-ears", conditions: ["tinnitus"] },
+    { name: "Sensitivity to noise", slug: "sensitivity-to-noise", conditions: ["tinnitus", "encephalitis"] },
+    { name: "Changes in taste or smell", slug: "changes-in-taste-or-smell", conditions: ["encephalitis"] },
+    { name: "Seizures", slug: "seizures", conditions: ["brain-tumour", "encephalitis"] },
+    { name: "Night sweats", slug: "night-sweats", conditions: ["hodgkin-lymphoma"] },
+    { name: "Itchy skin", slug: "itchy-skin", conditions: ["hodgkin-lymphoma"] },
+    { name: "Weight loss", slug: "weight-loss", conditions: ["hodgkin-lymphoma", "motor-neurone-disease"] },
+    { name: "Muscle weakness", slug: "muscle-weakness", conditions: ["motor-neurone-disease", "multiple-sclerosis"] },
+    { name: "Trouble swallowing", slug: "trouble-swallowing", conditions: ["motor-neurone-disease"] },
+    { name: "Breathlessness", slug: "breathlessness", conditions: ["motor-neurone-disease", "hodgkin-lymphoma"] },
+    { name: "Problems with balance", slug: "problems-with-balance", conditions: ["multiple-sclerosis", "brain-tumour"] },
   ];
 
   for (const symptom of symptoms) {
+    // A symptom may name a condition that is not seeded here — conditions are also added by
+    // editors. Skip those links rather than crashing the whole seed on a missing key.
     const record = await db.symptom.upsert({
       where: { slug: symptom.slug },
       update: { name: symptom.name },
       create: { name: symptom.name, slug: symptom.slug },
     });
     for (const conditionSlug of symptom.conditions) {
+      const condition = bySlug[conditionSlug] ?? (await db.condition.findUnique({ where: { slug: conditionSlug } }));
+      if (!condition) continue;
       await db.symptomCondition.upsert({
-        where: { symptomId_conditionId: { symptomId: record.id, conditionId: bySlug[conditionSlug].id } },
+        where: { symptomId_conditionId: { symptomId: record.id, conditionId: condition.id } },
         update: {},
-        create: { symptomId: record.id, conditionId: bySlug[conditionSlug].id },
+        create: { symptomId: record.id, conditionId: condition.id },
       });
     }
   }

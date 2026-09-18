@@ -708,3 +708,104 @@ The token *names* did not change, only their values, so the entire product re-sk
 touching a single feature component. `tests/unit/design-system.test.ts` still passes because the
 type scale kept its names; all 385 tests pass, and axe reports zero violations across the home,
 stories, condition and charity pages at both 1280px and 375px.
+
+### D-045 · Dependence signposting is a second set of contacts, not a replacement
+`SUPPORT_CONTACTS` in `src/lib/safety/constants.ts` is NHS 111, 999 and Samaritans. Those are the
+right numbers for somebody in danger tonight. They are not the right numbers for somebody who was
+prescribed a sleeping tablet at twenty-three and is still taking it at fifty, which is exactly the
+situation a page about nitrazepam can put a reader in.
+
+So `src/lib/safety/substance-support.ts` sits alongside it rather than inside it: FRANK and the NHS,
+for dependence and coming off something. A sensitive-topic medicine surface shows **both** blocks —
+crisis and dependence are different questions and a person should not have to translate one into the
+other. The two have separate heading ids so they can appear on the same page without colliding.
+
+Both contacts were checked against independent sources before being written down, on 18 September
+2026: FRANK's number and text line from `talktofrank.com/contact-frank`, corroborated by the NHS
+page at `nhs.uk/live-well/addiction-support/drug-addiction-getting-help/`, which prints the same
+number. Nothing here links to anyone who sells treatment (AGENTS.md rule 14). Re-check both at the
+twelve-month review.
+
+### D-046 · A medicine is public only once an editor has written what it is
+`Intervention` rows are created two ways. An editor creates one here. `findOrCreateIntervention`
+creates one every time a person types a treatment into their own tracking that we have not heard of
+(D-043) — which is the whole point of that feature, and which means the table is part medicine
+reference and part **somebody's private medicine cabinet**.
+
+A public index over that table would be a health-data leak dressed up as a reference work. So
+`src/lib/medicines/queries.ts` filters on `summary IS NOT NULL AND slug IS NOT NULL`: a plain-English
+description written from the NHS, the BNF or the eMC is the thing only an editor ever produces, and
+a medicine with no description is not worth a page anyway — a drug name on its own tells a
+frightened reader nothing. This is the medicines equivalent of "an unverified charity is never
+publicly visible", and it is tested in `tests/unit/medicine-visibility.test.ts`.
+
+The editorial picker uses a weaker filter (`slug IS NOT NULL`) for the same reason in a smaller way:
+rows a person created in their own log have no slug, and an editorial dropdown is not the place to
+enumerate them. Anything genuinely missing goes through `createMedicine`, which **adopts** an
+existing row rather than duplicating it — so an editor writing up a medicine somebody had already
+logged adds an identity to that row and reads nothing from anyone's tracking.
+
+### D-047 · No donation prompt on a medicine surface, and no medicine surface in the prompt policy
+`DONATION_SURFACES` in `src/lib/charities/prompt-policy.ts` is the charity team's list and their
+policy is default-deny: a surface nobody has decided about gets no prompt. `/medicines` and
+`/medicines/[slug]` are not on it, so they show no charity block at all — not a giving one, and not
+a support one either.
+
+That is a deliberate choice, not an oversight. The support variant (D-028) is the right pattern for
+a sensitive surface, but `CharitiesForCondition` is written for one condition and carries a fixed
+element id; a medicine page is about several conditions at once, and rendering the block more than
+once would duplicate that id. The medicine page therefore signposts to the condition pages, which
+carry the charity block properly, and carries the dependence and crisis contacts itself.
+
+Where the support variant **does** apply is the story page: `hasSensitiveMedicine` now flips a story
+to `variant="support"` on the medicine alone, so a story about a benzodiazepine drops the donate
+hand-off even when none of its condition tags is marked sensitive. Whether `medicine_page` should
+join `DONATION_SURFACES` is the charity team's call, and nothing here needs to change if they take it.
+
+### D-048 · The dose rule is a detector, not a review note
+AGENTS.md rule 15 says never publish a dose, a regimen, or how much of something someone took. A
+rule enforced by an editor reading carefully is a rule we will break on a busy Friday, so
+`src/lib/medicines/dose-language.ts` is the single definition of "dose-shaped" and it runs in three
+places: in the Zod schema, so the editor is told at the form; in the domain layer, so a second
+interface cannot skip it; and in `tests/unit/medicine-surfaces.test.tsx`, which renders every public
+medicine surface and scans the whole text content, so a sentence assembled at render time cannot get
+past it either.
+
+It is deliberately over-eager. It flags "dose", "daily" and "a day", which are ordinary English —
+ordinary English that has no business on these surfaces. The cost of a false positive is a rewritten
+phrase. The cost of a false negative is a page that reads as a recipe to somebody in recovery. The
+`StoryIntervention.context` column is capped at 160 characters by the database for the same reason:
+a phrase cannot become a regimen if there is nowhere to put one.
+
+### PL-12 · Adding a condition with no symptoms locked people out of the product
+Six conditions were added through content work — encephalitis, tinnitus, Hodgkin lymphoma, motor
+neurone disease, multiple sclerosis, brain tumour — with no symptoms linked to any of them. The
+onboarding symptoms step offers only symptoms attached to the conditions someone has chosen, and it
+requires at least one. So anyone choosing one of those six reached a step that demanded a choice and
+offered none: unable to finish onboarding, and therefore unable to use any tracking feature at all.
+
+The build was green and 385 unit tests passed throughout. An end-to-end test caught it, which is
+most of the argument for having them.
+
+Fixed in two places, because either alone would leave the trap set:
+- **Data**: symptoms are now linked to every seeded condition, including fourteen new ones.
+- **Behaviour**: `symptomsForUser` falls back to the full symptom list when the chosen conditions
+  have none of their own. Editors add conditions through the admin and cannot be asked to link
+  symptoms in the same breath; a slightly long list is a far smaller problem than a locked door.
+
+`tests/unit/onboarding-symptoms-invariant.test.ts` holds the rule: onboarding must never present a
+step that demands a choice and offers none.
+
+### PL-13 · End-to-end tests get their own database, port and build directory
+They used to run against the development database. Several specs legitimately create things — a
+published story, a questionnaire version — so every run left the developer's data further from the
+seed. It eventually produced a failure with no bug behind it: six published questionnaire versions
+had accumulated and the one the baseline step looks for was no longer the newest.
+
+`npm run test:e2e` now migrates and re-seeds `untouchable_e2e`, serves it on port 3100 from
+`.next-e2e` (Next locks a dev server per directory, so a developer's own server would otherwise
+block the run), and starts from identical fictional data every time.
+
+Also serialised. Two browser projects walking the same sign-up flow concurrently against one
+database produced twenty-nine thirty-second timeouts with nothing wrong in the code. End-to-end runs
+are not where we spend the speed budget.

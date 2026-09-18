@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { publicMedicinePaths } from "@/lib/medicines/queries";
 import { publishedStoryPaths } from "@/lib/stories/queries";
 
 /**
@@ -15,9 +16,13 @@ export const dynamic = "force-dynamic";
 const BASE_URL = process.env.AUTH_URL ?? "http://localhost:3000";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const paths = await publishedStoryPaths();
+  const [storyPaths, medicinePaths] = await Promise.all([
+    publishedStoryPaths(),
+    publicMedicinePaths(),
+  ]);
+  const paths = [...storyPaths, ...medicinePaths];
 
-  const fixed = ["/", "/stories", "/conditions", "/corrections"].map((path) => ({
+  const fixed = ["/", "/stories", "/conditions", "/medicines", "/corrections"].map((path) => ({
     url: `${BASE_URL}${path}`,
     lastModified: new Date(),
   }));

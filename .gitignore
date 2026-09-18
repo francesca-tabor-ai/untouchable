@@ -61,3 +61,6 @@ prisma/*.db
 
 # per-workstream test env files
 .env.test.*
+
+# end-to-end build output
+/.next-e2e/

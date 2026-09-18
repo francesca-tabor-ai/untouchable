@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   // signed-out visitor to an admin page deserves the right answer rather than a crash.
   experimental: { authInterrupts: true },
 
+  // End-to-end runs use their own build directory so they can start a dev server while a
+  // developer's own is already running — Next locks that per directory, and the two would
+  // otherwise refuse to coexist.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
+
   // Pin the build root: a stray lockfile in a parent directory otherwise changes what
   // Turbopack considers the project.
   turbopack: { root: __dirname },

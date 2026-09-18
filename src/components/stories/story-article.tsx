@@ -29,6 +29,9 @@ export function StoryArticle({
   related,
   saveSlot,
   charitySlot,
+  additionalContentNote,
+  medicinesSlot,
+  medicineSupportSlot,
 }: {
   story: PublicStory;
   related: StoryCard[];
@@ -36,8 +39,22 @@ export function StoryArticle({
   saveSlot?: ReactNode;
   /** Charities linked to this story. Owned by the charity team. */
   charitySlot?: ReactNode;
+  /**
+   * A second reason this story needs a warning, from outside the condition tags — today,
+   * a medicine somebody becomes dependent on. It joins the story's own note in the one
+   * callout rather than stacking a second box, so a reader gets one warning, not two.
+   * Owned by the medicines team.
+   */
+  additionalContentNote?: string | null;
+  /** The medicines this story is about. Owned by the medicines team. */
+  medicinesSlot?: ReactNode;
+  /** Dependence signposting, below the crisis contacts. Owned by the medicines team. */
+  medicineSupportSlot?: ReactNode;
 }) {
-  const note = contentNoteText(story);
+  const notes = [contentNoteText(story), additionalContentNote].filter(
+    (value): value is string => Boolean(value),
+  );
+  const note = notes.length > 0 ? notes.join(" ") : null;
   const showSupport = needsSupportSignposting(story);
 
   return (
@@ -86,6 +103,11 @@ export function StoryArticle({
 
         <ConditionLinks conditions={story.conditions} heading="What this story is about" />
 
+        {/* Medicines sit with the conditions: to a reader they are the same kind of fact.
+            Each one carries its own source inside the block, because saying a named person
+            took a named drug is a heavier claim than naming their condition. */}
+        {medicinesSlot}
+
         {/* On a sensitive-topic story this renders as support rather than as an ask — no
             donate hand-off, no giving copy. `StoryCharitiesSlot` owns that decision, so the
             slot is rendered here exactly as the caller built it. DECISIONS.md D-015. */}
@@ -105,6 +127,10 @@ export function StoryArticle({
         </p>
 
         {showSupport ? <SupportSignposting /> : null}
+
+        {/* Dependence is a different question from crisis, and needs different numbers. A
+            story about a benzodiazepine prescribed for depression shows both. */}
+        {medicineSupportSlot}
       </Container>
 
       {related.length > 0 ? (

@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "npm run db:test:prepare && vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
+    "test:e2e": "npm run db:e2e:prepare && playwright test",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:generate": "prisma generate",
@@ -19,7 +19,8 @@
     "db:studio": "prisma studio",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build",
     "format": "prettier --write .",
-    "db:test:prepare": "dotenv -e ${TEST_ENV:-.env.test} -- prisma migrate deploy"
+    "db:test:prepare": "dotenv -e ${TEST_ENV:-.env.test} -- prisma migrate deploy",
+    "db:e2e:prepare": "dotenv -e .env.e2e -- prisma migrate deploy && dotenv -e .env.e2e -- tsx prisma/seed/index.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
@@ -79,7 +80,7 @@
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.11"
   },
-  "description": "UnTouchable \u2014 nobody is untouchable, nobody is alone.",
+  "description": "UnTouchable — nobody is untouchable, nobody is alone.",
   "prisma": {
     "seed": "tsx prisma/seed/index.ts"
   }

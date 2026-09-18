@@ -33,6 +33,7 @@ export function SafetyFooter() {
             links={[
               { href: "/stories", label: "Stories" },
               { href: "/conditions", label: "Conditions" },
+              { href: "/medicines", label: "Medicines" },
               { href: "/charities", label: "Charities" },
             ]}
           />

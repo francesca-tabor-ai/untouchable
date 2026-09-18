@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { SubstanceSupport } from "@/components/medicines/medicine-safety";
 import { StoryCharitiesSlot } from "@/components/stories/charity-slots";
 import { SaveStory } from "@/components/stories/save-story";
 import { StoryArticle } from "@/components/stories/story-article";
+import { StoryMedicines } from "@/components/stories/story-medicines";
 import { getCurrentUser } from "@/lib/auth/guards";
+import { medicinesForPublishedStory } from "@/lib/medicines/queries";
+import { hasSensitiveMedicine, medicineContentNoteText } from "@/lib/medicines/safety";
 import { getPublishedStory, getRelatedStories } from "@/lib/stories/queries";
 import { isStorySaved } from "@/lib/stories/saved";
 import { needsSupportSignposting } from "@/lib/stories/safety";
@@ -40,15 +44,21 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
   const story = await getPublishedStory(slug);
   if (!story) notFound();
 
-  const [related, user] = await Promise.all([
+  const [related, user, medicines] = await Promise.all([
     getRelatedStories(
       story.id,
       story.conditions.map((condition) => condition.slug),
     ),
     getCurrentUser(),
+    medicinesForPublishedStory(story.id),
   ]);
 
   const saved = user ? await isStorySaved(user.id, story.id) : false;
+
+  // A medicine somebody becomes dependent on makes a story sensitive on its own, even when
+  // none of its conditions is marked. The charity block then renders as support rather than
+  // as an ask, exactly as it does for a sensitive condition (DECISIONS.md D-015a, D-028).
+  const sensitiveMedicine = hasSensitiveMedicine(medicines);
 
   return (
     <StoryArticle
@@ -64,8 +74,14 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
         />
       }
       charitySlot={
-        <StoryCharitiesSlot storyId={story.id} sensitive={needsSupportSignposting(story)} />
+        <StoryCharitiesSlot
+          storyId={story.id}
+          sensitive={needsSupportSignposting(story) || sensitiveMedicine}
+        />
       }
+      additionalContentNote={medicineContentNoteText(medicines)}
+      medicinesSlot={<StoryMedicines medicines={medicines} />}
+      medicineSupportSlot={sensitiveMedicine ? <SubstanceSupport /> : null}
     />
   );
 }

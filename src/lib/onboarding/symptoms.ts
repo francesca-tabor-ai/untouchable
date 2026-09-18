@@ -17,7 +17,16 @@ export const symptomsStepSchema = z.object({
     .min(1, "Please choose at least one symptom. The daily log is built from these, and you can change them whenever you like."),
 });
 
-/** Symptoms attached to any condition this person has chosen. */
+/**
+ * Symptoms attached to any condition this person has chosen.
+ *
+ * If their conditions have no symptoms linked yet, we offer the whole list rather than an
+ * empty one. An editor adding a condition through the admin cannot be expected to link
+ * symptoms in the same breath, and until they do, every person choosing that condition
+ * would reach a step that demands a choice and offers none — unable to finish onboarding,
+ * and so unable to use any tracking at all. A slightly long list is a far smaller problem
+ * than a locked door.
+ */
 export async function symptomsForUser(userId: string) {
   const conditions = await db.userCondition.findMany({
     where: { userId },
@@ -26,8 +35,15 @@ export async function symptomsForUser(userId: string) {
   const conditionIds = conditions.map((row) => row.conditionId);
   if (conditionIds.length === 0) return [];
 
-  return db.symptom.findMany({
+  const forTheirConditions = await db.symptom.findMany({
     where: { conditions: { some: { conditionId: { in: conditionIds } } } },
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, slug: true },
+  });
+
+  if (forTheirConditions.length > 0) return forTheirConditions;
+
+  return db.symptom.findMany({
     orderBy: { name: "asc" },
     select: { id: true, name: true, slug: true },
   });

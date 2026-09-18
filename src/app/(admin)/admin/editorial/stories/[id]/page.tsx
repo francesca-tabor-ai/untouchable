@@ -6,6 +6,11 @@ import { Callout } from "@/components/ui/callout";
 import { Container } from "@/components/ui/container";
 import { requireEditor } from "@/lib/auth/guards";
 import {
+  listMedicineOptions,
+  medicineLinksForStory,
+  medicineLinksMissingSource,
+} from "@/lib/medicines/editorial";
+import {
   getEditorialStory,
   listAllConditions,
   listPublicFigures,
@@ -25,6 +30,12 @@ import {
   returnToDraftAction,
   submitForReviewAction,
 } from "../../actions";
+import {
+  LinkMedicineForm,
+  MissingSourceWarning,
+  NewMedicineForm,
+  StoryMedicineList,
+} from "../../medicine-forms";
 import { StatusBadge } from "../../story-row";
 import { StoryForm } from "../../story-form";
 
@@ -43,11 +54,15 @@ export default async function EditorialStoryPage({
   const story = await getEditorialStory(id);
   if (!story) notFound();
 
-  const [figures, conditions, requests] = await Promise.all([
-    listPublicFigures(),
-    listAllConditions(),
-    listTakedownRequests(),
-  ]);
+  const [figures, conditions, requests, medicineOptions, medicineLinks, medicinesMissingSource] =
+    await Promise.all([
+      listPublicFigures(),
+      listAllConditions(),
+      listTakedownRequests(),
+      listMedicineOptions(),
+      medicineLinksForStory(story.id),
+      medicineLinksMissingSource(story.id),
+    ]);
   const aboutThisStory = requests.filter((request) => request.story.id === story.id);
 
   return (
@@ -162,6 +177,51 @@ export default async function EditorialStoryPage({
             </div>
           </section>
 
+          <section aria-labelledby="medicines-heading">
+            <h2 id="medicines-heading" className="text-title">
+              Medicines and treatments
+            </h2>
+            <p className="mt-2 max-w-prose text-small text-muted">
+              What the person said they were given or took. Each one carries its own source and a
+              short line of context, in our own words — never a dose, never how often, never
+              anything that could be read as instructions.
+            </p>
+
+            {/* The flag itself appears twice and no more: beside the row, where the drafter
+                fixes it, and in the publishing panel, where the second editor is looking
+                when they decide. A third copy here would only teach editors to skip it. */}
+            <StoryMedicineList
+              storyId={story.id}
+              links={medicineLinks}
+              editable={story.status !== "published"}
+            />
+
+            {story.status === "published" ? null : (
+              <>
+                <div className="mt-8 rounded-card border border-line bg-white p-6">
+                  <h3 className="text-title">Put a medicine on this story</h3>
+                  <div className="mt-5">
+                    <LinkMedicineForm
+                      storyId={story.id}
+                      medicines={medicineOptions}
+                      sources={story.sources}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 rounded-card border border-line bg-white p-6">
+                  <h3 className="text-title">It is not in the list</h3>
+                  <p className="mt-2 max-w-prose text-small text-muted">
+                    Add it here. It becomes a page of its own once it has a description.
+                  </p>
+                  <div className="mt-5">
+                    <NewMedicineForm storyId={story.id} />
+                  </div>
+                </div>
+              </>
+            )}
+          </section>
+
           {aboutThisStory.length > 0 ? (
             <section aria-labelledby="requests-heading">
               <h2 id="requests-heading" className="text-title">
@@ -191,7 +251,11 @@ export default async function EditorialStoryPage({
         </div>
 
         <aside className="space-y-6">
-          <PublishingPanel story={story} actorId={actor.id} />
+          <PublishingPanel
+            story={story}
+            actorId={actor.id}
+            medicinesMissingSource={medicinesMissingSource.map((medicine) => medicine.name)}
+          />
 
           {story.status === "published" || story.status === "retracted" ? (
             <div className="rounded-card border border-line bg-white p-6">
@@ -231,7 +295,16 @@ export default async function EditorialStoryPage({
  * shows one at all until there is a source. The rules are enforced in the domain layer and
  * in the database; this is the part that stops an editor wondering why.
  */
-function PublishingPanel({ story, actorId }: { story: EditorialStory; actorId: string }) {
+function PublishingPanel({
+  story,
+  actorId,
+  medicinesMissingSource,
+}: {
+  story: EditorialStory;
+  actorId: string;
+  /** Medicines on this story with nothing behind them. Shown to whoever publishes. */
+  medicinesMissingSource: string[];
+}) {
   const isDrafter = story.draftedById === actorId;
 
   return (
@@ -246,6 +319,12 @@ function PublishingPanel({ story, actorId }: { story: EditorialStory; actorId: s
           the story against them, and publishes.
         </li>
       </ol>
+
+      {medicinesMissingSource.length > 0 && story.status !== "retracted" ? (
+        <div className="mt-6">
+          <MissingSourceWarning names={medicinesMissingSource} />
+        </div>
+      ) : null}
 
       <div className="mt-6 border-t border-line pt-6">
         {story.status === "draft" ? (
