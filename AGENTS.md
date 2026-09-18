@@ -35,6 +35,18 @@ raise it instead.
     permission check.
 11. **No third-party analytics or tracking scripts on any authenticated page.**
 12. **`DonationReferral` never stores a user id, IP address, or health context.**
+13. **No content about a living child's health.** An adult telling their own childhood — what they
+    were prescribed at eight, what they found in the bathroom cabinet at thirteen — is their own
+    story and may be published: they are the person, grown up, choosing to tell it. A child's
+    health disclosed by a parent, a relative or anyone else may not be published at all. The rule
+    protects children who cannot consent, not adults remembering.
+14. **Medicine information comes from independent sources** — the NHS, the BNF, or the electronic
+    Medicines Compendium. **Never** from a company that sells treatment, however good its page is.
+    A private clinic's drug page exists to find customers, and linking to it would sell the one
+    thing this platform has: that nobody paid to be here.
+15. **Never publish a dose, a regimen, or how much of something someone took.** A story can say a
+    person was prescribed a drug, became dependent on it, and came off it. It must not be readable
+    as instructions.
 
 ## 2. Architecture
 

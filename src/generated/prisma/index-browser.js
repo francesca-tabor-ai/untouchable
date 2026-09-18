@@ -364,10 +364,21 @@ exports.Prisma.UserSymptomScalarFieldEnum = {
 exports.Prisma.InterventionScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  slug: 'slug',
   type: 'type',
   dmdCode: 'dmdCode',
+  summary: 'summary',
+  isSensitiveTopic: 'isSensitiveTopic',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StoryInterventionScalarFieldEnum = {
+  storyId: 'storyId',
+  interventionId: 'interventionId',
+  sourceId: 'sourceId',
+  context: 'context',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.TreatmentCourseScalarFieldEnum = {
@@ -617,6 +628,7 @@ exports.Prisma.ModelName = {
   SymptomCondition: 'SymptomCondition',
   UserSymptom: 'UserSymptom',
   Intervention: 'Intervention',
+  StoryIntervention: 'StoryIntervention',
   TreatmentCourse: 'TreatmentCourse',
   Questionnaire: 'Questionnaire',
   QuestionnaireVersion: 'QuestionnaireVersion',

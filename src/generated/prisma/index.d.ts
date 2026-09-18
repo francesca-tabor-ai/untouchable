@@ -140,6 +140,15 @@ export type UserSymptom = $Result.DefaultSelection<Prisma.$UserSymptomPayload>
  */
 export type Intervention = $Result.DefaultSelection<Prisma.$InterventionPayload>
 /**
+ * Model StoryIntervention
+ * A story linked to a medicine or treatment.
+ * 
+ * Saying that a named person took a particular drug is a factual claim about them, and a
+ * more sensitive one than naming their condition. It carries its own source, exactly as a
+ * claim about the charities they support does.
+ */
+export type StoryIntervention = $Result.DefaultSelection<Prisma.$StoryInterventionPayload>
+/**
  * Model TreatmentCourse
  * 
  */
@@ -725,6 +734,16 @@ export class PrismaClient<
   get intervention(): Prisma.InterventionDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.storyIntervention`: Exposes CRUD operations for the **StoryIntervention** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StoryInterventions
+    * const storyInterventions = await prisma.storyIntervention.findMany()
+    * ```
+    */
+  get storyIntervention(): Prisma.StoryInterventionDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.treatmentCourse`: Exposes CRUD operations for the **TreatmentCourse** model.
     * Example usage:
     * ```ts
@@ -1298,6 +1317,7 @@ export namespace Prisma {
     SymptomCondition: 'SymptomCondition',
     UserSymptom: 'UserSymptom',
     Intervention: 'Intervention',
+    StoryIntervention: 'StoryIntervention',
     TreatmentCourse: 'TreatmentCourse',
     Questionnaire: 'Questionnaire',
     QuestionnaireVersion: 'QuestionnaireVersion',
@@ -1327,7 +1347,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "profile" | "consentRecord" | "account" | "session" | "verificationToken" | "condition" | "publicFigure" | "story" | "storyCondition" | "source" | "savedStory" | "takedownRequest" | "charity" | "charityCondition" | "storyCharity" | "charityFollow" | "donationReferral" | "donationNote" | "userCondition" | "symptom" | "symptomCondition" | "userSymptom" | "intervention" | "treatmentCourse" | "questionnaire" | "questionnaireVersion" | "scheduledCheckIn" | "response" | "dailyLog" | "sideEffectReport" | "reminderPreference" | "safetyEvent" | "auditLog" | "researchExport"
+      modelProps: "user" | "profile" | "consentRecord" | "account" | "session" | "verificationToken" | "condition" | "publicFigure" | "story" | "storyCondition" | "source" | "savedStory" | "takedownRequest" | "charity" | "charityCondition" | "storyCharity" | "charityFollow" | "donationReferral" | "donationNote" | "userCondition" | "symptom" | "symptomCondition" | "userSymptom" | "intervention" | "storyIntervention" | "treatmentCourse" | "questionnaire" | "questionnaireVersion" | "scheduledCheckIn" | "response" | "dailyLog" | "sideEffectReport" | "reminderPreference" | "safetyEvent" | "auditLog" | "researchExport"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3107,6 +3127,80 @@ export namespace Prisma {
           }
         }
       }
+      StoryIntervention: {
+        payload: Prisma.$StoryInterventionPayload<ExtArgs>
+        fields: Prisma.StoryInterventionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StoryInterventionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StoryInterventionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>
+          }
+          findFirst: {
+            args: Prisma.StoryInterventionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StoryInterventionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>
+          }
+          findMany: {
+            args: Prisma.StoryInterventionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>[]
+          }
+          create: {
+            args: Prisma.StoryInterventionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>
+          }
+          createMany: {
+            args: Prisma.StoryInterventionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StoryInterventionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>[]
+          }
+          delete: {
+            args: Prisma.StoryInterventionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>
+          }
+          update: {
+            args: Prisma.StoryInterventionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>
+          }
+          deleteMany: {
+            args: Prisma.StoryInterventionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StoryInterventionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StoryInterventionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>[]
+          }
+          upsert: {
+            args: Prisma.StoryInterventionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StoryInterventionPayload>
+          }
+          aggregate: {
+            args: Prisma.StoryInterventionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStoryIntervention>
+          }
+          groupBy: {
+            args: Prisma.StoryInterventionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StoryInterventionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StoryInterventionCountArgs<ExtArgs>
+            result: $Utils.Optional<StoryInterventionCountAggregateOutputType> | number
+          }
+        }
+      }
       TreatmentCourse: {
         payload: Prisma.$TreatmentCoursePayload<ExtArgs>
         fields: Prisma.TreatmentCourseFieldRefs
@@ -4041,6 +4135,7 @@ export namespace Prisma {
     symptomCondition?: SymptomConditionOmit
     userSymptom?: UserSymptomOmit
     intervention?: InterventionOmit
+    storyIntervention?: StoryInterventionOmit
     treatmentCourse?: TreatmentCourseOmit
     questionnaire?: QuestionnaireOmit
     questionnaireVersion?: QuestionnaireVersionOmit
@@ -4408,6 +4503,7 @@ export namespace Prisma {
     conditions: number
     sources: number
     charities: number
+    interventions: number
     savedBy: number
     takedowns: number
   }
@@ -4416,6 +4512,7 @@ export namespace Prisma {
     conditions?: boolean | StoryCountOutputTypeCountConditionsArgs
     sources?: boolean | StoryCountOutputTypeCountSourcesArgs
     charities?: boolean | StoryCountOutputTypeCountCharitiesArgs
+    interventions?: boolean | StoryCountOutputTypeCountInterventionsArgs
     savedBy?: boolean | StoryCountOutputTypeCountSavedByArgs
     takedowns?: boolean | StoryCountOutputTypeCountTakedownsArgs
   }
@@ -4455,6 +4552,13 @@ export namespace Prisma {
   /**
    * StoryCountOutputType without action
    */
+  export type StoryCountOutputTypeCountInterventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoryInterventionWhereInput
+  }
+
+  /**
+   * StoryCountOutputType without action
+   */
   export type StoryCountOutputTypeCountSavedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SavedStoryWhereInput
   }
@@ -4473,10 +4577,12 @@ export namespace Prisma {
 
   export type SourceCountOutputType = {
     storyCharities: number
+    storyInterventions: number
   }
 
   export type SourceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     storyCharities?: boolean | SourceCountOutputTypeCountStoryCharitiesArgs
+    storyInterventions?: boolean | SourceCountOutputTypeCountStoryInterventionsArgs
   }
 
   // Custom InputTypes
@@ -4495,6 +4601,13 @@ export namespace Prisma {
    */
   export type SourceCountOutputTypeCountStoryCharitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StoryCharityWhereInput
+  }
+
+  /**
+   * SourceCountOutputType without action
+   */
+  export type SourceCountOutputTypeCountStoryInterventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoryInterventionWhereInput
   }
 
 
@@ -4611,10 +4724,12 @@ export namespace Prisma {
 
   export type InterventionCountOutputType = {
     courses: number
+    stories: number
   }
 
   export type InterventionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     courses?: boolean | InterventionCountOutputTypeCountCoursesArgs
+    stories?: boolean | InterventionCountOutputTypeCountStoriesArgs
   }
 
   // Custom InputTypes
@@ -4633,6 +4748,13 @@ export namespace Prisma {
    */
   export type InterventionCountOutputTypeCountCoursesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TreatmentCourseWhereInput
+  }
+
+  /**
+   * InterventionCountOutputType without action
+   */
+  export type InterventionCountOutputTypeCountStoriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoryInterventionWhereInput
   }
 
 
@@ -14522,6 +14644,7 @@ export namespace Prisma {
     conditions?: boolean | Story$conditionsArgs<ExtArgs>
     sources?: boolean | Story$sourcesArgs<ExtArgs>
     charities?: boolean | Story$charitiesArgs<ExtArgs>
+    interventions?: boolean | Story$interventionsArgs<ExtArgs>
     savedBy?: boolean | Story$savedByArgs<ExtArgs>
     takedowns?: boolean | Story$takedownsArgs<ExtArgs>
     _count?: boolean | StoryCountOutputTypeDefaultArgs<ExtArgs>
@@ -14613,6 +14736,7 @@ export namespace Prisma {
     conditions?: boolean | Story$conditionsArgs<ExtArgs>
     sources?: boolean | Story$sourcesArgs<ExtArgs>
     charities?: boolean | Story$charitiesArgs<ExtArgs>
+    interventions?: boolean | Story$interventionsArgs<ExtArgs>
     savedBy?: boolean | Story$savedByArgs<ExtArgs>
     takedowns?: boolean | Story$takedownsArgs<ExtArgs>
     _count?: boolean | StoryCountOutputTypeDefaultArgs<ExtArgs>
@@ -14637,6 +14761,7 @@ export namespace Prisma {
       conditions: Prisma.$StoryConditionPayload<ExtArgs>[]
       sources: Prisma.$SourcePayload<ExtArgs>[]
       charities: Prisma.$StoryCharityPayload<ExtArgs>[]
+      interventions: Prisma.$StoryInterventionPayload<ExtArgs>[]
       savedBy: Prisma.$SavedStoryPayload<ExtArgs>[]
       takedowns: Prisma.$TakedownRequestPayload<ExtArgs>[]
     }
@@ -15086,6 +15211,7 @@ export namespace Prisma {
     conditions<T extends Story$conditionsArgs<ExtArgs> = {}>(args?: Subset<T, Story$conditionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryConditionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sources<T extends Story$sourcesArgs<ExtArgs> = {}>(args?: Subset<T, Story$sourcesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SourcePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     charities<T extends Story$charitiesArgs<ExtArgs> = {}>(args?: Subset<T, Story$charitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryCharityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    interventions<T extends Story$interventionsArgs<ExtArgs> = {}>(args?: Subset<T, Story$interventionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     savedBy<T extends Story$savedByArgs<ExtArgs> = {}>(args?: Subset<T, Story$savedByArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SavedStoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     takedowns<T extends Story$takedownsArgs<ExtArgs> = {}>(args?: Subset<T, Story$takedownsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TakedownRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -15641,6 +15767,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StoryCharityScalarFieldEnum | StoryCharityScalarFieldEnum[]
+  }
+
+  /**
+   * Story.interventions
+   */
+  export type Story$interventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    where?: StoryInterventionWhereInput
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    cursor?: StoryInterventionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StoryInterventionScalarFieldEnum | StoryInterventionScalarFieldEnum[]
   }
 
   /**
@@ -16948,6 +17098,7 @@ export namespace Prisma {
     updatedAt?: boolean
     story?: boolean | StoryDefaultArgs<ExtArgs>
     storyCharities?: boolean | Source$storyCharitiesArgs<ExtArgs>
+    storyInterventions?: boolean | Source$storyInterventionsArgs<ExtArgs>
     _count?: boolean | SourceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["source"]>
 
@@ -16993,6 +17144,7 @@ export namespace Prisma {
   export type SourceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     story?: boolean | StoryDefaultArgs<ExtArgs>
     storyCharities?: boolean | Source$storyCharitiesArgs<ExtArgs>
+    storyInterventions?: boolean | Source$storyInterventionsArgs<ExtArgs>
     _count?: boolean | SourceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SourceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17007,6 +17159,7 @@ export namespace Prisma {
     objects: {
       story: Prisma.$StoryPayload<ExtArgs>
       storyCharities: Prisma.$StoryCharityPayload<ExtArgs>[]
+      storyInterventions: Prisma.$StoryInterventionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -17414,6 +17567,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     storyCharities<T extends Source$storyCharitiesArgs<ExtArgs> = {}>(args?: Subset<T, Source$storyCharitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryCharityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    storyInterventions<T extends Source$storyInterventionsArgs<ExtArgs> = {}>(args?: Subset<T, Source$storyInterventionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17869,6 +18023,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StoryCharityScalarFieldEnum | StoryCharityScalarFieldEnum[]
+  }
+
+  /**
+   * Source.storyInterventions
+   */
+  export type Source$storyInterventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    where?: StoryInterventionWhereInput
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    cursor?: StoryInterventionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StoryInterventionScalarFieldEnum | StoryInterventionScalarFieldEnum[]
   }
 
   /**
@@ -31146,8 +31324,11 @@ export namespace Prisma {
   export type InterventionMinAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     type: $Enums.InterventionType | null
     dmdCode: string | null
+    summary: string | null
+    isSensitiveTopic: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -31155,8 +31336,11 @@ export namespace Prisma {
   export type InterventionMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    slug: string | null
     type: $Enums.InterventionType | null
     dmdCode: string | null
+    summary: string | null
+    isSensitiveTopic: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -31164,8 +31348,11 @@ export namespace Prisma {
   export type InterventionCountAggregateOutputType = {
     id: number
     name: number
+    slug: number
     type: number
     dmdCode: number
+    summary: number
+    isSensitiveTopic: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -31175,8 +31362,11 @@ export namespace Prisma {
   export type InterventionMinAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     type?: true
     dmdCode?: true
+    summary?: true
+    isSensitiveTopic?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -31184,8 +31374,11 @@ export namespace Prisma {
   export type InterventionMaxAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     type?: true
     dmdCode?: true
+    summary?: true
+    isSensitiveTopic?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -31193,8 +31386,11 @@ export namespace Prisma {
   export type InterventionCountAggregateInputType = {
     id?: true
     name?: true
+    slug?: true
     type?: true
     dmdCode?: true
+    summary?: true
+    isSensitiveTopic?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -31275,8 +31471,11 @@ export namespace Prisma {
   export type InterventionGroupByOutputType = {
     id: string
     name: string
+    slug: string | null
     type: $Enums.InterventionType
     dmdCode: string | null
+    summary: string | null
+    isSensitiveTopic: boolean
     createdAt: Date
     updatedAt: Date
     _count: InterventionCountAggregateOutputType | null
@@ -31301,19 +31500,26 @@ export namespace Prisma {
   export type InterventionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     type?: boolean
     dmdCode?: boolean
+    summary?: boolean
+    isSensitiveTopic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     courses?: boolean | Intervention$coursesArgs<ExtArgs>
+    stories?: boolean | Intervention$storiesArgs<ExtArgs>
     _count?: boolean | InterventionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["intervention"]>
 
   export type InterventionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     type?: boolean
     dmdCode?: boolean
+    summary?: boolean
+    isSensitiveTopic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["intervention"]>
@@ -31321,8 +31527,11 @@ export namespace Prisma {
   export type InterventionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    slug?: boolean
     type?: boolean
     dmdCode?: boolean
+    summary?: boolean
+    isSensitiveTopic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["intervention"]>
@@ -31330,15 +31539,19 @@ export namespace Prisma {
   export type InterventionSelectScalar = {
     id?: boolean
     name?: boolean
+    slug?: boolean
     type?: boolean
     dmdCode?: boolean
+    summary?: boolean
+    isSensitiveTopic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type InterventionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "dmdCode" | "createdAt" | "updatedAt", ExtArgs["result"]["intervention"]>
+  export type InterventionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "type" | "dmdCode" | "summary" | "isSensitiveTopic" | "createdAt" | "updatedAt", ExtArgs["result"]["intervention"]>
   export type InterventionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     courses?: boolean | Intervention$coursesArgs<ExtArgs>
+    stories?: boolean | Intervention$storiesArgs<ExtArgs>
     _count?: boolean | InterventionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type InterventionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -31348,15 +31561,32 @@ export namespace Prisma {
     name: "Intervention"
     objects: {
       courses: Prisma.$TreatmentCoursePayload<ExtArgs>[]
+      stories: Prisma.$StoryInterventionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      /**
+       * Public URL segment. Backfilled from the name for everything seeded before
+       * medicines had pages of their own.
+       */
+      slug: string | null
       type: $Enums.InterventionType
       /**
        * dm+d code. Null until a full NHS TRUD import is in place.
        */
       dmdCode: string | null
+      /**
+       * Plain English, in our own words, from an independent source — the NHS, the BNF or
+       * the electronic Medicines Compendium. Never from a treatment provider selling
+       * something: independence is the whole asset.
+       */
+      summary: string | null
+      /**
+       * Medicines where dependence, withdrawal or misuse is part of the story. Drives the
+       * content note and the support signposting, the same way a sensitive condition does.
+       */
+      isSensitiveTopic: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["intervention"]>
@@ -31754,6 +31984,7 @@ export namespace Prisma {
   export interface Prisma__InterventionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     courses<T extends Intervention$coursesArgs<ExtArgs> = {}>(args?: Subset<T, Intervention$coursesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreatmentCoursePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    stories<T extends Intervention$storiesArgs<ExtArgs> = {}>(args?: Subset<T, Intervention$storiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -31785,8 +32016,11 @@ export namespace Prisma {
   interface InterventionFieldRefs {
     readonly id: FieldRef<"Intervention", 'String'>
     readonly name: FieldRef<"Intervention", 'String'>
+    readonly slug: FieldRef<"Intervention", 'String'>
     readonly type: FieldRef<"Intervention", 'InterventionType'>
     readonly dmdCode: FieldRef<"Intervention", 'String'>
+    readonly summary: FieldRef<"Intervention", 'String'>
+    readonly isSensitiveTopic: FieldRef<"Intervention", 'Boolean'>
     readonly createdAt: FieldRef<"Intervention", 'DateTime'>
     readonly updatedAt: FieldRef<"Intervention", 'DateTime'>
   }
@@ -32201,6 +32435,30 @@ export namespace Prisma {
   }
 
   /**
+   * Intervention.stories
+   */
+  export type Intervention$storiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    where?: StoryInterventionWhereInput
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    cursor?: StoryInterventionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StoryInterventionScalarFieldEnum | StoryInterventionScalarFieldEnum[]
+  }
+
+  /**
    * Intervention without action
    */
   export type InterventionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -32216,6 +32474,1103 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: InterventionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StoryIntervention
+   */
+
+  export type AggregateStoryIntervention = {
+    _count: StoryInterventionCountAggregateOutputType | null
+    _min: StoryInterventionMinAggregateOutputType | null
+    _max: StoryInterventionMaxAggregateOutputType | null
+  }
+
+  export type StoryInterventionMinAggregateOutputType = {
+    storyId: string | null
+    interventionId: string | null
+    sourceId: string | null
+    context: string | null
+    createdAt: Date | null
+  }
+
+  export type StoryInterventionMaxAggregateOutputType = {
+    storyId: string | null
+    interventionId: string | null
+    sourceId: string | null
+    context: string | null
+    createdAt: Date | null
+  }
+
+  export type StoryInterventionCountAggregateOutputType = {
+    storyId: number
+    interventionId: number
+    sourceId: number
+    context: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type StoryInterventionMinAggregateInputType = {
+    storyId?: true
+    interventionId?: true
+    sourceId?: true
+    context?: true
+    createdAt?: true
+  }
+
+  export type StoryInterventionMaxAggregateInputType = {
+    storyId?: true
+    interventionId?: true
+    sourceId?: true
+    context?: true
+    createdAt?: true
+  }
+
+  export type StoryInterventionCountAggregateInputType = {
+    storyId?: true
+    interventionId?: true
+    sourceId?: true
+    context?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type StoryInterventionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StoryIntervention to aggregate.
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoryInterventions to fetch.
+     */
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StoryInterventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoryInterventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoryInterventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StoryInterventions
+    **/
+    _count?: true | StoryInterventionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StoryInterventionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StoryInterventionMaxAggregateInputType
+  }
+
+  export type GetStoryInterventionAggregateType<T extends StoryInterventionAggregateArgs> = {
+        [P in keyof T & keyof AggregateStoryIntervention]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStoryIntervention[P]>
+      : GetScalarType<T[P], AggregateStoryIntervention[P]>
+  }
+
+
+
+
+  export type StoryInterventionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StoryInterventionWhereInput
+    orderBy?: StoryInterventionOrderByWithAggregationInput | StoryInterventionOrderByWithAggregationInput[]
+    by: StoryInterventionScalarFieldEnum[] | StoryInterventionScalarFieldEnum
+    having?: StoryInterventionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StoryInterventionCountAggregateInputType | true
+    _min?: StoryInterventionMinAggregateInputType
+    _max?: StoryInterventionMaxAggregateInputType
+  }
+
+  export type StoryInterventionGroupByOutputType = {
+    storyId: string
+    interventionId: string
+    sourceId: string | null
+    context: string | null
+    createdAt: Date
+    _count: StoryInterventionCountAggregateOutputType | null
+    _min: StoryInterventionMinAggregateOutputType | null
+    _max: StoryInterventionMaxAggregateOutputType | null
+  }
+
+  type GetStoryInterventionGroupByPayload<T extends StoryInterventionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StoryInterventionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StoryInterventionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StoryInterventionGroupByOutputType[P]>
+            : GetScalarType<T[P], StoryInterventionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StoryInterventionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    storyId?: boolean
+    interventionId?: boolean
+    sourceId?: boolean
+    context?: boolean
+    createdAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    intervention?: boolean | InterventionDefaultArgs<ExtArgs>
+    source?: boolean | StoryIntervention$sourceArgs<ExtArgs>
+  }, ExtArgs["result"]["storyIntervention"]>
+
+  export type StoryInterventionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    storyId?: boolean
+    interventionId?: boolean
+    sourceId?: boolean
+    context?: boolean
+    createdAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    intervention?: boolean | InterventionDefaultArgs<ExtArgs>
+    source?: boolean | StoryIntervention$sourceArgs<ExtArgs>
+  }, ExtArgs["result"]["storyIntervention"]>
+
+  export type StoryInterventionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    storyId?: boolean
+    interventionId?: boolean
+    sourceId?: boolean
+    context?: boolean
+    createdAt?: boolean
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    intervention?: boolean | InterventionDefaultArgs<ExtArgs>
+    source?: boolean | StoryIntervention$sourceArgs<ExtArgs>
+  }, ExtArgs["result"]["storyIntervention"]>
+
+  export type StoryInterventionSelectScalar = {
+    storyId?: boolean
+    interventionId?: boolean
+    sourceId?: boolean
+    context?: boolean
+    createdAt?: boolean
+  }
+
+  export type StoryInterventionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"storyId" | "interventionId" | "sourceId" | "context" | "createdAt", ExtArgs["result"]["storyIntervention"]>
+  export type StoryInterventionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    intervention?: boolean | InterventionDefaultArgs<ExtArgs>
+    source?: boolean | StoryIntervention$sourceArgs<ExtArgs>
+  }
+  export type StoryInterventionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    intervention?: boolean | InterventionDefaultArgs<ExtArgs>
+    source?: boolean | StoryIntervention$sourceArgs<ExtArgs>
+  }
+  export type StoryInterventionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    story?: boolean | StoryDefaultArgs<ExtArgs>
+    intervention?: boolean | InterventionDefaultArgs<ExtArgs>
+    source?: boolean | StoryIntervention$sourceArgs<ExtArgs>
+  }
+
+  export type $StoryInterventionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StoryIntervention"
+    objects: {
+      story: Prisma.$StoryPayload<ExtArgs>
+      intervention: Prisma.$InterventionPayload<ExtArgs>
+      source: Prisma.$SourcePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      storyId: string
+      interventionId: string
+      sourceId: string | null
+      /**
+       * How they came to it, in our own words: "prescribed, aged eight", "bought online".
+       * Never a dose, never a regimen — this is not a recipe.
+       */
+      context: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["storyIntervention"]>
+    composites: {}
+  }
+
+  type StoryInterventionGetPayload<S extends boolean | null | undefined | StoryInterventionDefaultArgs> = $Result.GetResult<Prisma.$StoryInterventionPayload, S>
+
+  type StoryInterventionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StoryInterventionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StoryInterventionCountAggregateInputType | true
+    }
+
+  export interface StoryInterventionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StoryIntervention'], meta: { name: 'StoryIntervention' } }
+    /**
+     * Find zero or one StoryIntervention that matches the filter.
+     * @param {StoryInterventionFindUniqueArgs} args - Arguments to find a StoryIntervention
+     * @example
+     * // Get one StoryIntervention
+     * const storyIntervention = await prisma.storyIntervention.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StoryInterventionFindUniqueArgs>(args: SelectSubset<T, StoryInterventionFindUniqueArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StoryIntervention that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StoryInterventionFindUniqueOrThrowArgs} args - Arguments to find a StoryIntervention
+     * @example
+     * // Get one StoryIntervention
+     * const storyIntervention = await prisma.storyIntervention.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StoryInterventionFindUniqueOrThrowArgs>(args: SelectSubset<T, StoryInterventionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StoryIntervention that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionFindFirstArgs} args - Arguments to find a StoryIntervention
+     * @example
+     * // Get one StoryIntervention
+     * const storyIntervention = await prisma.storyIntervention.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StoryInterventionFindFirstArgs>(args?: SelectSubset<T, StoryInterventionFindFirstArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StoryIntervention that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionFindFirstOrThrowArgs} args - Arguments to find a StoryIntervention
+     * @example
+     * // Get one StoryIntervention
+     * const storyIntervention = await prisma.storyIntervention.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StoryInterventionFindFirstOrThrowArgs>(args?: SelectSubset<T, StoryInterventionFindFirstOrThrowArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StoryInterventions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StoryInterventions
+     * const storyInterventions = await prisma.storyIntervention.findMany()
+     * 
+     * // Get first 10 StoryInterventions
+     * const storyInterventions = await prisma.storyIntervention.findMany({ take: 10 })
+     * 
+     * // Only select the `storyId`
+     * const storyInterventionWithStoryIdOnly = await prisma.storyIntervention.findMany({ select: { storyId: true } })
+     * 
+     */
+    findMany<T extends StoryInterventionFindManyArgs>(args?: SelectSubset<T, StoryInterventionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StoryIntervention.
+     * @param {StoryInterventionCreateArgs} args - Arguments to create a StoryIntervention.
+     * @example
+     * // Create one StoryIntervention
+     * const StoryIntervention = await prisma.storyIntervention.create({
+     *   data: {
+     *     // ... data to create a StoryIntervention
+     *   }
+     * })
+     * 
+     */
+    create<T extends StoryInterventionCreateArgs>(args: SelectSubset<T, StoryInterventionCreateArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StoryInterventions.
+     * @param {StoryInterventionCreateManyArgs} args - Arguments to create many StoryInterventions.
+     * @example
+     * // Create many StoryInterventions
+     * const storyIntervention = await prisma.storyIntervention.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StoryInterventionCreateManyArgs>(args?: SelectSubset<T, StoryInterventionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StoryInterventions and returns the data saved in the database.
+     * @param {StoryInterventionCreateManyAndReturnArgs} args - Arguments to create many StoryInterventions.
+     * @example
+     * // Create many StoryInterventions
+     * const storyIntervention = await prisma.storyIntervention.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StoryInterventions and only return the `storyId`
+     * const storyInterventionWithStoryIdOnly = await prisma.storyIntervention.createManyAndReturn({
+     *   select: { storyId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StoryInterventionCreateManyAndReturnArgs>(args?: SelectSubset<T, StoryInterventionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StoryIntervention.
+     * @param {StoryInterventionDeleteArgs} args - Arguments to delete one StoryIntervention.
+     * @example
+     * // Delete one StoryIntervention
+     * const StoryIntervention = await prisma.storyIntervention.delete({
+     *   where: {
+     *     // ... filter to delete one StoryIntervention
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StoryInterventionDeleteArgs>(args: SelectSubset<T, StoryInterventionDeleteArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StoryIntervention.
+     * @param {StoryInterventionUpdateArgs} args - Arguments to update one StoryIntervention.
+     * @example
+     * // Update one StoryIntervention
+     * const storyIntervention = await prisma.storyIntervention.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StoryInterventionUpdateArgs>(args: SelectSubset<T, StoryInterventionUpdateArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StoryInterventions.
+     * @param {StoryInterventionDeleteManyArgs} args - Arguments to filter StoryInterventions to delete.
+     * @example
+     * // Delete a few StoryInterventions
+     * const { count } = await prisma.storyIntervention.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StoryInterventionDeleteManyArgs>(args?: SelectSubset<T, StoryInterventionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StoryInterventions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StoryInterventions
+     * const storyIntervention = await prisma.storyIntervention.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StoryInterventionUpdateManyArgs>(args: SelectSubset<T, StoryInterventionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StoryInterventions and returns the data updated in the database.
+     * @param {StoryInterventionUpdateManyAndReturnArgs} args - Arguments to update many StoryInterventions.
+     * @example
+     * // Update many StoryInterventions
+     * const storyIntervention = await prisma.storyIntervention.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StoryInterventions and only return the `storyId`
+     * const storyInterventionWithStoryIdOnly = await prisma.storyIntervention.updateManyAndReturn({
+     *   select: { storyId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StoryInterventionUpdateManyAndReturnArgs>(args: SelectSubset<T, StoryInterventionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StoryIntervention.
+     * @param {StoryInterventionUpsertArgs} args - Arguments to update or create a StoryIntervention.
+     * @example
+     * // Update or create a StoryIntervention
+     * const storyIntervention = await prisma.storyIntervention.upsert({
+     *   create: {
+     *     // ... data to create a StoryIntervention
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StoryIntervention we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StoryInterventionUpsertArgs>(args: SelectSubset<T, StoryInterventionUpsertArgs<ExtArgs>>): Prisma__StoryInterventionClient<$Result.GetResult<Prisma.$StoryInterventionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StoryInterventions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionCountArgs} args - Arguments to filter StoryInterventions to count.
+     * @example
+     * // Count the number of StoryInterventions
+     * const count = await prisma.storyIntervention.count({
+     *   where: {
+     *     // ... the filter for the StoryInterventions we want to count
+     *   }
+     * })
+    **/
+    count<T extends StoryInterventionCountArgs>(
+      args?: Subset<T, StoryInterventionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StoryInterventionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StoryIntervention.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StoryInterventionAggregateArgs>(args: Subset<T, StoryInterventionAggregateArgs>): Prisma.PrismaPromise<GetStoryInterventionAggregateType<T>>
+
+    /**
+     * Group by StoryIntervention.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StoryInterventionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StoryInterventionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StoryInterventionGroupByArgs['orderBy'] }
+        : { orderBy?: StoryInterventionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StoryInterventionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStoryInterventionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StoryIntervention model
+   */
+  readonly fields: StoryInterventionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StoryIntervention.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StoryInterventionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    story<T extends StoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StoryDefaultArgs<ExtArgs>>): Prisma__StoryClient<$Result.GetResult<Prisma.$StoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    intervention<T extends InterventionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InterventionDefaultArgs<ExtArgs>>): Prisma__InterventionClient<$Result.GetResult<Prisma.$InterventionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    source<T extends StoryIntervention$sourceArgs<ExtArgs> = {}>(args?: Subset<T, StoryIntervention$sourceArgs<ExtArgs>>): Prisma__SourceClient<$Result.GetResult<Prisma.$SourcePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StoryIntervention model
+   */
+  interface StoryInterventionFieldRefs {
+    readonly storyId: FieldRef<"StoryIntervention", 'String'>
+    readonly interventionId: FieldRef<"StoryIntervention", 'String'>
+    readonly sourceId: FieldRef<"StoryIntervention", 'String'>
+    readonly context: FieldRef<"StoryIntervention", 'String'>
+    readonly createdAt: FieldRef<"StoryIntervention", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StoryIntervention findUnique
+   */
+  export type StoryInterventionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * Filter, which StoryIntervention to fetch.
+     */
+    where: StoryInterventionWhereUniqueInput
+  }
+
+  /**
+   * StoryIntervention findUniqueOrThrow
+   */
+  export type StoryInterventionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * Filter, which StoryIntervention to fetch.
+     */
+    where: StoryInterventionWhereUniqueInput
+  }
+
+  /**
+   * StoryIntervention findFirst
+   */
+  export type StoryInterventionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * Filter, which StoryIntervention to fetch.
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoryInterventions to fetch.
+     */
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StoryInterventions.
+     */
+    cursor?: StoryInterventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoryInterventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoryInterventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StoryInterventions.
+     */
+    distinct?: StoryInterventionScalarFieldEnum | StoryInterventionScalarFieldEnum[]
+  }
+
+  /**
+   * StoryIntervention findFirstOrThrow
+   */
+  export type StoryInterventionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * Filter, which StoryIntervention to fetch.
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoryInterventions to fetch.
+     */
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StoryInterventions.
+     */
+    cursor?: StoryInterventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoryInterventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoryInterventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StoryInterventions.
+     */
+    distinct?: StoryInterventionScalarFieldEnum | StoryInterventionScalarFieldEnum[]
+  }
+
+  /**
+   * StoryIntervention findMany
+   */
+  export type StoryInterventionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * Filter, which StoryInterventions to fetch.
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StoryInterventions to fetch.
+     */
+    orderBy?: StoryInterventionOrderByWithRelationInput | StoryInterventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StoryInterventions.
+     */
+    cursor?: StoryInterventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StoryInterventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StoryInterventions.
+     */
+    skip?: number
+    distinct?: StoryInterventionScalarFieldEnum | StoryInterventionScalarFieldEnum[]
+  }
+
+  /**
+   * StoryIntervention create
+   */
+  export type StoryInterventionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StoryIntervention.
+     */
+    data: XOR<StoryInterventionCreateInput, StoryInterventionUncheckedCreateInput>
+  }
+
+  /**
+   * StoryIntervention createMany
+   */
+  export type StoryInterventionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StoryInterventions.
+     */
+    data: StoryInterventionCreateManyInput | StoryInterventionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StoryIntervention createManyAndReturn
+   */
+  export type StoryInterventionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * The data used to create many StoryInterventions.
+     */
+    data: StoryInterventionCreateManyInput | StoryInterventionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StoryIntervention update
+   */
+  export type StoryInterventionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StoryIntervention.
+     */
+    data: XOR<StoryInterventionUpdateInput, StoryInterventionUncheckedUpdateInput>
+    /**
+     * Choose, which StoryIntervention to update.
+     */
+    where: StoryInterventionWhereUniqueInput
+  }
+
+  /**
+   * StoryIntervention updateMany
+   */
+  export type StoryInterventionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StoryInterventions.
+     */
+    data: XOR<StoryInterventionUpdateManyMutationInput, StoryInterventionUncheckedUpdateManyInput>
+    /**
+     * Filter which StoryInterventions to update
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * Limit how many StoryInterventions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StoryIntervention updateManyAndReturn
+   */
+  export type StoryInterventionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * The data used to update StoryInterventions.
+     */
+    data: XOR<StoryInterventionUpdateManyMutationInput, StoryInterventionUncheckedUpdateManyInput>
+    /**
+     * Filter which StoryInterventions to update
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * Limit how many StoryInterventions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StoryIntervention upsert
+   */
+  export type StoryInterventionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StoryIntervention to update in case it exists.
+     */
+    where: StoryInterventionWhereUniqueInput
+    /**
+     * In case the StoryIntervention found by the `where` argument doesn't exist, create a new StoryIntervention with this data.
+     */
+    create: XOR<StoryInterventionCreateInput, StoryInterventionUncheckedCreateInput>
+    /**
+     * In case the StoryIntervention was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StoryInterventionUpdateInput, StoryInterventionUncheckedUpdateInput>
+  }
+
+  /**
+   * StoryIntervention delete
+   */
+  export type StoryInterventionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
+    /**
+     * Filter which StoryIntervention to delete.
+     */
+    where: StoryInterventionWhereUniqueInput
+  }
+
+  /**
+   * StoryIntervention deleteMany
+   */
+  export type StoryInterventionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StoryInterventions to delete
+     */
+    where?: StoryInterventionWhereInput
+    /**
+     * Limit how many StoryInterventions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StoryIntervention.source
+   */
+  export type StoryIntervention$sourceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Source
+     */
+    select?: SourceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Source
+     */
+    omit?: SourceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SourceInclude<ExtArgs> | null
+    where?: SourceWhereInput
+  }
+
+  /**
+   * StoryIntervention without action
+   */
+  export type StoryInterventionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StoryIntervention
+     */
+    select?: StoryInterventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StoryIntervention
+     */
+    omit?: StoryInterventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StoryInterventionInclude<ExtArgs> | null
   }
 
 
@@ -44966,13 +46321,27 @@ export namespace Prisma {
   export const InterventionScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    slug: 'slug',
     type: 'type',
     dmdCode: 'dmdCode',
+    summary: 'summary',
+    isSensitiveTopic: 'isSensitiveTopic',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type InterventionScalarFieldEnum = (typeof InterventionScalarFieldEnum)[keyof typeof InterventionScalarFieldEnum]
+
+
+  export const StoryInterventionScalarFieldEnum: {
+    storyId: 'storyId',
+    interventionId: 'interventionId',
+    sourceId: 'sourceId',
+    context: 'context',
+    createdAt: 'createdAt'
+  };
+
+  export type StoryInterventionScalarFieldEnum = (typeof StoryInterventionScalarFieldEnum)[keyof typeof StoryInterventionScalarFieldEnum]
 
 
   export const TreatmentCourseScalarFieldEnum: {
@@ -46104,6 +47473,7 @@ export namespace Prisma {
     conditions?: StoryConditionListRelationFilter
     sources?: SourceListRelationFilter
     charities?: StoryCharityListRelationFilter
+    interventions?: StoryInterventionListRelationFilter
     savedBy?: SavedStoryListRelationFilter
     takedowns?: TakedownRequestListRelationFilter
   }
@@ -46136,6 +47506,7 @@ export namespace Prisma {
     conditions?: StoryConditionOrderByRelationAggregateInput
     sources?: SourceOrderByRelationAggregateInput
     charities?: StoryCharityOrderByRelationAggregateInput
+    interventions?: StoryInterventionOrderByRelationAggregateInput
     savedBy?: SavedStoryOrderByRelationAggregateInput
     takedowns?: TakedownRequestOrderByRelationAggregateInput
   }
@@ -46171,6 +47542,7 @@ export namespace Prisma {
     conditions?: StoryConditionListRelationFilter
     sources?: SourceListRelationFilter
     charities?: StoryCharityListRelationFilter
+    interventions?: StoryInterventionListRelationFilter
     savedBy?: SavedStoryListRelationFilter
     takedowns?: TakedownRequestListRelationFilter
   }, "id" | "slug">
@@ -46293,6 +47665,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Source"> | Date | string
     story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
     storyCharities?: StoryCharityListRelationFilter
+    storyInterventions?: StoryInterventionListRelationFilter
   }
 
   export type SourceOrderByWithRelationInput = {
@@ -46307,6 +47680,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     story?: StoryOrderByWithRelationInput
     storyCharities?: StoryCharityOrderByRelationAggregateInput
+    storyInterventions?: StoryInterventionOrderByRelationAggregateInput
   }
 
   export type SourceWhereUniqueInput = Prisma.AtLeast<{
@@ -46324,6 +47698,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Source"> | Date | string
     story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
     storyCharities?: StoryCharityListRelationFilter
+    storyInterventions?: StoryInterventionListRelationFilter
   }, "id">
 
   export type SourceOrderByWithAggregationInput = {
@@ -47139,25 +48514,34 @@ export namespace Prisma {
     NOT?: InterventionWhereInput | InterventionWhereInput[]
     id?: StringFilter<"Intervention"> | string
     name?: StringFilter<"Intervention"> | string
+    slug?: StringNullableFilter<"Intervention"> | string | null
     type?: EnumInterventionTypeFilter<"Intervention"> | $Enums.InterventionType
     dmdCode?: StringNullableFilter<"Intervention"> | string | null
+    summary?: StringNullableFilter<"Intervention"> | string | null
+    isSensitiveTopic?: BoolFilter<"Intervention"> | boolean
     createdAt?: DateTimeFilter<"Intervention"> | Date | string
     updatedAt?: DateTimeFilter<"Intervention"> | Date | string
     courses?: TreatmentCourseListRelationFilter
+    stories?: StoryInterventionListRelationFilter
   }
 
   export type InterventionOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     type?: SortOrder
     dmdCode?: SortOrderInput | SortOrder
+    summary?: SortOrderInput | SortOrder
+    isSensitiveTopic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     courses?: TreatmentCourseOrderByRelationAggregateInput
+    stories?: StoryInterventionOrderByRelationAggregateInput
   }
 
   export type InterventionWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    slug?: string
     name_type?: InterventionNameTypeCompoundUniqueInput
     AND?: InterventionWhereInput | InterventionWhereInput[]
     OR?: InterventionWhereInput[]
@@ -47165,16 +48549,22 @@ export namespace Prisma {
     name?: StringFilter<"Intervention"> | string
     type?: EnumInterventionTypeFilter<"Intervention"> | $Enums.InterventionType
     dmdCode?: StringNullableFilter<"Intervention"> | string | null
+    summary?: StringNullableFilter<"Intervention"> | string | null
+    isSensitiveTopic?: BoolFilter<"Intervention"> | boolean
     createdAt?: DateTimeFilter<"Intervention"> | Date | string
     updatedAt?: DateTimeFilter<"Intervention"> | Date | string
     courses?: TreatmentCourseListRelationFilter
-  }, "id" | "name_type">
+    stories?: StoryInterventionListRelationFilter
+  }, "id" | "slug" | "name_type">
 
   export type InterventionOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrderInput | SortOrder
     type?: SortOrder
     dmdCode?: SortOrderInput | SortOrder
+    summary?: SortOrderInput | SortOrder
+    isSensitiveTopic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: InterventionCountOrderByAggregateInput
@@ -47188,10 +48578,75 @@ export namespace Prisma {
     NOT?: InterventionScalarWhereWithAggregatesInput | InterventionScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Intervention"> | string
     name?: StringWithAggregatesFilter<"Intervention"> | string
+    slug?: StringNullableWithAggregatesFilter<"Intervention"> | string | null
     type?: EnumInterventionTypeWithAggregatesFilter<"Intervention"> | $Enums.InterventionType
     dmdCode?: StringNullableWithAggregatesFilter<"Intervention"> | string | null
+    summary?: StringNullableWithAggregatesFilter<"Intervention"> | string | null
+    isSensitiveTopic?: BoolWithAggregatesFilter<"Intervention"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Intervention"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Intervention"> | Date | string
+  }
+
+  export type StoryInterventionWhereInput = {
+    AND?: StoryInterventionWhereInput | StoryInterventionWhereInput[]
+    OR?: StoryInterventionWhereInput[]
+    NOT?: StoryInterventionWhereInput | StoryInterventionWhereInput[]
+    storyId?: StringFilter<"StoryIntervention"> | string
+    interventionId?: StringFilter<"StoryIntervention"> | string
+    sourceId?: StringNullableFilter<"StoryIntervention"> | string | null
+    context?: StringNullableFilter<"StoryIntervention"> | string | null
+    createdAt?: DateTimeFilter<"StoryIntervention"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    intervention?: XOR<InterventionScalarRelationFilter, InterventionWhereInput>
+    source?: XOR<SourceNullableScalarRelationFilter, SourceWhereInput> | null
+  }
+
+  export type StoryInterventionOrderByWithRelationInput = {
+    storyId?: SortOrder
+    interventionId?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    context?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    story?: StoryOrderByWithRelationInput
+    intervention?: InterventionOrderByWithRelationInput
+    source?: SourceOrderByWithRelationInput
+  }
+
+  export type StoryInterventionWhereUniqueInput = Prisma.AtLeast<{
+    storyId_interventionId?: StoryInterventionStoryIdInterventionIdCompoundUniqueInput
+    AND?: StoryInterventionWhereInput | StoryInterventionWhereInput[]
+    OR?: StoryInterventionWhereInput[]
+    NOT?: StoryInterventionWhereInput | StoryInterventionWhereInput[]
+    storyId?: StringFilter<"StoryIntervention"> | string
+    interventionId?: StringFilter<"StoryIntervention"> | string
+    sourceId?: StringNullableFilter<"StoryIntervention"> | string | null
+    context?: StringNullableFilter<"StoryIntervention"> | string | null
+    createdAt?: DateTimeFilter<"StoryIntervention"> | Date | string
+    story?: XOR<StoryScalarRelationFilter, StoryWhereInput>
+    intervention?: XOR<InterventionScalarRelationFilter, InterventionWhereInput>
+    source?: XOR<SourceNullableScalarRelationFilter, SourceWhereInput> | null
+  }, "storyId_interventionId">
+
+  export type StoryInterventionOrderByWithAggregationInput = {
+    storyId?: SortOrder
+    interventionId?: SortOrder
+    sourceId?: SortOrderInput | SortOrder
+    context?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: StoryInterventionCountOrderByAggregateInput
+    _max?: StoryInterventionMaxOrderByAggregateInput
+    _min?: StoryInterventionMinOrderByAggregateInput
+  }
+
+  export type StoryInterventionScalarWhereWithAggregatesInput = {
+    AND?: StoryInterventionScalarWhereWithAggregatesInput | StoryInterventionScalarWhereWithAggregatesInput[]
+    OR?: StoryInterventionScalarWhereWithAggregatesInput[]
+    NOT?: StoryInterventionScalarWhereWithAggregatesInput | StoryInterventionScalarWhereWithAggregatesInput[]
+    storyId?: StringWithAggregatesFilter<"StoryIntervention"> | string
+    interventionId?: StringWithAggregatesFilter<"StoryIntervention"> | string
+    sourceId?: StringNullableWithAggregatesFilter<"StoryIntervention"> | string | null
+    context?: StringNullableWithAggregatesFilter<"StoryIntervention"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StoryIntervention"> | Date | string
   }
 
   export type TreatmentCourseWhereInput = {
@@ -48747,6 +50202,7 @@ export namespace Prisma {
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -48776,6 +50232,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -48805,6 +50262,7 @@ export namespace Prisma {
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -48834,6 +50292,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -48958,6 +50417,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     story: StoryCreateNestedOneWithoutSourcesInput
     storyCharities?: StoryCharityCreateNestedManyWithoutSourceInput
+    storyInterventions?: StoryInterventionCreateNestedManyWithoutSourceInput
   }
 
   export type SourceUncheckedCreateInput = {
@@ -48971,6 +50431,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     storyCharities?: StoryCharityUncheckedCreateNestedManyWithoutSourceInput
+    storyInterventions?: StoryInterventionUncheckedCreateNestedManyWithoutSourceInput
   }
 
   export type SourceUpdateInput = {
@@ -48984,6 +50445,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     story?: StoryUpdateOneRequiredWithoutSourcesNestedInput
     storyCharities?: StoryCharityUpdateManyWithoutSourceNestedInput
+    storyInterventions?: StoryInterventionUpdateManyWithoutSourceNestedInput
   }
 
   export type SourceUncheckedUpdateInput = {
@@ -48997,6 +50459,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     storyCharities?: StoryCharityUncheckedUpdateManyWithoutSourceNestedInput
+    storyInterventions?: StoryInterventionUncheckedUpdateManyWithoutSourceNestedInput
   }
 
   export type SourceCreateManyInput = {
@@ -49802,48 +51265,67 @@ export namespace Prisma {
   export type InterventionCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     type: $Enums.InterventionType
     dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     courses?: TreatmentCourseCreateNestedManyWithoutInterventionInput
+    stories?: StoryInterventionCreateNestedManyWithoutInterventionInput
   }
 
   export type InterventionUncheckedCreateInput = {
     id?: string
     name: string
+    slug?: string | null
     type: $Enums.InterventionType
     dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     courses?: TreatmentCourseUncheckedCreateNestedManyWithoutInterventionInput
+    stories?: StoryInterventionUncheckedCreateNestedManyWithoutInterventionInput
   }
 
   export type InterventionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
     dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     courses?: TreatmentCourseUpdateManyWithoutInterventionNestedInput
+    stories?: StoryInterventionUpdateManyWithoutInterventionNestedInput
   }
 
   export type InterventionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
     dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     courses?: TreatmentCourseUncheckedUpdateManyWithoutInterventionNestedInput
+    stories?: StoryInterventionUncheckedUpdateManyWithoutInterventionNestedInput
   }
 
   export type InterventionCreateManyInput = {
     id?: string
     name: string
+    slug?: string | null
     type: $Enums.InterventionType
     dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -49851,8 +51333,11 @@ export namespace Prisma {
   export type InterventionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
     dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49860,10 +51345,66 @@ export namespace Prisma {
   export type InterventionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
     dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionCreateInput = {
+    context?: string | null
+    createdAt?: Date | string
+    story: StoryCreateNestedOneWithoutInterventionsInput
+    intervention: InterventionCreateNestedOneWithoutStoriesInput
+    source?: SourceCreateNestedOneWithoutStoryInterventionsInput
+  }
+
+  export type StoryInterventionUncheckedCreateInput = {
+    storyId: string
+    interventionId: string
+    sourceId?: string | null
+    context?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StoryInterventionUpdateInput = {
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutInterventionsNestedInput
+    intervention?: InterventionUpdateOneRequiredWithoutStoriesNestedInput
+    source?: SourceUpdateOneWithoutStoryInterventionsNestedInput
+  }
+
+  export type StoryInterventionUncheckedUpdateInput = {
+    storyId?: StringFieldUpdateOperationsInput | string
+    interventionId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionCreateManyInput = {
+    storyId: string
+    interventionId: string
+    sourceId?: string | null
+    context?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StoryInterventionUpdateManyMutationInput = {
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUncheckedUpdateManyInput = {
+    storyId?: StringFieldUpdateOperationsInput | string
+    interventionId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TreatmentCourseCreateInput = {
@@ -51485,6 +53026,12 @@ export namespace Prisma {
     none?: StoryCharityWhereInput
   }
 
+  export type StoryInterventionListRelationFilter = {
+    every?: StoryInterventionWhereInput
+    some?: StoryInterventionWhereInput
+    none?: StoryInterventionWhereInput
+  }
+
   export type TakedownRequestListRelationFilter = {
     every?: TakedownRequestWhereInput
     some?: TakedownRequestWhereInput
@@ -51496,6 +53043,10 @@ export namespace Prisma {
   }
 
   export type StoryCharityOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StoryInterventionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -52221,8 +53772,11 @@ export namespace Prisma {
   export type InterventionCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     type?: SortOrder
     dmdCode?: SortOrder
+    summary?: SortOrder
+    isSensitiveTopic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52230,8 +53784,11 @@ export namespace Prisma {
   export type InterventionMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     type?: SortOrder
     dmdCode?: SortOrder
+    summary?: SortOrder
+    isSensitiveTopic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52239,8 +53796,11 @@ export namespace Prisma {
   export type InterventionMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    slug?: SortOrder
     type?: SortOrder
     dmdCode?: SortOrder
+    summary?: SortOrder
+    isSensitiveTopic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52255,16 +53815,45 @@ export namespace Prisma {
     _max?: NestedEnumInterventionTypeFilter<$PrismaModel>
   }
 
+  export type InterventionScalarRelationFilter = {
+    is?: InterventionWhereInput
+    isNot?: InterventionWhereInput
+  }
+
+  export type StoryInterventionStoryIdInterventionIdCompoundUniqueInput = {
+    storyId: string
+    interventionId: string
+  }
+
+  export type StoryInterventionCountOrderByAggregateInput = {
+    storyId?: SortOrder
+    interventionId?: SortOrder
+    sourceId?: SortOrder
+    context?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StoryInterventionMaxOrderByAggregateInput = {
+    storyId?: SortOrder
+    interventionId?: SortOrder
+    sourceId?: SortOrder
+    context?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StoryInterventionMinOrderByAggregateInput = {
+    storyId?: SortOrder
+    interventionId?: SortOrder
+    sourceId?: SortOrder
+    context?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type EnumStopReasonNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.StopReason | EnumStopReasonFieldRefInput<$PrismaModel> | null
     in?: $Enums.StopReason[] | ListEnumStopReasonFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.StopReason[] | ListEnumStopReasonFieldRefInput<$PrismaModel> | null
     not?: NestedEnumStopReasonNullableFilter<$PrismaModel> | $Enums.StopReason | null
-  }
-
-  export type InterventionScalarRelationFilter = {
-    is?: InterventionWhereInput
-    isNot?: InterventionWhereInput
   }
 
   export type TreatmentCourseCountOrderByAggregateInput = {
@@ -53948,6 +55537,13 @@ export namespace Prisma {
     connect?: StoryCharityWhereUniqueInput | StoryCharityWhereUniqueInput[]
   }
 
+  export type StoryInterventionCreateNestedManyWithoutStoryInput = {
+    create?: XOR<StoryInterventionCreateWithoutStoryInput, StoryInterventionUncheckedCreateWithoutStoryInput> | StoryInterventionCreateWithoutStoryInput[] | StoryInterventionUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutStoryInput | StoryInterventionCreateOrConnectWithoutStoryInput[]
+    createMany?: StoryInterventionCreateManyStoryInputEnvelope
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+  }
+
   export type SavedStoryCreateNestedManyWithoutStoryInput = {
     create?: XOR<SavedStoryCreateWithoutStoryInput, SavedStoryUncheckedCreateWithoutStoryInput> | SavedStoryCreateWithoutStoryInput[] | SavedStoryUncheckedCreateWithoutStoryInput[]
     connectOrCreate?: SavedStoryCreateOrConnectWithoutStoryInput | SavedStoryCreateOrConnectWithoutStoryInput[]
@@ -53981,6 +55577,13 @@ export namespace Prisma {
     connectOrCreate?: StoryCharityCreateOrConnectWithoutStoryInput | StoryCharityCreateOrConnectWithoutStoryInput[]
     createMany?: StoryCharityCreateManyStoryInputEnvelope
     connect?: StoryCharityWhereUniqueInput | StoryCharityWhereUniqueInput[]
+  }
+
+  export type StoryInterventionUncheckedCreateNestedManyWithoutStoryInput = {
+    create?: XOR<StoryInterventionCreateWithoutStoryInput, StoryInterventionUncheckedCreateWithoutStoryInput> | StoryInterventionCreateWithoutStoryInput[] | StoryInterventionUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutStoryInput | StoryInterventionCreateOrConnectWithoutStoryInput[]
+    createMany?: StoryInterventionCreateManyStoryInputEnvelope
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
   }
 
   export type SavedStoryUncheckedCreateNestedManyWithoutStoryInput = {
@@ -54083,6 +55686,20 @@ export namespace Prisma {
     deleteMany?: StoryCharityScalarWhereInput | StoryCharityScalarWhereInput[]
   }
 
+  export type StoryInterventionUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<StoryInterventionCreateWithoutStoryInput, StoryInterventionUncheckedCreateWithoutStoryInput> | StoryInterventionCreateWithoutStoryInput[] | StoryInterventionUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutStoryInput | StoryInterventionCreateOrConnectWithoutStoryInput[]
+    upsert?: StoryInterventionUpsertWithWhereUniqueWithoutStoryInput | StoryInterventionUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: StoryInterventionCreateManyStoryInputEnvelope
+    set?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    disconnect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    delete?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    update?: StoryInterventionUpdateWithWhereUniqueWithoutStoryInput | StoryInterventionUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: StoryInterventionUpdateManyWithWhereWithoutStoryInput | StoryInterventionUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
+  }
+
   export type SavedStoryUpdateManyWithoutStoryNestedInput = {
     create?: XOR<SavedStoryCreateWithoutStoryInput, SavedStoryUncheckedCreateWithoutStoryInput> | SavedStoryCreateWithoutStoryInput[] | SavedStoryUncheckedCreateWithoutStoryInput[]
     connectOrCreate?: SavedStoryCreateOrConnectWithoutStoryInput | SavedStoryCreateOrConnectWithoutStoryInput[]
@@ -54151,6 +55768,20 @@ export namespace Prisma {
     update?: StoryCharityUpdateWithWhereUniqueWithoutStoryInput | StoryCharityUpdateWithWhereUniqueWithoutStoryInput[]
     updateMany?: StoryCharityUpdateManyWithWhereWithoutStoryInput | StoryCharityUpdateManyWithWhereWithoutStoryInput[]
     deleteMany?: StoryCharityScalarWhereInput | StoryCharityScalarWhereInput[]
+  }
+
+  export type StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput = {
+    create?: XOR<StoryInterventionCreateWithoutStoryInput, StoryInterventionUncheckedCreateWithoutStoryInput> | StoryInterventionCreateWithoutStoryInput[] | StoryInterventionUncheckedCreateWithoutStoryInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutStoryInput | StoryInterventionCreateOrConnectWithoutStoryInput[]
+    upsert?: StoryInterventionUpsertWithWhereUniqueWithoutStoryInput | StoryInterventionUpsertWithWhereUniqueWithoutStoryInput[]
+    createMany?: StoryInterventionCreateManyStoryInputEnvelope
+    set?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    disconnect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    delete?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    update?: StoryInterventionUpdateWithWhereUniqueWithoutStoryInput | StoryInterventionUpdateWithWhereUniqueWithoutStoryInput[]
+    updateMany?: StoryInterventionUpdateManyWithWhereWithoutStoryInput | StoryInterventionUpdateManyWithWhereWithoutStoryInput[]
+    deleteMany?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
   }
 
   export type SavedStoryUncheckedUpdateManyWithoutStoryNestedInput = {
@@ -54222,11 +55853,25 @@ export namespace Prisma {
     connect?: StoryCharityWhereUniqueInput | StoryCharityWhereUniqueInput[]
   }
 
+  export type StoryInterventionCreateNestedManyWithoutSourceInput = {
+    create?: XOR<StoryInterventionCreateWithoutSourceInput, StoryInterventionUncheckedCreateWithoutSourceInput> | StoryInterventionCreateWithoutSourceInput[] | StoryInterventionUncheckedCreateWithoutSourceInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutSourceInput | StoryInterventionCreateOrConnectWithoutSourceInput[]
+    createMany?: StoryInterventionCreateManySourceInputEnvelope
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+  }
+
   export type StoryCharityUncheckedCreateNestedManyWithoutSourceInput = {
     create?: XOR<StoryCharityCreateWithoutSourceInput, StoryCharityUncheckedCreateWithoutSourceInput> | StoryCharityCreateWithoutSourceInput[] | StoryCharityUncheckedCreateWithoutSourceInput[]
     connectOrCreate?: StoryCharityCreateOrConnectWithoutSourceInput | StoryCharityCreateOrConnectWithoutSourceInput[]
     createMany?: StoryCharityCreateManySourceInputEnvelope
     connect?: StoryCharityWhereUniqueInput | StoryCharityWhereUniqueInput[]
+  }
+
+  export type StoryInterventionUncheckedCreateNestedManyWithoutSourceInput = {
+    create?: XOR<StoryInterventionCreateWithoutSourceInput, StoryInterventionUncheckedCreateWithoutSourceInput> | StoryInterventionCreateWithoutSourceInput[] | StoryInterventionUncheckedCreateWithoutSourceInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutSourceInput | StoryInterventionCreateOrConnectWithoutSourceInput[]
+    createMany?: StoryInterventionCreateManySourceInputEnvelope
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
   }
 
   export type EnumSourceTypeFieldUpdateOperationsInput = {
@@ -54255,6 +55900,20 @@ export namespace Prisma {
     deleteMany?: StoryCharityScalarWhereInput | StoryCharityScalarWhereInput[]
   }
 
+  export type StoryInterventionUpdateManyWithoutSourceNestedInput = {
+    create?: XOR<StoryInterventionCreateWithoutSourceInput, StoryInterventionUncheckedCreateWithoutSourceInput> | StoryInterventionCreateWithoutSourceInput[] | StoryInterventionUncheckedCreateWithoutSourceInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutSourceInput | StoryInterventionCreateOrConnectWithoutSourceInput[]
+    upsert?: StoryInterventionUpsertWithWhereUniqueWithoutSourceInput | StoryInterventionUpsertWithWhereUniqueWithoutSourceInput[]
+    createMany?: StoryInterventionCreateManySourceInputEnvelope
+    set?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    disconnect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    delete?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    update?: StoryInterventionUpdateWithWhereUniqueWithoutSourceInput | StoryInterventionUpdateWithWhereUniqueWithoutSourceInput[]
+    updateMany?: StoryInterventionUpdateManyWithWhereWithoutSourceInput | StoryInterventionUpdateManyWithWhereWithoutSourceInput[]
+    deleteMany?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
+  }
+
   export type StoryCharityUncheckedUpdateManyWithoutSourceNestedInput = {
     create?: XOR<StoryCharityCreateWithoutSourceInput, StoryCharityUncheckedCreateWithoutSourceInput> | StoryCharityCreateWithoutSourceInput[] | StoryCharityUncheckedCreateWithoutSourceInput[]
     connectOrCreate?: StoryCharityCreateOrConnectWithoutSourceInput | StoryCharityCreateOrConnectWithoutSourceInput[]
@@ -54267,6 +55926,20 @@ export namespace Prisma {
     update?: StoryCharityUpdateWithWhereUniqueWithoutSourceInput | StoryCharityUpdateWithWhereUniqueWithoutSourceInput[]
     updateMany?: StoryCharityUpdateManyWithWhereWithoutSourceInput | StoryCharityUpdateManyWithWhereWithoutSourceInput[]
     deleteMany?: StoryCharityScalarWhereInput | StoryCharityScalarWhereInput[]
+  }
+
+  export type StoryInterventionUncheckedUpdateManyWithoutSourceNestedInput = {
+    create?: XOR<StoryInterventionCreateWithoutSourceInput, StoryInterventionUncheckedCreateWithoutSourceInput> | StoryInterventionCreateWithoutSourceInput[] | StoryInterventionUncheckedCreateWithoutSourceInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutSourceInput | StoryInterventionCreateOrConnectWithoutSourceInput[]
+    upsert?: StoryInterventionUpsertWithWhereUniqueWithoutSourceInput | StoryInterventionUpsertWithWhereUniqueWithoutSourceInput[]
+    createMany?: StoryInterventionCreateManySourceInputEnvelope
+    set?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    disconnect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    delete?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    update?: StoryInterventionUpdateWithWhereUniqueWithoutSourceInput | StoryInterventionUpdateWithWhereUniqueWithoutSourceInput[]
+    updateMany?: StoryInterventionUpdateManyWithWhereWithoutSourceInput | StoryInterventionUpdateManyWithWhereWithoutSourceInput[]
+    deleteMany?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSavedStoriesInput = {
@@ -54874,11 +56547,25 @@ export namespace Prisma {
     connect?: TreatmentCourseWhereUniqueInput | TreatmentCourseWhereUniqueInput[]
   }
 
+  export type StoryInterventionCreateNestedManyWithoutInterventionInput = {
+    create?: XOR<StoryInterventionCreateWithoutInterventionInput, StoryInterventionUncheckedCreateWithoutInterventionInput> | StoryInterventionCreateWithoutInterventionInput[] | StoryInterventionUncheckedCreateWithoutInterventionInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutInterventionInput | StoryInterventionCreateOrConnectWithoutInterventionInput[]
+    createMany?: StoryInterventionCreateManyInterventionInputEnvelope
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+  }
+
   export type TreatmentCourseUncheckedCreateNestedManyWithoutInterventionInput = {
     create?: XOR<TreatmentCourseCreateWithoutInterventionInput, TreatmentCourseUncheckedCreateWithoutInterventionInput> | TreatmentCourseCreateWithoutInterventionInput[] | TreatmentCourseUncheckedCreateWithoutInterventionInput[]
     connectOrCreate?: TreatmentCourseCreateOrConnectWithoutInterventionInput | TreatmentCourseCreateOrConnectWithoutInterventionInput[]
     createMany?: TreatmentCourseCreateManyInterventionInputEnvelope
     connect?: TreatmentCourseWhereUniqueInput | TreatmentCourseWhereUniqueInput[]
+  }
+
+  export type StoryInterventionUncheckedCreateNestedManyWithoutInterventionInput = {
+    create?: XOR<StoryInterventionCreateWithoutInterventionInput, StoryInterventionUncheckedCreateWithoutInterventionInput> | StoryInterventionCreateWithoutInterventionInput[] | StoryInterventionUncheckedCreateWithoutInterventionInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutInterventionInput | StoryInterventionCreateOrConnectWithoutInterventionInput[]
+    createMany?: StoryInterventionCreateManyInterventionInputEnvelope
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
   }
 
   export type EnumInterventionTypeFieldUpdateOperationsInput = {
@@ -54899,6 +56586,20 @@ export namespace Prisma {
     deleteMany?: TreatmentCourseScalarWhereInput | TreatmentCourseScalarWhereInput[]
   }
 
+  export type StoryInterventionUpdateManyWithoutInterventionNestedInput = {
+    create?: XOR<StoryInterventionCreateWithoutInterventionInput, StoryInterventionUncheckedCreateWithoutInterventionInput> | StoryInterventionCreateWithoutInterventionInput[] | StoryInterventionUncheckedCreateWithoutInterventionInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutInterventionInput | StoryInterventionCreateOrConnectWithoutInterventionInput[]
+    upsert?: StoryInterventionUpsertWithWhereUniqueWithoutInterventionInput | StoryInterventionUpsertWithWhereUniqueWithoutInterventionInput[]
+    createMany?: StoryInterventionCreateManyInterventionInputEnvelope
+    set?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    disconnect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    delete?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    update?: StoryInterventionUpdateWithWhereUniqueWithoutInterventionInput | StoryInterventionUpdateWithWhereUniqueWithoutInterventionInput[]
+    updateMany?: StoryInterventionUpdateManyWithWhereWithoutInterventionInput | StoryInterventionUpdateManyWithWhereWithoutInterventionInput[]
+    deleteMany?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
+  }
+
   export type TreatmentCourseUncheckedUpdateManyWithoutInterventionNestedInput = {
     create?: XOR<TreatmentCourseCreateWithoutInterventionInput, TreatmentCourseUncheckedCreateWithoutInterventionInput> | TreatmentCourseCreateWithoutInterventionInput[] | TreatmentCourseUncheckedCreateWithoutInterventionInput[]
     connectOrCreate?: TreatmentCourseCreateOrConnectWithoutInterventionInput | TreatmentCourseCreateOrConnectWithoutInterventionInput[]
@@ -54911,6 +56612,64 @@ export namespace Prisma {
     update?: TreatmentCourseUpdateWithWhereUniqueWithoutInterventionInput | TreatmentCourseUpdateWithWhereUniqueWithoutInterventionInput[]
     updateMany?: TreatmentCourseUpdateManyWithWhereWithoutInterventionInput | TreatmentCourseUpdateManyWithWhereWithoutInterventionInput[]
     deleteMany?: TreatmentCourseScalarWhereInput | TreatmentCourseScalarWhereInput[]
+  }
+
+  export type StoryInterventionUncheckedUpdateManyWithoutInterventionNestedInput = {
+    create?: XOR<StoryInterventionCreateWithoutInterventionInput, StoryInterventionUncheckedCreateWithoutInterventionInput> | StoryInterventionCreateWithoutInterventionInput[] | StoryInterventionUncheckedCreateWithoutInterventionInput[]
+    connectOrCreate?: StoryInterventionCreateOrConnectWithoutInterventionInput | StoryInterventionCreateOrConnectWithoutInterventionInput[]
+    upsert?: StoryInterventionUpsertWithWhereUniqueWithoutInterventionInput | StoryInterventionUpsertWithWhereUniqueWithoutInterventionInput[]
+    createMany?: StoryInterventionCreateManyInterventionInputEnvelope
+    set?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    disconnect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    delete?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    connect?: StoryInterventionWhereUniqueInput | StoryInterventionWhereUniqueInput[]
+    update?: StoryInterventionUpdateWithWhereUniqueWithoutInterventionInput | StoryInterventionUpdateWithWhereUniqueWithoutInterventionInput[]
+    updateMany?: StoryInterventionUpdateManyWithWhereWithoutInterventionInput | StoryInterventionUpdateManyWithWhereWithoutInterventionInput[]
+    deleteMany?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
+  }
+
+  export type StoryCreateNestedOneWithoutInterventionsInput = {
+    create?: XOR<StoryCreateWithoutInterventionsInput, StoryUncheckedCreateWithoutInterventionsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutInterventionsInput
+    connect?: StoryWhereUniqueInput
+  }
+
+  export type InterventionCreateNestedOneWithoutStoriesInput = {
+    create?: XOR<InterventionCreateWithoutStoriesInput, InterventionUncheckedCreateWithoutStoriesInput>
+    connectOrCreate?: InterventionCreateOrConnectWithoutStoriesInput
+    connect?: InterventionWhereUniqueInput
+  }
+
+  export type SourceCreateNestedOneWithoutStoryInterventionsInput = {
+    create?: XOR<SourceCreateWithoutStoryInterventionsInput, SourceUncheckedCreateWithoutStoryInterventionsInput>
+    connectOrCreate?: SourceCreateOrConnectWithoutStoryInterventionsInput
+    connect?: SourceWhereUniqueInput
+  }
+
+  export type StoryUpdateOneRequiredWithoutInterventionsNestedInput = {
+    create?: XOR<StoryCreateWithoutInterventionsInput, StoryUncheckedCreateWithoutInterventionsInput>
+    connectOrCreate?: StoryCreateOrConnectWithoutInterventionsInput
+    upsert?: StoryUpsertWithoutInterventionsInput
+    connect?: StoryWhereUniqueInput
+    update?: XOR<XOR<StoryUpdateToOneWithWhereWithoutInterventionsInput, StoryUpdateWithoutInterventionsInput>, StoryUncheckedUpdateWithoutInterventionsInput>
+  }
+
+  export type InterventionUpdateOneRequiredWithoutStoriesNestedInput = {
+    create?: XOR<InterventionCreateWithoutStoriesInput, InterventionUncheckedCreateWithoutStoriesInput>
+    connectOrCreate?: InterventionCreateOrConnectWithoutStoriesInput
+    upsert?: InterventionUpsertWithoutStoriesInput
+    connect?: InterventionWhereUniqueInput
+    update?: XOR<XOR<InterventionUpdateToOneWithWhereWithoutStoriesInput, InterventionUpdateWithoutStoriesInput>, InterventionUncheckedUpdateWithoutStoriesInput>
+  }
+
+  export type SourceUpdateOneWithoutStoryInterventionsNestedInput = {
+    create?: XOR<SourceCreateWithoutStoryInterventionsInput, SourceUncheckedCreateWithoutStoryInterventionsInput>
+    connectOrCreate?: SourceCreateOrConnectWithoutStoryInterventionsInput
+    upsert?: SourceUpsertWithoutStoryInterventionsInput
+    disconnect?: SourceWhereInput | boolean
+    delete?: SourceWhereInput | boolean
+    connect?: SourceWhereUniqueInput
+    update?: XOR<XOR<SourceUpdateToOneWithWhereWithoutStoryInterventionsInput, SourceUpdateWithoutStoryInterventionsInput>, SourceUncheckedUpdateWithoutStoryInterventionsInput>
   }
 
   export type UserCreateNestedOneWithoutTreatmentCoursesInput = {
@@ -56398,6 +58157,7 @@ export namespace Prisma {
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -56426,6 +58186,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -56464,6 +58225,7 @@ export namespace Prisma {
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -56492,6 +58254,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -57917,6 +59680,7 @@ export namespace Prisma {
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -57945,6 +59709,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -58168,6 +59933,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     storyCharities?: StoryCharityCreateNestedManyWithoutSourceInput
+    storyInterventions?: StoryInterventionCreateNestedManyWithoutSourceInput
   }
 
   export type SourceUncheckedCreateWithoutStoryInput = {
@@ -58180,6 +59946,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     storyCharities?: StoryCharityUncheckedCreateNestedManyWithoutSourceInput
+    storyInterventions?: StoryInterventionUncheckedCreateNestedManyWithoutSourceInput
   }
 
   export type SourceCreateOrConnectWithoutStoryInput = {
@@ -58211,6 +59978,30 @@ export namespace Prisma {
 
   export type StoryCharityCreateManyStoryInputEnvelope = {
     data: StoryCharityCreateManyStoryInput | StoryCharityCreateManyStoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StoryInterventionCreateWithoutStoryInput = {
+    context?: string | null
+    createdAt?: Date | string
+    intervention: InterventionCreateNestedOneWithoutStoriesInput
+    source?: SourceCreateNestedOneWithoutStoryInterventionsInput
+  }
+
+  export type StoryInterventionUncheckedCreateWithoutStoryInput = {
+    interventionId: string
+    sourceId?: string | null
+    context?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StoryInterventionCreateOrConnectWithoutStoryInput = {
+    where: StoryInterventionWhereUniqueInput
+    create: XOR<StoryInterventionCreateWithoutStoryInput, StoryInterventionUncheckedCreateWithoutStoryInput>
+  }
+
+  export type StoryInterventionCreateManyStoryInputEnvelope = {
+    data: StoryInterventionCreateManyStoryInput | StoryInterventionCreateManyStoryInput[]
     skipDuplicates?: boolean
   }
 
@@ -58526,6 +60317,33 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StoryCharity"> | Date | string
   }
 
+  export type StoryInterventionUpsertWithWhereUniqueWithoutStoryInput = {
+    where: StoryInterventionWhereUniqueInput
+    update: XOR<StoryInterventionUpdateWithoutStoryInput, StoryInterventionUncheckedUpdateWithoutStoryInput>
+    create: XOR<StoryInterventionCreateWithoutStoryInput, StoryInterventionUncheckedCreateWithoutStoryInput>
+  }
+
+  export type StoryInterventionUpdateWithWhereUniqueWithoutStoryInput = {
+    where: StoryInterventionWhereUniqueInput
+    data: XOR<StoryInterventionUpdateWithoutStoryInput, StoryInterventionUncheckedUpdateWithoutStoryInput>
+  }
+
+  export type StoryInterventionUpdateManyWithWhereWithoutStoryInput = {
+    where: StoryInterventionScalarWhereInput
+    data: XOR<StoryInterventionUpdateManyMutationInput, StoryInterventionUncheckedUpdateManyWithoutStoryInput>
+  }
+
+  export type StoryInterventionScalarWhereInput = {
+    AND?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
+    OR?: StoryInterventionScalarWhereInput[]
+    NOT?: StoryInterventionScalarWhereInput | StoryInterventionScalarWhereInput[]
+    storyId?: StringFilter<"StoryIntervention"> | string
+    interventionId?: StringFilter<"StoryIntervention"> | string
+    sourceId?: StringNullableFilter<"StoryIntervention"> | string | null
+    context?: StringNullableFilter<"StoryIntervention"> | string | null
+    createdAt?: DateTimeFilter<"StoryIntervention"> | Date | string
+  }
+
   export type SavedStoryUpsertWithWhereUniqueWithoutStoryInput = {
     where: SavedStoryWhereUniqueInput
     update: XOR<SavedStoryUpdateWithoutStoryInput, SavedStoryUncheckedUpdateWithoutStoryInput>
@@ -58600,6 +60418,7 @@ export namespace Prisma {
     verifiedBy?: UserCreateNestedOneWithoutStoriesVerifiedInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -58628,6 +60447,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -58705,6 +60525,7 @@ export namespace Prisma {
     verifiedBy?: UserUpdateOneWithoutStoriesVerifiedNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -58733,6 +60554,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -58800,6 +60622,7 @@ export namespace Prisma {
     verifiedBy?: UserCreateNestedOneWithoutStoriesVerifiedInput
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -58828,6 +60651,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -58856,6 +60680,30 @@ export namespace Prisma {
 
   export type StoryCharityCreateManySourceInputEnvelope = {
     data: StoryCharityCreateManySourceInput | StoryCharityCreateManySourceInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StoryInterventionCreateWithoutSourceInput = {
+    context?: string | null
+    createdAt?: Date | string
+    story: StoryCreateNestedOneWithoutInterventionsInput
+    intervention: InterventionCreateNestedOneWithoutStoriesInput
+  }
+
+  export type StoryInterventionUncheckedCreateWithoutSourceInput = {
+    storyId: string
+    interventionId: string
+    context?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StoryInterventionCreateOrConnectWithoutSourceInput = {
+    where: StoryInterventionWhereUniqueInput
+    create: XOR<StoryInterventionCreateWithoutSourceInput, StoryInterventionUncheckedCreateWithoutSourceInput>
+  }
+
+  export type StoryInterventionCreateManySourceInputEnvelope = {
+    data: StoryInterventionCreateManySourceInput | StoryInterventionCreateManySourceInput[]
     skipDuplicates?: boolean
   }
 
@@ -58894,6 +60742,7 @@ export namespace Prisma {
     verifiedBy?: UserUpdateOneWithoutStoriesVerifiedNestedInput
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -58922,6 +60771,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -58940,6 +60790,22 @@ export namespace Prisma {
   export type StoryCharityUpdateManyWithWhereWithoutSourceInput = {
     where: StoryCharityScalarWhereInput
     data: XOR<StoryCharityUpdateManyMutationInput, StoryCharityUncheckedUpdateManyWithoutSourceInput>
+  }
+
+  export type StoryInterventionUpsertWithWhereUniqueWithoutSourceInput = {
+    where: StoryInterventionWhereUniqueInput
+    update: XOR<StoryInterventionUpdateWithoutSourceInput, StoryInterventionUncheckedUpdateWithoutSourceInput>
+    create: XOR<StoryInterventionCreateWithoutSourceInput, StoryInterventionUncheckedCreateWithoutSourceInput>
+  }
+
+  export type StoryInterventionUpdateWithWhereUniqueWithoutSourceInput = {
+    where: StoryInterventionWhereUniqueInput
+    data: XOR<StoryInterventionUpdateWithoutSourceInput, StoryInterventionUncheckedUpdateWithoutSourceInput>
+  }
+
+  export type StoryInterventionUpdateManyWithWhereWithoutSourceInput = {
+    where: StoryInterventionScalarWhereInput
+    data: XOR<StoryInterventionUpdateManyMutationInput, StoryInterventionUncheckedUpdateManyWithoutSourceInput>
   }
 
   export type UserCreateWithoutSavedStoriesInput = {
@@ -59034,6 +60900,7 @@ export namespace Prisma {
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
 
@@ -59062,6 +60929,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
 
@@ -59179,6 +61047,7 @@ export namespace Prisma {
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
 
@@ -59207,6 +61076,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
 
@@ -59235,6 +61105,7 @@ export namespace Prisma {
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
     charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
   }
 
@@ -59263,6 +61134,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
     charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
   }
 
@@ -59307,6 +61179,7 @@ export namespace Prisma {
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
   }
 
@@ -59335,6 +61208,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
   }
 
@@ -59882,6 +61756,7 @@ export namespace Prisma {
     verifiedBy?: UserCreateNestedOneWithoutStoriesVerifiedInput
     conditions?: StoryConditionCreateNestedManyWithoutStoryInput
     sources?: SourceCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
   }
@@ -59910,6 +61785,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
     sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
+    interventions?: StoryInterventionUncheckedCreateNestedManyWithoutStoryInput
     savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
     takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
   }
@@ -59978,6 +61854,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     story: StoryCreateNestedOneWithoutSourcesInput
+    storyInterventions?: StoryInterventionCreateNestedManyWithoutSourceInput
   }
 
   export type SourceUncheckedCreateWithoutStoryCharitiesInput = {
@@ -59990,6 +61867,7 @@ export namespace Prisma {
     sourceType: $Enums.SourceType
     createdAt?: Date | string
     updatedAt?: Date | string
+    storyInterventions?: StoryInterventionUncheckedCreateNestedManyWithoutSourceInput
   }
 
   export type SourceCreateOrConnectWithoutStoryCharitiesInput = {
@@ -60032,6 +61910,7 @@ export namespace Prisma {
     verifiedBy?: UserUpdateOneWithoutStoriesVerifiedNestedInput
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -60060,6 +61939,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -60140,6 +62020,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     story?: StoryUpdateOneRequiredWithoutSourcesNestedInput
+    storyInterventions?: StoryInterventionUpdateManyWithoutSourceNestedInput
   }
 
   export type SourceUncheckedUpdateWithoutStoryCharitiesInput = {
@@ -60152,6 +62033,7 @@ export namespace Prisma {
     sourceType?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyInterventions?: StoryInterventionUncheckedUpdateManyWithoutSourceNestedInput
   }
 
   export type UserCreateWithoutCharityFollowsInput = {
@@ -61394,6 +63276,30 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StoryInterventionCreateWithoutInterventionInput = {
+    context?: string | null
+    createdAt?: Date | string
+    story: StoryCreateNestedOneWithoutInterventionsInput
+    source?: SourceCreateNestedOneWithoutStoryInterventionsInput
+  }
+
+  export type StoryInterventionUncheckedCreateWithoutInterventionInput = {
+    storyId: string
+    sourceId?: string | null
+    context?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StoryInterventionCreateOrConnectWithoutInterventionInput = {
+    where: StoryInterventionWhereUniqueInput
+    create: XOR<StoryInterventionCreateWithoutInterventionInput, StoryInterventionUncheckedCreateWithoutInterventionInput>
+  }
+
+  export type StoryInterventionCreateManyInterventionInputEnvelope = {
+    data: StoryInterventionCreateManyInterventionInput | StoryInterventionCreateManyInterventionInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TreatmentCourseUpsertWithWhereUniqueWithoutInterventionInput = {
     where: TreatmentCourseWhereUniqueInput
     update: XOR<TreatmentCourseUpdateWithoutInterventionInput, TreatmentCourseUncheckedUpdateWithoutInterventionInput>
@@ -61408,6 +63314,290 @@ export namespace Prisma {
   export type TreatmentCourseUpdateManyWithWhereWithoutInterventionInput = {
     where: TreatmentCourseScalarWhereInput
     data: XOR<TreatmentCourseUpdateManyMutationInput, TreatmentCourseUncheckedUpdateManyWithoutInterventionInput>
+  }
+
+  export type StoryInterventionUpsertWithWhereUniqueWithoutInterventionInput = {
+    where: StoryInterventionWhereUniqueInput
+    update: XOR<StoryInterventionUpdateWithoutInterventionInput, StoryInterventionUncheckedUpdateWithoutInterventionInput>
+    create: XOR<StoryInterventionCreateWithoutInterventionInput, StoryInterventionUncheckedCreateWithoutInterventionInput>
+  }
+
+  export type StoryInterventionUpdateWithWhereUniqueWithoutInterventionInput = {
+    where: StoryInterventionWhereUniqueInput
+    data: XOR<StoryInterventionUpdateWithoutInterventionInput, StoryInterventionUncheckedUpdateWithoutInterventionInput>
+  }
+
+  export type StoryInterventionUpdateManyWithWhereWithoutInterventionInput = {
+    where: StoryInterventionScalarWhereInput
+    data: XOR<StoryInterventionUpdateManyMutationInput, StoryInterventionUncheckedUpdateManyWithoutInterventionInput>
+  }
+
+  export type StoryCreateWithoutInterventionsInput = {
+    id?: string
+    type: $Enums.StoryType
+    disclosureType: $Enums.DisclosureType
+    title: string
+    slug: string
+    summary: string
+    keyMomentsJson?: JsonNullValueInput | InputJsonValue
+    quote?: string | null
+    quoteSourceId?: string | null
+    contentNote?: string | null
+    communityPermissionConfirmed?: boolean | null
+    status?: $Enums.StoryStatus
+    publishedAt?: Date | string | null
+    lastReviewedAt?: Date | string | null
+    retractedAt?: Date | string | null
+    retractionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    publicFigure?: PublicFigureCreateNestedOneWithoutStoriesInput
+    draftedBy: UserCreateNestedOneWithoutStoriesDraftedInput
+    verifiedBy?: UserCreateNestedOneWithoutStoriesVerifiedInput
+    conditions?: StoryConditionCreateNestedManyWithoutStoryInput
+    sources?: SourceCreateNestedManyWithoutStoryInput
+    charities?: StoryCharityCreateNestedManyWithoutStoryInput
+    savedBy?: SavedStoryCreateNestedManyWithoutStoryInput
+    takedowns?: TakedownRequestCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryUncheckedCreateWithoutInterventionsInput = {
+    id?: string
+    type: $Enums.StoryType
+    publicFigureId?: string | null
+    disclosureType: $Enums.DisclosureType
+    title: string
+    slug: string
+    summary: string
+    keyMomentsJson?: JsonNullValueInput | InputJsonValue
+    quote?: string | null
+    quoteSourceId?: string | null
+    contentNote?: string | null
+    communityPermissionConfirmed?: boolean | null
+    status?: $Enums.StoryStatus
+    draftedById: string
+    verifiedById?: string | null
+    publishedAt?: Date | string | null
+    lastReviewedAt?: Date | string | null
+    retractedAt?: Date | string | null
+    retractionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    conditions?: StoryConditionUncheckedCreateNestedManyWithoutStoryInput
+    sources?: SourceUncheckedCreateNestedManyWithoutStoryInput
+    charities?: StoryCharityUncheckedCreateNestedManyWithoutStoryInput
+    savedBy?: SavedStoryUncheckedCreateNestedManyWithoutStoryInput
+    takedowns?: TakedownRequestUncheckedCreateNestedManyWithoutStoryInput
+  }
+
+  export type StoryCreateOrConnectWithoutInterventionsInput = {
+    where: StoryWhereUniqueInput
+    create: XOR<StoryCreateWithoutInterventionsInput, StoryUncheckedCreateWithoutInterventionsInput>
+  }
+
+  export type InterventionCreateWithoutStoriesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    type: $Enums.InterventionType
+    dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    courses?: TreatmentCourseCreateNestedManyWithoutInterventionInput
+  }
+
+  export type InterventionUncheckedCreateWithoutStoriesInput = {
+    id?: string
+    name: string
+    slug?: string | null
+    type: $Enums.InterventionType
+    dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    courses?: TreatmentCourseUncheckedCreateNestedManyWithoutInterventionInput
+  }
+
+  export type InterventionCreateOrConnectWithoutStoriesInput = {
+    where: InterventionWhereUniqueInput
+    create: XOR<InterventionCreateWithoutStoriesInput, InterventionUncheckedCreateWithoutStoriesInput>
+  }
+
+  export type SourceCreateWithoutStoryInterventionsInput = {
+    id?: string
+    url: string
+    title: string
+    publisher: string
+    publishedDate?: Date | string | null
+    sourceType: $Enums.SourceType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    story: StoryCreateNestedOneWithoutSourcesInput
+    storyCharities?: StoryCharityCreateNestedManyWithoutSourceInput
+  }
+
+  export type SourceUncheckedCreateWithoutStoryInterventionsInput = {
+    id?: string
+    storyId: string
+    url: string
+    title: string
+    publisher: string
+    publishedDate?: Date | string | null
+    sourceType: $Enums.SourceType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    storyCharities?: StoryCharityUncheckedCreateNestedManyWithoutSourceInput
+  }
+
+  export type SourceCreateOrConnectWithoutStoryInterventionsInput = {
+    where: SourceWhereUniqueInput
+    create: XOR<SourceCreateWithoutStoryInterventionsInput, SourceUncheckedCreateWithoutStoryInterventionsInput>
+  }
+
+  export type StoryUpsertWithoutInterventionsInput = {
+    update: XOR<StoryUpdateWithoutInterventionsInput, StoryUncheckedUpdateWithoutInterventionsInput>
+    create: XOR<StoryCreateWithoutInterventionsInput, StoryUncheckedCreateWithoutInterventionsInput>
+    where?: StoryWhereInput
+  }
+
+  export type StoryUpdateToOneWithWhereWithoutInterventionsInput = {
+    where?: StoryWhereInput
+    data: XOR<StoryUpdateWithoutInterventionsInput, StoryUncheckedUpdateWithoutInterventionsInput>
+  }
+
+  export type StoryUpdateWithoutInterventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    disclosureType?: EnumDisclosureTypeFieldUpdateOperationsInput | $Enums.DisclosureType
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyMomentsJson?: JsonNullValueInput | InputJsonValue
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    quoteSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentNote?: NullableStringFieldUpdateOperationsInput | string | null
+    communityPermissionConfirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retractionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publicFigure?: PublicFigureUpdateOneWithoutStoriesNestedInput
+    draftedBy?: UserUpdateOneRequiredWithoutStoriesDraftedNestedInput
+    verifiedBy?: UserUpdateOneWithoutStoriesVerifiedNestedInput
+    conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
+    sources?: SourceUpdateManyWithoutStoryNestedInput
+    charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
+    takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
+  }
+
+  export type StoryUncheckedUpdateWithoutInterventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStoryTypeFieldUpdateOperationsInput | $Enums.StoryType
+    publicFigureId?: NullableStringFieldUpdateOperationsInput | string | null
+    disclosureType?: EnumDisclosureTypeFieldUpdateOperationsInput | $Enums.DisclosureType
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    summary?: StringFieldUpdateOperationsInput | string
+    keyMomentsJson?: JsonNullValueInput | InputJsonValue
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    quoteSourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    contentNote?: NullableStringFieldUpdateOperationsInput | string | null
+    communityPermissionConfirmed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    status?: EnumStoryStatusFieldUpdateOperationsInput | $Enums.StoryStatus
+    draftedById?: StringFieldUpdateOperationsInput | string
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retractedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retractionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
+    sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
+    charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
+    takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
+  }
+
+  export type InterventionUpsertWithoutStoriesInput = {
+    update: XOR<InterventionUpdateWithoutStoriesInput, InterventionUncheckedUpdateWithoutStoriesInput>
+    create: XOR<InterventionCreateWithoutStoriesInput, InterventionUncheckedCreateWithoutStoriesInput>
+    where?: InterventionWhereInput
+  }
+
+  export type InterventionUpdateToOneWithWhereWithoutStoriesInput = {
+    where?: InterventionWhereInput
+    data: XOR<InterventionUpdateWithoutStoriesInput, InterventionUncheckedUpdateWithoutStoriesInput>
+  }
+
+  export type InterventionUpdateWithoutStoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
+    dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    courses?: TreatmentCourseUpdateManyWithoutInterventionNestedInput
+  }
+
+  export type InterventionUncheckedUpdateWithoutStoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
+    dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    courses?: TreatmentCourseUncheckedUpdateManyWithoutInterventionNestedInput
+  }
+
+  export type SourceUpsertWithoutStoryInterventionsInput = {
+    update: XOR<SourceUpdateWithoutStoryInterventionsInput, SourceUncheckedUpdateWithoutStoryInterventionsInput>
+    create: XOR<SourceCreateWithoutStoryInterventionsInput, SourceUncheckedCreateWithoutStoryInterventionsInput>
+    where?: SourceWhereInput
+  }
+
+  export type SourceUpdateToOneWithWhereWithoutStoryInterventionsInput = {
+    where?: SourceWhereInput
+    data: XOR<SourceUpdateWithoutStoryInterventionsInput, SourceUncheckedUpdateWithoutStoryInterventionsInput>
+  }
+
+  export type SourceUpdateWithoutStoryInterventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    publisher?: StringFieldUpdateOperationsInput | string
+    publishedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceType?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutSourcesNestedInput
+    storyCharities?: StoryCharityUpdateManyWithoutSourceNestedInput
+  }
+
+  export type SourceUncheckedUpdateWithoutStoryInterventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storyId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    publisher?: StringFieldUpdateOperationsInput | string
+    publishedDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sourceType?: EnumSourceTypeFieldUpdateOperationsInput | $Enums.SourceType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    storyCharities?: StoryCharityUncheckedUpdateManyWithoutSourceNestedInput
   }
 
   export type UserCreateWithoutTreatmentCoursesInput = {
@@ -61480,19 +63670,27 @@ export namespace Prisma {
   export type InterventionCreateWithoutCoursesInput = {
     id?: string
     name: string
+    slug?: string | null
     type: $Enums.InterventionType
     dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    stories?: StoryInterventionCreateNestedManyWithoutInterventionInput
   }
 
   export type InterventionUncheckedCreateWithoutCoursesInput = {
     id?: string
     name: string
+    slug?: string | null
     type: $Enums.InterventionType
     dmdCode?: string | null
+    summary?: string | null
+    isSensitiveTopic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    stories?: StoryInterventionUncheckedCreateNestedManyWithoutInterventionInput
   }
 
   export type InterventionCreateOrConnectWithoutCoursesInput = {
@@ -61651,19 +63849,27 @@ export namespace Prisma {
   export type InterventionUpdateWithoutCoursesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
     dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stories?: StoryInterventionUpdateManyWithoutInterventionNestedInput
   }
 
   export type InterventionUncheckedUpdateWithoutCoursesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    slug?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumInterventionTypeFieldUpdateOperationsInput | $Enums.InterventionType
     dmdCode?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    isSensitiveTopic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stories?: StoryInterventionUncheckedUpdateManyWithoutInterventionNestedInput
   }
 
   export type ScheduledCheckInUpsertWithWhereUniqueWithoutTreatmentCourseInput = {
@@ -63991,6 +66197,7 @@ export namespace Prisma {
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -64019,6 +66226,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -64070,6 +66278,7 @@ export namespace Prisma {
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -64098,6 +66307,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -64325,6 +66535,7 @@ export namespace Prisma {
     conditions?: StoryConditionUpdateManyWithoutStoryNestedInput
     sources?: SourceUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUpdateManyWithoutStoryNestedInput
   }
@@ -64353,6 +66564,7 @@ export namespace Prisma {
     conditions?: StoryConditionUncheckedUpdateManyWithoutStoryNestedInput
     sources?: SourceUncheckedUpdateManyWithoutStoryNestedInput
     charities?: StoryCharityUncheckedUpdateManyWithoutStoryNestedInput
+    interventions?: StoryInterventionUncheckedUpdateManyWithoutStoryNestedInput
     savedBy?: SavedStoryUncheckedUpdateManyWithoutStoryNestedInput
     takedowns?: TakedownRequestUncheckedUpdateManyWithoutStoryNestedInput
   }
@@ -64402,6 +66614,13 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type StoryInterventionCreateManyStoryInput = {
+    interventionId: string
+    sourceId?: string | null
+    context?: string | null
+    createdAt?: Date | string
+  }
+
   export type SavedStoryCreateManyStoryInput = {
     userId: string
     createdAt?: Date | string
@@ -64446,6 +66665,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     storyCharities?: StoryCharityUpdateManyWithoutSourceNestedInput
+    storyInterventions?: StoryInterventionUpdateManyWithoutSourceNestedInput
   }
 
   export type SourceUncheckedUpdateWithoutStoryInput = {
@@ -64458,6 +66678,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     storyCharities?: StoryCharityUncheckedUpdateManyWithoutSourceNestedInput
+    storyInterventions?: StoryInterventionUncheckedUpdateManyWithoutSourceNestedInput
   }
 
   export type SourceUncheckedUpdateManyWithoutStoryInput = {
@@ -64486,6 +66707,27 @@ export namespace Prisma {
   export type StoryCharityUncheckedUpdateManyWithoutStoryInput = {
     charityId?: StringFieldUpdateOperationsInput | string
     sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUpdateWithoutStoryInput = {
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    intervention?: InterventionUpdateOneRequiredWithoutStoriesNestedInput
+    source?: SourceUpdateOneWithoutStoryInterventionsNestedInput
+  }
+
+  export type StoryInterventionUncheckedUpdateWithoutStoryInput = {
+    interventionId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUncheckedUpdateManyWithoutStoryInput = {
+    interventionId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -64552,6 +66794,13 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type StoryInterventionCreateManySourceInput = {
+    storyId: string
+    interventionId: string
+    context?: string | null
+    createdAt?: Date | string
+  }
+
   export type StoryCharityUpdateWithoutSourceInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     story?: StoryUpdateOneRequiredWithoutCharitiesNestedInput
@@ -64567,6 +66816,27 @@ export namespace Prisma {
   export type StoryCharityUncheckedUpdateManyWithoutSourceInput = {
     storyId?: StringFieldUpdateOperationsInput | string
     charityId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUpdateWithoutSourceInput = {
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutInterventionsNestedInput
+    intervention?: InterventionUpdateOneRequiredWithoutStoriesNestedInput
+  }
+
+  export type StoryInterventionUncheckedUpdateWithoutSourceInput = {
+    storyId?: StringFieldUpdateOperationsInput | string
+    interventionId?: StringFieldUpdateOperationsInput | string
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUncheckedUpdateManyWithoutSourceInput = {
+    storyId?: StringFieldUpdateOperationsInput | string
+    interventionId?: StringFieldUpdateOperationsInput | string
+    context?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -64761,6 +67031,13 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type StoryInterventionCreateManyInterventionInput = {
+    storyId: string
+    sourceId?: string | null
+    context?: string | null
+    createdAt?: Date | string
+  }
+
   export type TreatmentCourseUpdateWithoutInterventionInput = {
     id?: StringFieldUpdateOperationsInput | string
     dose?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64808,6 +67085,27 @@ export namespace Prisma {
     adherenceRating?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUpdateWithoutInterventionInput = {
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    story?: StoryUpdateOneRequiredWithoutInterventionsNestedInput
+    source?: SourceUpdateOneWithoutStoryInterventionsNestedInput
+  }
+
+  export type StoryInterventionUncheckedUpdateWithoutInterventionInput = {
+    storyId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StoryInterventionUncheckedUpdateManyWithoutInterventionInput = {
+    storyId?: StringFieldUpdateOperationsInput | string
+    sourceId?: NullableStringFieldUpdateOperationsInput | string | null
+    context?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ScheduledCheckInCreateManyTreatmentCourseInput = {

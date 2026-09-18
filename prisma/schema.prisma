@@ -256,9 +256,10 @@ model Story {
   draftedBy    User          @relation("StoryDrafter", fields: [draftedById], references: [id], onDelete: Restrict)
   verifiedBy   User?         @relation("StoryVerifier", fields: [verifiedById], references: [id], onDelete: Restrict)
 
-  conditions StoryCondition[]
-  sources    Source[]
-  charities  StoryCharity[]
+  conditions    StoryCondition[]
+  sources       Source[]
+  charities     StoryCharity[]
+  interventions StoryIntervention[]
   savedBy    SavedStory[]
   takedowns  TakedownRequest[]
 
@@ -301,8 +302,9 @@ model Source {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  story         Story          @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  storyCharities StoryCharity[]
+  story             Story               @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  storyCharities    StoryCharity[]
+  storyInterventions StoryIntervention[]
 
   @@index([storyId])
 }
@@ -542,16 +544,49 @@ enum InterventionType {
 model Intervention {
   id       String           @id @default(cuid())
   name     String
+  /// Public URL segment. Backfilled from the name for everything seeded before
+  /// medicines had pages of their own.
+  slug     String?          @unique
   type     InterventionType
   /// dm+d code. Null until a full NHS TRUD import is in place.
   dmdCode  String?
+  /// Plain English, in our own words, from an independent source — the NHS, the BNF or
+  /// the electronic Medicines Compendium. Never from a treatment provider selling
+  /// something: independence is the whole asset.
+  summary  String?
+  /// Medicines where dependence, withdrawal or misuse is part of the story. Drives the
+  /// content note and the support signposting, the same way a sensitive condition does.
+  isSensitiveTopic Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   courses TreatmentCourse[]
+  stories StoryIntervention[]
 
   @@unique([name, type])
+}
+
+/// A story linked to a medicine or treatment.
+///
+/// Saying that a named person took a particular drug is a factual claim about them, and a
+/// more sensitive one than naming their condition. It carries its own source, exactly as a
+/// claim about the charities they support does.
+model StoryIntervention {
+  storyId        String
+  interventionId String
+  sourceId       String?
+  /// How they came to it, in our own words: "prescribed, aged eight", "bought online".
+  /// Never a dose, never a regimen — this is not a recipe.
+  context        String?
+
+  createdAt DateTime @default(now())
+
+  story        Story        @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  intervention Intervention @relation(fields: [interventionId], references: [id], onDelete: Cascade)
+  source       Source?      @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  @@id([storyId, interventionId])
 }
 
 enum StopReason {
