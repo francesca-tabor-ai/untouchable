@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import { Fraunces, Rubik } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Do Health sets Season Mix over NB International Pro. Both are commercial
+// licences; these are the closest free equivalents — Outfit for the light
+// display face, Inter for the neutral grotesque underneath it.
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
+  weight: ["300", "400", "500"],
   display: "swap",
 });
 
-const rubik = Rubik({
-  variable: "--font-rubik",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
@@ -31,7 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     // block, which Tailwind emits on :root — so a --font-fraunces defined only on <body> is
     // undefined where --font-display is computed, the whole declaration becomes invalid, and
     // every heading and every word of body text silently falls back to system sans.
-    <html lang="en-GB" className={`${fraunces.variable} ${rubik.variable}`}>
+    <html lang="en-GB" className={`${outfit.variable} ${inter.variable}`}>
       <body className="antialiased">
         <a href="#main" className="skip-link">
           Skip to content

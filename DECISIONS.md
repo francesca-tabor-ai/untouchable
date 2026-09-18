@@ -682,3 +682,29 @@ than no button.
 The row reads through `listPublishedStories` like every other public surface, so a retracted
 story leaves the front page on the next request. `tests/unit/home-figure-strip.test.ts` fails if
 anyone later hand-rolls a query here and drops the published filter.
+
+### PL-11 · The design system is now Do Health's, with two forced departures
+The colours, type scale and shapes were re-based on dohealth.co at the product owner's request, and
+measured from the live site rather than eyeballed: text `#19301E`, ground `#F4F1E7`, dividers
+`#E4E1D8`, the lime `#B9F00A`, 24px cards, 40px panels, pills everywhere else, and a 72/44/32/24/16
+type scale with -0.5px tracking on the large sizes.
+
+Two things could not be copied.
+
+**The typefaces are commercial.** Do Health sets **Season Mix** (Displaay) over **NB International
+Pro** (Neubau). We hold neither licence, so the closest free equivalents stand in — **Outfit** for
+the light display face, **Inter** for the neutral grotesque. Buying the real licences is a two-line
+change in `tokens.css` and `layout.tsx`.
+
+**Their muted text colour does not meet WCAG AA.** `#67796B` is roughly 3.8:1 on their own cream,
+under the 4.5:1 that body text requires. Ours is `#566658` at 5.6:1. We are not going to ship text
+our own accessibility principle forbids in order to match a hex value.
+
+The lime is a **fill only**, at about 1.3:1 against every ground we use. `Button` gained a `dark`
+variant so safety screens, destructive confirmations and anything already sombre can use the deep
+green instead — a bright lime "Delete everything you have recorded" would be grotesque.
+
+The token *names* did not change, only their values, so the entire product re-skinned without
+touching a single feature component. `tests/unit/design-system.test.ts` still passes because the
+type scale kept its names; all 385 tests pass, and axe reports zero violations across the home,
+stories, condition and charity pages at both 1280px and 375px.

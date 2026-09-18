@@ -9,18 +9,23 @@ const button = cva(
   {
     variants: {
       variant: {
-        primary: "bg-forest-800 text-white hover:bg-forest-900",
+        // The lime is the one bright colour in the system and it is a fill, never
+        // text: forest-900 on it reaches 11:1, while the lime itself on any of our
+        // grounds is around 1.3:1.
+        primary: "bg-clay-500 text-forest-900 hover:bg-clay-600",
+        // The dark green button, for surfaces where lime would be too loud —
+        // safety screens, destructive confirmations, anything already sombre.
+        dark: "bg-forest-800 text-white hover:bg-forest-900",
         secondary:
-          "bg-white text-forest-800 border border-line hover:bg-cream-50 hover:border-line-strong",
-        clay: "bg-clay-500 text-forest-900 hover:bg-clay-600 hover:text-white",
+          "border border-line bg-white text-forest-800 hover:border-line-strong hover:bg-cream-50",
         ghost: "text-forest-700 hover:bg-forest-50",
         link: "text-forest-600 underline underline-offset-4 hover:text-forest-800",
       },
       size: {
-        // 44px is the minimum comfortable touch target; the default is larger.
-        sm: "h-11 px-5 text-small rounded-pill",
-        md: "h-13 px-7 text-body rounded-pill",
-        lg: "h-14 px-8 text-lead rounded-pill",
+        // 44px is the minimum comfortable touch target; their own button is 56.
+        sm: "h-11 rounded-pill px-5 text-small",
+        md: "h-13 rounded-pill px-6 text-body",
+        lg: "h-14 rounded-pill px-7 text-body",
       },
       block: { true: "w-full", false: "" },
     },

@@ -15,7 +15,7 @@ export default function HomePage() {
             <p className="text-small font-medium tracking-wide text-clay-700 uppercase">
               Nobody is untouchable
             </p>
-            <h1 className="mt-4 text-hero sm:text-[3.5rem]">
+            <h1 className="mt-4 text-hero lg:text-[4.5rem]">
               Illness does not care who you are.
             </h1>
             <p className="mt-6 text-lead text-ink-soft">

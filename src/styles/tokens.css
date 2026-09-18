@@ -1,47 +1,56 @@
 /* ---------------------------------------------------------------------------
    UnTouchable design tokens.
 
-   Warm, open and community-led rather than clinical. The palette is grounded in
-   deep green and warm cream; clay is the accent that stops it feeling like a
-   hospital. Generous radii, generous space, one calm voice.
+   Matched to Do Health (dohealth.co), measured from the live site rather than
+   eyeballed: the deep green #19301E it uses for text, the warm cream #F4F1E7
+   page ground, the lime #B9F00A used only ever as a fill, generous pill and
+   card radii, and a light display face over a neutral grotesque.
+
+   Two deliberate departures, both noted where they occur:
+     · their muted text colour does not meet WCAG AA, so ours is darker
+     · their two typefaces are commercial licences, so ours are the closest
+       free equivalents
 
    Owned by the platform lead — see AGENTS.md section 3. Every colour pairing
-   used for text meets WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI edges);
-   the ratio is noted where it is close.
+   used for text meets WCAG 2.2 AA (4.5:1 body, 3:1 large text and UI edges).
    --------------------------------------------------------------------------- */
 
 @theme {
   /* --- Surface: warm neutrals ------------------------------------------- */
-  --color-cream-50: #faf8f3;
-  --color-cream-100: #f6f4ef;
-  --color-cream-200: #efebe2;
-  --color-cream-300: #e4dfd3;
-  --color-line: #d8d3c7;
-  --color-line-strong: #bdb6a6;
+  --color-cream-50: #f7f5ef; /* their lightest panel */
+  --color-cream-100: #f4f1e7; /* their page ground */
+  --color-cream-200: #ece8dc;
+  --color-cream-300: #e4e1d8;
+  --color-line: #e4e1d8; /* their divider tone */
+  --color-line-strong: #cfcbbd;
   --color-white: #ffffff;
 
   /* --- Ink -------------------------------------------------------------- */
-  --color-ink: #1f2a26;        /* 14.1:1 on cream-100 */
-  --color-ink-soft: #3a4642;   /*  9.0:1 on cream-100 */
-  --color-muted: #5b6560;      /*  5.6:1 on cream-100 — the floor for body text */
+  --color-ink: #19301e; /* their primary text — 13.7:1 on cream-100 */
+  --color-ink-soft: #2b4230; /* their secondary text — 10.6:1 */
+  /* Their muted is #67796B, which lands at about 3.8:1 on this ground and so
+     fails AA for body text. Darkened until it passes; everything else about it
+     is theirs. */
+  --color-muted: #566658; /* 5.6:1 on cream-100 */
 
-  /* --- Forest: the primary voice ---------------------------------------- */
-  --color-forest-50: #eef3f0;
-  --color-forest-100: #d9e5df;
-  --color-forest-200: #b4cbc0;
-  --color-forest-400: #5c8272;
-  --color-forest-600: #3d5a4c;  /* 6.6:1 on cream-100 — safe for text and links */
-  --color-forest-700: #334c41;
-  --color-forest-800: #2f3f39;  /* primary button fill, white text 10.4:1 */
-  --color-forest-900: #26352f;  /* hover */
+  /* --- Forest: the dark green voice -------------------------------------- */
+  --color-forest-50: #eef2ec;
+  --color-forest-100: #dce4d9;
+  --color-forest-200: #b9c7b5;
+  --color-forest-400: #5c7560;
+  --color-forest-600: #35513a; /* 8.4:1 on cream-100 — links and quiet text */
+  --color-forest-700: #223a27;
+  --color-forest-800: #19301e; /* dark surfaces; white on it is 13.7:1 */
+  --color-forest-900: #122215; /* their darkest — the text that sits on lime */
 
-  /* --- Clay: warmth, community, the human accent ------------------------- */
-  /* clay-500 is a FILL colour only — 2.6:1 on cream, never used for text. */
-  --color-clay-100: #fbeae3;
-  --color-clay-200: #f5cfc1;
-  --color-clay-500: #e07a5f;
-  --color-clay-600: #c2603f;
-  --color-clay-700: #9e4a2e;   /* 5.3:1 on cream-100 — the text-safe clay */
+  /* --- Lime: the one bright colour, and a fill only ---------------------- */
+  /* clay-500 is their #B9F00A. At 1.3:1 on white it can never carry text; it
+     exists to be a button, with forest-900 on top (11:1). */
+  --color-clay-100: #eff6d8;
+  --color-clay-200: #dcefa0;
+  --color-clay-500: #b9f00a;
+  --color-clay-600: #a6d806;
+  --color-clay-700: #46620a; /* 7:1 on cream-100 — the text-safe end of the accent */
 
   /* --- Meaning ---------------------------------------------------------- */
   /* Deliberately muted. Nothing on this platform should shout at a frightened
@@ -54,45 +63,52 @@
   /* --- Data visualisation ------------------------------------------------ */
   /* Five series, distinguishable in the common forms of colour blindness and
      when printed in greyscale (each step changes lightness as well as hue). */
-  --color-series-1: #2f5d50;
-  --color-series-2: #c2603f;
+  --color-series-1: #35513a;
+  --color-series-2: #a6741f;
   --color-series-3: #4a6f97;
   --color-series-4: #8a6ba1;
-  --color-series-5: #96842f;
+  --color-series-5: #7d8f22;
 
   /* --- Type ------------------------------------------------------------- */
-  /* Display is a soft, slightly wonky serif: warm rather than authoritative.
-     Body is Rubik — open apertures, friendly, highly legible at small sizes. */
-  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-rubik), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Do Health sets Season Mix over NB International Pro. Both are commercial
+     licences we do not hold, so these are the closest free equivalents:
+     Outfit for the light display face, Inter for the neutral grotesque. If the
+     real licences are bought, only these two lines change. */
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
-  --text-hero: 2.75rem;        /* 44px, up to 56px at large viewports */
+  /* Their scale: 72 / 44 / 32 / 24 / 16, tracking -0.5px on the large sizes.
+     Hero is set at 48 here and raised per page, because 72px is a desktop hero
+     rather than a size every page title should inherit. */
+  --text-hero: 3rem;
   --text-hero--line-height: 1.08;
   --text-hero--letter-spacing: -0.02em;
-  --text-display: 2rem;
-  --text-display--line-height: 1.15;
-  --text-display--letter-spacing: -0.015em;
-  --text-title: 1.5rem;
+  --text-display: 2.75rem; /* their H2 */
+  --text-display--line-height: 1.2;
+  --text-display--letter-spacing: -0.012em;
+  --text-title: 1.5rem; /* their card and pull-quote size */
   --text-title--line-height: 1.25;
-  --text-lead: 1.1875rem;      /* 19px */
+  --text-title--letter-spacing: -0.01em;
+  --text-lead: 1.125rem;
   --text-lead--line-height: 1.6;
-  --text-body: 1.0625rem;      /* 17px — a notch up from default; people read this tired */
-  --text-body--line-height: 1.65;
-  --text-small: 0.9375rem;
-  --text-small--line-height: 1.55;
+  --text-body: 1rem; /* their 16/24 */
+  --text-body--line-height: 1.5;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
   --text-legal: 0.8125rem;
-  --text-legal--line-height: 1.5;
+  --text-legal--line-height: 1.45;
 
   /* --- Shape ------------------------------------------------------------ */
-  --radius-card: 1.25rem;
-  --radius-panel: 1.5rem;
-  --radius-field: 0.75rem;
+  /* Theirs run large: 24px cards, 32–40px panels, everything else a pill. */
+  --radius-card: 1.5rem;
+  --radius-panel: 2.5rem;
+  --radius-field: 1rem;
   --radius-pill: 999px;
 
   /* --- Depth: emphasis comes from space, not shadow --------------------- */
-  --shadow-soft: 0 1px 2px rgba(31, 42, 38, 0.04), 0 8px 24px rgba(31, 42, 38, 0.06);
-  --shadow-lift: 0 2px 4px rgba(31, 42, 38, 0.06), 0 16px 40px rgba(31, 42, 38, 0.1);
+  --shadow-soft: 0 1px 2px rgba(25, 48, 30, 0.04), 0 8px 24px rgba(25, 48, 30, 0.06);
+  --shadow-lift: 0 2px 4px rgba(25, 48, 30, 0.06), 0 16px 40px rgba(25, 48, 30, 0.1);
 
   /* --- Motion: present but never busy ----------------------------------- */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -101,7 +117,7 @@
 }
 
 :root {
-  --focus-ring: 0 0 0 3px var(--color-cream-100), 0 0 0 5.5px var(--color-forest-600);
-  --content-width: 72rem;
-  --reading-width: 40rem;
+  --focus-ring: 0 0 0 3px var(--color-cream-100), 0 0 0 5.5px var(--color-forest-800);
+  --content-width: 75rem;
+  --reading-width: 42rem;
 }

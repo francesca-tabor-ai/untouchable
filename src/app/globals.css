@@ -23,9 +23,16 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 500;
+    /* Do Health sets its display face light — 300 at hero size, 400 elsewhere.
+       At 72px a light weight reads as confident; at 24px it reads as faint, so
+       the two are separated rather than averaged. */
+    font-weight: 400;
     color: var(--color-ink);
     text-wrap: balance;
+  }
+
+  h1 {
+    font-weight: 300;
   }
 
   h4,
