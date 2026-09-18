@@ -97,6 +97,11 @@ test("a new person can get through onboarding on a small phone", async ({ page }
   // draft does not finish the step — which is exactly what this test exists to notice.
   await page.getByRole("button", { name: "Save my answers" }).click();
 
+  // Wait for the answer to actually land before looking at the hub. Navigating straight
+  // away races the server action, and the hub then honestly reports the step unfinished —
+  // which looks exactly like a broken baseline and is not one.
+  await page.waitForURL(/\/onboarding\/baseline\?recorded=/);
+
   // Every step reports itself done, whatever the number of steps has grown to.
   await page.goto("/onboarding");
   await expect(page.getByText(/^(\d+) of \1 done\.$/)).toBeVisible();

@@ -2,7 +2,16 @@ import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 
 const config = [
-  { ignores: ["src/generated/**", ".next/**", "node_modules/**", "next-env.d.ts"] },
+  {
+    ignores: [
+      "src/generated/**",
+      ".next/**",
+      // The end-to-end build output — same reason as .next, different directory.
+      ".next-e2e/**",
+      "node_modules/**",
+      "next-env.d.ts",
+    ],
+  },
 
   ...nextCoreWebVitals,
   ...nextTypescript,

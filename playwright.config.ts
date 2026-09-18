@@ -11,18 +11,18 @@ import { defineConfig, devices } from "@playwright/test";
  *
  * `npm run test:e2e` now migrates and re-seeds `untouchable_e2e` first, so every run starts
  * from the same fictional data and nothing a test does can reach anyone's dev database.
+ *
+ * `.env.e2e` must keep AUTH_URL on this port. Auth.js redirects to AUTH_URL after sign-in,
+ * so a stale port there sends the browser to whatever server is on the old one — a
+ * different database, no session, and twenty-nine timeouts that look like anything but a
+ * one-line config error.
  */
 const PORT = 3100;
 
 export default defineConfig({
   testDir: "./tests/e2e",
 
-  // Serial, deliberately. Many specs sign somebody up and walk them through onboarding, and
-  // the two projects running the same flow at the same time against one database produced
-  // thirty-second timeouts that had nothing to do with the code. End-to-end runs are not
-  // where we spend our speed budget; determinism is worth more than four minutes.
-  fullyParallel: false,
-  workers: 1,
+  fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
