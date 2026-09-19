@@ -946,3 +946,29 @@ home.spec.ts` records every request a real browser makes, loads the story and th
 page, waits for network idle, and asserts nothing matched `youtube.com`, `ytimg.com`,
 `googlevideo.com`, `googleapis.com`, `gstatic.com` or `google.com` — then clicks, and asserts the
 only third party reached is the no-cookie host.
+
+### PL-17 · The project lives on /Volumes/Health, and `npm install` must not be committed from macOS
+The working copy moved to `/Volumes/Health/HEALTH/Untouchables` for the space. The disk is exFAT,
+which costs about 38ms per small file against 0.055ms on the internal SSD — a `node_modules`
+install is roughly half an hour and a production build about a hundred seconds rather than three.
+That is the price of the space, and it is paid knowingly.
+
+The obvious mitigation does not work: Next 16 refuses a `node_modules` symlink that points outside
+the project root ("Symlink [project]/node_modules is invalid, it points out of the filesystem
+root"). Source, dependencies and build output all have to live on the same volume.
+
+Two traps this volume sets, both of which have already been sprung once:
+
+**macOS writes AppleDouble `._` files on exFAT**, and git tries to read `._pack-*.idx` as a pack
+index, reporting "non-monotonic index" on every command. The previous copy of this repository was
+left permanently in that state. Export `COPYFILE_DISABLE=1` when copying onto the volume, and
+`find . -name '._*' -delete` if it happens.
+
+**A plain `npm install` on macOS rewrites `package-lock.json` to drop the Linux-only packages** —
+`@emnapi/*`, the platform variants of `@node-rs/argon2`. Committing that breaks `npm ci` on
+Vercel and in CI, which is precisely the failure recorded in PL-5. If `git status` shows
+`package-lock.json` modified after an install and you did not change a dependency, revert it:
+
+```bash
+git checkout -- package-lock.json
+```
