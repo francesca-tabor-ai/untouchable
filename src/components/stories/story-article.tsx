@@ -4,9 +4,11 @@ import { FigurePortrait } from "@/components/stories/figure-portrait";
 import type { ReactNode } from "react";
 
 import { StoryCardGrid } from "@/components/stories/story-card";
+import { StoryVideoSection } from "@/components/video/story-video";
 import { Container } from "@/components/ui/container";
 import type { PublicStory, StoryCard } from "@/lib/stories/queries";
 import { contentNoteText, needsSupportSignposting } from "@/lib/stories/safety";
+import { findStoryVideo } from "@/lib/video";
 
 import { ContentNote, NoEndorsement, SupportSignposting } from "./safety-blocks";
 import {
@@ -59,6 +61,12 @@ export function StoryArticle({
   const note = notes.length > 0 ? notes.join(" ") : null;
   const showSupport = needsSupportSignposting(story);
 
+  // Most of our sources are interviews of the person speaking for themselves, which is the
+  // best evidence a story can have. The video is simply the first of the story's existing
+  // sources that points at YouTube — there is no new field, and nothing loads from Google
+  // until the reader presses play. See src/components/video/youtube-facade.tsx.
+  const video = findStoryVideo(story.sources);
+
   return (
     <article>
       <Container reading className="py-10 sm:py-14">
@@ -100,6 +108,15 @@ export function StoryArticle({
 
         {story.quote && story.quoteSource ? (
           <StoryQuote quote={story.quote} source={story.quoteSource} />
+        ) : null}
+
+        {video ? (
+          <StoryVideoSection
+            video={video}
+            personName={story.figure?.name ?? null}
+            headingId="story-video-heading"
+            className="mt-10"
+          />
         ) : null}
 
         {saveSlot}
