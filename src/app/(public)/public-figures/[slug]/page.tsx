@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PublicFigureProfileView } from "@/components/stories/public-figure-profile";
+import { Container } from "@/components/ui/container";
+import { StoryVideoSection } from "@/components/video/story-video";
 import { getPublicFigure } from "@/lib/stories/queries";
+import { findFigureVideo } from "@/lib/video";
 
 /**
  * A public figure's page.
@@ -41,5 +44,26 @@ export default async function PublicFigurePage({
   const result = await getPublicFigure(slug);
   if (!result) notFound();
 
-  return <PublicFigureProfileView figure={result.figure} stories={result.stories} />;
+  // Read back through `getPublishedStory`, so a retracted story cannot leave its video
+  // behind here. Nothing loads from Google until the reader presses play.
+  const video = await findFigureVideo(result.stories);
+
+  return (
+    <>
+      <PublicFigureProfileView figure={result.figure} stories={result.stories} />
+
+      {video ? (
+        <section className="border-t border-line bg-cream-50">
+          <Container className="py-14">
+            <StoryVideoSection
+              video={video}
+              personName={result.figure.name}
+              headingId="figure-video-heading"
+              className="max-w-[46rem]"
+            />
+          </Container>
+        </section>
+      ) : null}
+    </>
+  );
 }

@@ -856,3 +856,119 @@ Three rules hold it together:
 
 Attribution is collective under the home page row — a photographer's name under a 56px thumbnail is
 not "reasonable to the medium" — and per-image beside the portrait on each story page.
+
+### D-049 · One search box over four kinds of thing, and not one query of its own
+Somebody who has just been told they have tinnitus does not know whether what they want is filed
+under a condition, a medicine, a charity or somebody's story. So the home page has one box that
+covers all four, and `src/lib/search/index.ts` holds the logic.
+
+**There is no Prisma query in that file, deliberately.** It calls `listConditions`,
+`listPublicMedicines`, `listPublicCharities` and `listPublishedStories` and filters what comes back.
+Those four modules are where "published", "verified and active" and "an editor has written it up"
+are decided, and re-implementing any of them in a second place — even correctly, even once — makes
+the second place the one that gets it wrong later. The widest public surface on the platform is the
+worst place to hold a copy of a visibility rule.
+`tests/unit/search-visibility.test.ts` fails if this file ever grows a query, and also drives the
+real thing: a retracted story, a draft, an unverified charity, a withdrawn charity and a medicine
+with no write-up each go in and come back out of `search()` as nothing.
+
+It is a plain GET form pointed at `/`, like the story index filters: it works before the JavaScript
+arrives and with it switched off, every result set has an address that can be shared, and the back
+button behaves. The kind filter is a row of links for the same reason.
+
+**No ranking.** Results keep the order their own module gave them — alphabetical for conditions,
+medicines and charities, newest first for stories. Any other ordering on a health platform reads as
+an endorsement, and there is no honest way to rank a charity above another one here.
+
+Search results and the grid of people are alternatives rather than a stack: repeating the same six
+faces under somebody's search results is noise.
+
+### D-050 · The front page cards carry photographs, and the contrast is arithmetic rather than hope
+The initials row from PL-10 is now a card grid: the figure's photograph fills the card, a dark
+gradient rises from the bottom, and the name, the disclosure line, the conditions and medicines as
+tags, and the content note sit on top of it. The whole card is the link, so the tags are plain text
+rather than links — a link inside a link is invalid markup and unusable with a keyboard.
+
+**A gradient is not a contrast guarantee.** A light photograph defeats one, and "usually dark
+enough" is not a standard. So the text does not sit on the gradient. It sits on a flat scrim —
+`bg-forest-900/95` — with a short fade of the same colour above it, so the two read as one gradient
+while the text is always on the flat part. The worst case a photograph can produce is every pixel
+under the scrim being solid white, and white on that is **14.5:1**. `cream-200` is 11.8:1 and the
+translucent tag pills 9.0:1. `tests/unit/home-figure-cards.test.ts` reads the token out of
+`tokens.css` and the opacity out of the component and redoes the sum, so changing either re-runs it.
+
+Two contrast failures were found and fixed during the build, both worth recording because both are
+the same mistake in different clothes.
+
+**A faint watermark is still text.** The card for a figure with no photograph carried the initials
+at 25% white, 80px, `aria-hidden`. axe reported 2.24:1 against forest-800, under the 3:1 large text
+needs. `aria-hidden` hides something from a screen reader; it does not hide it from somebody with
+low vision, and at that size it was the most prominent thing on the card. It is now a solid
+`cream-200` monogram centred in the space a photograph would have filled — 10.1:1 at worst across
+the three tints, and a deliberate-looking card rather than a missing image.
+
+**A wrapper with no colour inherits body ink.** The tag row's container had no text colour, so it
+inherited `#19301E` — 1.02:1 on the scrim, which is invisible rather than merely low-contrast. The
+individual pills set `text-white` and looked fine, which is exactly why it survived review. The bed
+now sets `text-white` itself, so anything added later that forgets a colour is readable by default.
+Both were caught by measuring the page rather than by looking at it.
+
+Photographs still render only when a licence is recorded on the same record, and the collective
+Creative Commons credit under the grid renders whenever they do. PL-16 is unchanged.
+
+`src/components/home/scroller.tsx` is gone with the row it served. PL-10's reasoning against an
+auto-playing marquee still holds and nothing here auto-plays; a grid simply reads better than a
+scroller when each card is a photograph, and it does not hide half the people behind a swipe.
+
+### D-051 · Video plays from a facade, and nothing reaches Google until somebody presses play
+Most sources on this platform are YouTube interviews of the person speaking for themselves, which is
+the best evidence a story can have. A normal embed would have surfaced them at an unacceptable
+price: a YouTube iframe contacts Google and sets cookies the moment the page loads, on a page about
+a named person's diagnosis. The request *is* the disclosure — it tells a third party that this
+browser is reading about that illness, before the reader has done anything at all.
+
+So what renders is ours: a typographic card in our own type and colours with a real `<button>`, and
+a line that says where it will play from before the person chooses. **Not YouTube's thumbnail** —
+`i.ytimg.com` serves those, and hot-linking one would reintroduce the exact leak the facade exists
+to prevent while looking private. On click, and only on click, an iframe appears pointed at
+`youtube-nocookie.com`.
+
+The video is not a new field. It is the first of the story's existing `Source` rows whose URL is a
+YouTube link, so a video cannot be attached without also being a cited source checked by the two
+editors who published the story, and retraction takes the video with it. `src/lib/video/youtube.ts`
+does the parsing and is deliberately strict: hosts are matched whole rather than with `includes`, so
+`youtube.com.example.test` is refused, as are ids of the wrong shape and anything that is not http
+or https. 44 unit tests, most of them about what it refuses.
+
+Proof that nothing loads before the click is made twice. `tests/unit/video-facade.test.tsx` walks
+every `src`, `href` and `srcset` in the rendered markup and asserts the list is empty. `tests/e2e/
+home.spec.ts` records every request a real browser makes, loads the story and the public figure
+page, waits for network idle, and asserts nothing matched `youtube.com`, `ytimg.com`,
+`googlevideo.com`, `googleapis.com`, `gstatic.com` or `google.com` — then clicks, and asserts the
+only third party reached is the no-cookie host.
+
+### PL-17 · The project lives on /Volumes/Health, and `npm install` must not be committed from macOS
+The working copy moved to `/Volumes/Health/HEALTH/Untouchables` for the space. The disk is exFAT,
+which costs about 38ms per small file against 0.055ms on the internal SSD — a `node_modules`
+install is roughly half an hour and a production build about a hundred seconds rather than three.
+That is the price of the space, and it is paid knowingly.
+
+The obvious mitigation does not work: Next 16 refuses a `node_modules` symlink that points outside
+the project root ("Symlink [project]/node_modules is invalid, it points out of the filesystem
+root"). Source, dependencies and build output all have to live on the same volume.
+
+Two traps this volume sets, both of which have already been sprung once:
+
+**macOS writes AppleDouble `._` files on exFAT**, and git tries to read `._pack-*.idx` as a pack
+index, reporting "non-monotonic index" on every command. The previous copy of this repository was
+left permanently in that state. Export `COPYFILE_DISABLE=1` when copying onto the volume, and
+`find . -name '._*' -delete` if it happens.
+
+**A plain `npm install` on macOS rewrites `package-lock.json` to drop the Linux-only packages** —
+`@emnapi/*`, the platform variants of `@node-rs/argon2`. Committing that breaks `npm ci` on
+Vercel and in CI, which is precisely the failure recorded in PL-5. If `git status` shows
+`package-lock.json` modified after an install and you did not change a dependency, revert it:
+
+```bash
+git checkout -- package-lock.json
+```
