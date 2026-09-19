@@ -17,8 +17,25 @@ const db = new PrismaClient();
  * a fixture or a test. Brief section 9.
  */
 async function main() {
+  // Fails closed. This file creates editor and admin accounts whose password is written in
+  // plain text in `prisma/seed/staff.ts`, in a public repository — so the guard cannot be
+  // "unless someone remembered to set NODE_ENV". It has to be an explicit opt-in, and
+  // NODE_ENV=production overrides even that.
   if (process.env.NODE_ENV === "production") {
-    throw new Error("The seed contains fictional demo accounts and must never run in production.");
+    throw new Error("The seed creates demo accounts with a publicly known password. It must never run in production.");
+  }
+  if (process.env.ALLOW_DEV_SEED !== "true") {
+    throw new Error(
+      [
+        "Refusing to seed: ALLOW_DEV_SEED is not set to \"true\".",
+        "",
+        "This seed creates accounts whose password is published in the repository. Running it",
+        "against anything reachable from the internet would hand an administrator account to",
+        "anyone who has read the code.",
+        "",
+        "For a local development database: ALLOW_DEV_SEED=true npm run db:seed",
+      ].join("\n"),
+    );
   }
 
   console.info("Seeding UnTouchable development data — all of it fictional.\n");

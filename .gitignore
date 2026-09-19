@@ -64,3 +64,9 @@ prisma/*.db
 
 # end-to-end build output
 /.next-e2e/
+
+# editorial content export — real people, never committed
+editorial-export*.json
+
+# vercel
+.vercel
