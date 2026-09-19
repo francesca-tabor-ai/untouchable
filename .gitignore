@@ -74,3 +74,9 @@ editorial-export*.json
 # Prisma client is generated at build time, not committed: it carries a query engine
 # binary for whichever platform generated it, and ours is not the one Vercel runs.
 /src/generated/
+
+# Vercel/Neon production credentials pulled by the CLI. Deliberately NOT named
+# .env.local: Next and Prisma load that ahead of .env, which would silently point local
+# development at the production database.
+.env.vercel
+.env.prod

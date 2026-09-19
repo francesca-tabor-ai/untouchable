@@ -10,9 +10,6 @@ between environments uses the export and import scripts.
    and choose a **UK or EU region**. Health data is UK GDPR special category data and should
    not leave the UK without a documented reason. The store sets `DATABASE_URL` automatically.
 
-2. **Set `SHADOW_DATABASE_URL`** to the same value as `DATABASE_URL`. It is only read by
-   `prisma migrate dev`, which never runs in production, but the schema names it.
-
 3. The remaining production variables are already set: `AUTH_SECRET`, `AUTH_TRUST_HOST`,
    `PRIVACY_MIN_GROUP_SIZE`, `EMAIL_PROVIDER`.
 

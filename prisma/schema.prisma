@@ -17,9 +17,11 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // No shadowDatabaseUrl. `migrate dev` creates its own temporary shadow database locally,
+  // and naming one here made `migrate deploy` refuse in production, where the only database
+  // available is the real one.
 }
 
 // ---------------------------------------------------------------------------
