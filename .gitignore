@@ -70,3 +70,7 @@ editorial-export*.json
 
 # vercel
 .vercel
+
+# Prisma client is generated at build time, not committed: it carries a query engine
+# binary for whichever platform generated it, and ours is not the one Vercel runs.
+/src/generated/
