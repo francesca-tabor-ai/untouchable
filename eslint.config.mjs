@@ -10,6 +10,10 @@ const config = [
       ".next-e2e/**",
       "node_modules/**",
       "next-env.d.ts",
+      // macOS writes AppleDouble sidecars on exFAT, and this project lives on one. They
+      // are binary metadata with source-file names, so every tool that globs by extension
+      // picks them up and reports nonsense. See DECISIONS.md PL-17.
+      "**/._*",
     ],
   },
 

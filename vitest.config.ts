@@ -8,6 +8,9 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
     include: ["tests/unit/**/*.test.{ts,tsx}", "src/**/*.test.{ts,tsx}"],
+    // AppleDouble sidecars macOS writes on exFAT. They match the include glob and fail to
+    // parse — see DECISIONS.md PL-17.
+    exclude: ["**/node_modules/**", "**/._*"],
     globals: true,
     // One test file at a time.
     //
