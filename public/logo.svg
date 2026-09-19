@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">Root Chakra — Lime</title>
+  <desc id="desc">Four symmetrical lotus petals surrounding a circular ring, a central square and a downward-pointing triangle. Solid lime #BAF109 with a transparent background. Each element is an editable vector path.</desc>
+  <g fill="#BAF109">
+    <g id="lotus-petals">
+      <path id="petal-top" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+      <path id="petal-right" transform="rotate(90 300 300)" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+      <path id="petal-bottom" transform="rotate(180 300 300)" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+      <path id="petal-left" transform="rotate(270 300 300)" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+    </g>
+    <path id="circular-ring" fill-rule="evenodd" d="M 462,300 A 162,162 0 1 1 138,300 A 162,162 0 1 1 462,300 Z M 446,300 A 146,146 0 1 1 154,300 A 146,146 0 1 1 446,300 Z"/>
+    <path id="central-square" fill-rule="evenodd" d="M 201,201 H 399 V 399 H 201 Z M 215,215 H 385 V 385 H 215 Z"/>
+    <path id="downward-triangle" d="M 229,238 H 371 L 300,361 Z"/>
+  </g>
+</svg>

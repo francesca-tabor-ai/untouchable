@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" role="img" aria-label="UnTouchable">
+  <!--
+    A simplified cut of the full mark for use as a favicon.
+
+    The complete logo carries four petals, a ring, a square and a triangle. At 16px those
+    fine concentric lines collapse into a green smudge, so this keeps only the two shapes
+    that survive: the petals and a solid triangle. The full mark lives at /logo.svg.
+  -->
+  <g fill="#BAF109">
+    <g id="petals">
+      <path d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+      <path transform="rotate(90 300 300)" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+      <path transform="rotate(180 300 300)" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+      <path transform="rotate(270 300 300)" d="M 200,150 C 196,105 253,74 300,36 C 347,74 404,105 400,150 A 180,180 0 0 0 200,150 Z"/>
+    </g>
+    <path d="M 214,232 H 386 L 300,381 Z"/>
+  </g>
+</svg>

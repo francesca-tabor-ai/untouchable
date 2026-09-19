@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { ExploreMenu } from "@/components/layout/explore-menu";
@@ -27,7 +28,10 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bg-cream-100">
       <Container className="flex h-18 items-center justify-between gap-6">
-        <Link href="/" className="font-display text-title tracking-tight">
+        <Link href="/" className="flex items-center gap-2.5 font-display text-title tracking-tight">
+          {/* Decorative: the link is already named by the wordmark beside it, so announcing
+              the mark as well would read the brand twice to a screen reader. */}
+          <Image src="/logo.svg" alt="" width={32} height={32} priority />
           UnTouchable
         </Link>
 
