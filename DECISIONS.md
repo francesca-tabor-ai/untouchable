@@ -809,3 +809,27 @@ block the run), and starts from identical fictional data every time.
 Also serialised. Two browser projects walking the same sign-up flow concurrently against one
 database produced twenty-nine thirty-second timeouts with nothing wrong in the code. End-to-end runs
 are not where we spend the speed budget.
+
+### PL-14 · A medical charity may source a condition page; a company selling treatment may not
+Rule 14 forbids taking medicine information from anyone who sells treatment. It does not forbid
+charities, and the distinction matters: the NHS has no page for colloid cysts, and The Brain Tumour
+Charity does — written by a registered charity whose purpose is information, with nothing to sell.
+That is the source for the colloid cyst condition page, cited on it.
+
+The test is not "is this an NHS page", it is "does whoever wrote this benefit from you believing
+it". A private clinic's drug page fails that test. A disease charity's information page does not.
+
+The Brain Tumour Charity is also an obvious candidate for the charity directory against
+`brain-tumour` and `colloid-cyst`. It has not been added, because an editor has to check it against
+the register first and nobody has.
+
+### PL-15 · Editorial content lives in the database, not in the repository
+Every real story added so far — Clarke, Laing, Zohn, Dane, McCall — exists only in the local
+development database. None of it is in the repository, and none of it would survive a deployment to
+a fresh environment.
+
+That is the correct design: real content is editorial work, entered through the admin against
+verified sources by named editors, not committed by engineers. But it means the content added during
+development is a demonstration of the workflow rather than an asset, and the same stories will need
+re-entering once there is a production environment. If that becomes tiresome, the thing to build is
+an export and import for editorial content — not a habit of seeding real people.
