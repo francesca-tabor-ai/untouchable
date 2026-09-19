@@ -1,8 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { listPublishedStories } from "@/lib/stories/queries";
 import type { StoryCard } from "@/lib/stories/queries";
 import { Container } from "@/components/ui/container";
+import { parseAttribution } from "@/components/stories/figure-portrait";
 
 import { Scroller } from "./scroller";
 
@@ -44,6 +46,8 @@ export async function FigureStrip() {
           ))}
         </Scroller>
 
+        <PhotoCredits stories={figures} />
+
         <p className="mt-6">
           <Link href="/stories" className="text-forest-600 underline underline-offset-4">
             Read all {stories.length} stories
@@ -84,12 +88,24 @@ function FigureCard({ story, index }: { story: StoryCard; index: number }) {
         href={`/stories/${story.slug}`}
         className="flex h-full flex-col rounded-card border border-line bg-cream-50 p-6 transition-shadow duration-[--duration-calm] ease-[--ease-out-soft] hover:shadow-soft"
       >
-        <span
-          aria-hidden
-          className={`flex h-14 w-14 items-center justify-center rounded-pill font-display text-title ${tint}`}
-        >
-          {initials(figure.name)}
-        </span>
+        {figure.imageUrl && parseAttribution(figure.imageLicence) ? (
+          <Image
+            src={figure.imageUrl}
+            alt=""
+            width={56}
+            height={56}
+            className="h-14 w-14 rounded-pill border border-line object-cover"
+          />
+        ) : (
+          // No licensed photograph, so initials. Never a picture we do not have the right
+          // to use — see src/components/stories/figure-portrait.tsx.
+          <span
+            aria-hidden
+            className={`flex h-14 w-14 items-center justify-center rounded-pill font-display text-title ${tint}`}
+          >
+            {initials(figure.name)}
+          </span>
+        )}
 
         <span className="mt-4 font-display text-title text-ink">{figure.name}</span>
 
@@ -107,5 +123,45 @@ function FigureCard({ story, index }: { story: StoryCard; index: number }) {
         ) : null}
       </Link>
     </li>
+  );
+}
+
+/**
+ * Creative Commons attribution for the photographs in the row above.
+ *
+ * Credited collectively rather than on each card: the licences require attribution that is
+ * reasonable to the medium, and a photographer's name crammed under a 56px thumbnail is not
+ * reasonable to anybody. Each story page carries the full per-image credit beside the
+ * picture it belongs to.
+ */
+function PhotoCredits({ stories }: { stories: StoryCard[] }) {
+  const credits = stories
+    .map((story) => ({ figure: story.figure, attribution: parseAttribution(story.figure?.imageLicence ?? null) }))
+    .filter((entry) => entry.figure?.imageUrl && entry.attribution);
+
+  if (credits.length === 0) return null;
+
+  return (
+    <p className="mt-6 text-legal text-muted">
+      Photographs, in order:{" "}
+      {credits.map((entry, index) => (
+        <span key={entry.figure!.slug}>
+          {index > 0 ? "; " : ""}
+          {entry.figure!.name} by {entry.attribution!.author}
+          {entry.attribution!.licenceUrl ? (
+            <>
+              {" ("}
+              <a href={entry.attribution!.licenceUrl} rel="noopener noreferrer" className="underline">
+                {entry.attribution!.licence}
+              </a>
+              {")"}
+            </>
+          ) : (
+            ` (${entry.attribution!.licence})`
+          )}
+        </span>
+      ))}
+      .
+    </p>
   );
 }

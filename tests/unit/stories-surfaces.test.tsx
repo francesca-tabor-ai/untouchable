@@ -27,7 +27,7 @@ function makeCard(overrides: Partial<StoryCardData> = {}): StoryCardData {
     summary: "An invented summary, written in our own words.",
     type: "public_figure",
     disclosureType: "own",
-    figure: { name: "Invented Person", slug: "invented-person" },
+    figure: { name: "Invented Person", slug: "invented-person", imageUrl: null, imageLicence: null },
     conditions: [ordinaryCondition],
     publishedAt: new Date("2025-01-15"),
     needsContentNote: false,

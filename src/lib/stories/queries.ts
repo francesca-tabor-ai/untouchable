@@ -23,7 +23,7 @@ const cardSelect = {
   disclosureType: true,
   contentNote: true,
   publishedAt: true,
-  publicFigure: { select: { name: true, slug: true } },
+  publicFigure: { select: { name: true, slug: true, imageUrl: true, imageLicence: true } },
   conditions: {
     select: { condition: { select: { name: true, slug: true, isSensitiveTopic: true } } },
   },
@@ -38,7 +38,7 @@ export interface StoryCard {
   summary: string;
   type: "public_figure" | "community";
   disclosureType: "own" | "loved_one";
-  figure: { name: string; slug: string } | null;
+  figure: { name: string; slug: string; imageUrl: string | null; imageLicence: string | null } | null;
   conditions: { name: string; slug: string; isSensitiveTopic: boolean }[];
   publishedAt: Date | null;
   /** True when the story carries a content note or touches a sensitive topic. */

@@ -33,7 +33,19 @@ describe("the home page figure strip", () => {
     expect(source).toContain("needsContentNote");
   });
 
-  it("renders no image, because we hold a licence for none of them", () => {
-    expect(source).not.toMatch(/<img|next\/image|imageUrl/);
+  it("only ever renders a photograph when a licence is recorded with it", () => {
+    // This used to assert that no image rendered at all, because we held a licence for
+    // nothing. That is no longer true: five figures now carry Creative Commons photographs
+    // from Wikimedia Commons. The durable rule is not "no pictures", it is "no picture
+    // without a licence" — the image and the attribution come from the same record and the
+    // component refuses to render one without the other.
+    expect(source).toContain("parseAttribution");
+    expect(source).toMatch(/imageUrl && parseAttribution/);
+  });
+
+  it("credits the photographers", () => {
+    // CC BY and CC BY-SA require attribution. Showing the picture without naming the
+    // photographer is the one thing the licence forbids.
+    expect(source).toContain("PhotoCredits");
   });
 });

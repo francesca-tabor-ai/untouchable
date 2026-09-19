@@ -109,7 +109,7 @@ function makeStory(overrides: Partial<PublicStory> = {}): PublicStory {
     summary: "An invented summary, written in our own words.",
     type: "public_figure",
     disclosureType: "own",
-    figure: { name: "Invented Person", slug: "invented-person" },
+    figure: { name: "Invented Person", slug: "invented-person", imageUrl: null, imageLicence: null },
     conditions: [
       { name: "Invented sleeplessness", slug: "invented-sleeplessness", isSensitiveTopic: false },
     ],

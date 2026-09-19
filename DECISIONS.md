@@ -833,3 +833,26 @@ verified sources by named editors, not committed by engineers. But it means the 
 development is a demonstration of the workflow rather than an asset, and the same stories will need
 re-entering once there is a production environment. If that becomes tiresome, the thing to build is
 an export and import for editorial content — not a habit of seeding real people.
+
+### PL-16 · Photographs are Creative Commons, self-hosted, and credited
+Eight images were supplied for these pages over the course of the build — Google's thumbnail cache,
+a speaker agency's promotional file, an IMDb still, NBC News, the Liverpool Echo, Kent Online, the
+Telegraph, a Squarespace site. All eight were refused by `figure_image_requires_licence`, because we
+held a licence for none of them. Publishing them on a public site would have been copyright
+infringement with the site owner's name on it.
+
+The route that works is Wikimedia Commons. Five of the six people with published stories have
+photographs there under CC BY or CC BY-SA, which permit commercial reuse with attribution. Each
+one's licence and photographer were read from the Commons API, not assumed, and recorded in
+`imageLicence` as JSON so the page can render the credit the licence requires.
+
+Three rules hold it together:
+- **Self-hosted, not hot-linked.** Loading a portrait from Wikimedia would tell their servers the
+  IP address of everyone reading a page about a named person's diagnosis. Same reasoning as D-021.
+- **The image and the credit come from one record**, and `FigurePortrait` renders neither without
+  the other. An unreadable licence is treated as no licence.
+- **No licensed photograph means no photograph.** Ethan Zohn has none, so his card shows initials.
+  That is the intended outcome, not a gap to fill with whatever an image search returns.
+
+Attribution is collective under the home page row — a photographer's name under a 56px thumbnail is
+not "reasonable to the medium" — and per-image beside the portrait on each story page.

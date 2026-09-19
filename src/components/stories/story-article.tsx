@@ -1,4 +1,6 @@
 import Link from "next/link";
+
+import { FigurePortrait } from "@/components/stories/figure-portrait";
 import type { ReactNode } from "react";
 
 import { StoryCardGrid } from "@/components/stories/story-card";
@@ -69,14 +71,17 @@ export function StoryArticle({
         <h1 className="mt-4 text-hero">{story.title}</h1>
 
         {story.figure ? (
-          <p className="mt-4 text-lead text-ink-soft">
-            <Link
-              href={`/public-figures/${story.figure.slug}`}
-              className="text-forest-600 underline underline-offset-4"
-            >
-              {story.figure.name}
-            </Link>
-          </p>
+          <div className="mt-5 flex items-start gap-4">
+            <FigurePortrait name={story.figure.name} figure={story.figure} size={96} />
+            <p className="text-lead text-ink-soft">
+              <Link
+                href={`/public-figures/${story.figure.slug}`}
+                className="text-forest-600 underline underline-offset-4"
+              >
+                {story.figure.name}
+              </Link>
+            </p>
+          </div>
         ) : (
           <p className="mt-4 text-lead text-ink-soft">
             A community story, shared with the person&rsquo;s written permission.
