@@ -45,13 +45,10 @@ export default async function HomePage({
             <p className="text-small font-medium tracking-wide text-clay-700 uppercase">
               Nobody is untouchable
             </p>
-            <h1 className="mt-4 text-hero lg:text-[4.5rem]">
-              Illness does not care who you are.
-            </h1>
+            <h1 className="mt-4 text-hero lg:text-[4.5rem]">Celebrity Health Stories</h1>
             <p className="mt-6 text-lead text-ink-soft">
-              Well-known people have stood up and said what happened to them, or to someone they
-              love. Their stories are here, told carefully and with sources. So are the charities
-              behind them, and a quiet place to keep track of how you are really doing.
+              UnTouchable tells the health stories of people you know, so that nobody has to feel
+              alone in their own.
             </p>
           </div>
 
