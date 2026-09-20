@@ -17,7 +17,17 @@ import { db } from "../src/lib/db";
 async function main() {
   const conditions = await db.condition.findMany({
     orderBy: { slug: "asc" },
-    select: { name: true, slug: true, summary: true, snomedCode: true, isSensitiveTopic: true },
+    // supportTopic travels with the condition. It was left out when the field was added, so
+    // production rendered crisis contacts and nothing else — no Rape Crisis on a story about
+    // sexual abuse, no FRANK on one about addiction. The block is only as good as the export.
+    select: {
+      name: true,
+      slug: true,
+      summary: true,
+      snomedCode: true,
+      isSensitiveTopic: true,
+      supportTopic: true,
+    },
   });
 
   const medicines = await db.intervention.findMany({
@@ -61,6 +71,7 @@ async function main() {
       keyMomentsJson: true,
       quote: true,
       contentNote: true,
+      needsSupportSignposting: true,
       communityPermissionConfirmed: true,
       publishedAt: true,
       lastReviewedAt: true,

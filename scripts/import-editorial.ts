@@ -22,7 +22,7 @@ type Payload = ReturnType<typeof readPayload>;
 
 function readPayload(path: string) {
   return JSON.parse(readFileSync(path, "utf8")) as {
-    conditions: { name: string; slug: string; summary: string; snomedCode: string | null; isSensitiveTopic: boolean }[];
+    conditions: { name: string; slug: string; summary: string; snomedCode: string | null; isSensitiveTopic: boolean; supportTopic: string | null }[];
     medicines: { name: string; slug: string; type: string; summary: string; isSensitiveTopic: boolean; dmdCode: string | null }[];
     figures: { name: string; slug: string; shortBio: string; isDeceased: boolean; imageUrl: string | null; imageLicence: string | null }[];
     stories: Record<string, unknown>[];
@@ -69,15 +69,26 @@ async function main() {
   for (const raw of payload.stories) {
     const story = raw as {
       slug: string; title: string; summary: string; type: string; disclosureType: string;
-      keyMomentsJson: unknown; quote: string | null; contentNote: string | null;
+      keyMomentsJson: unknown; quote: string | null; contentNote: string | null; needsSupportSignposting?: boolean;
       communityPermissionConfirmed: boolean | null; publishedAt: string | null; lastReviewedAt: string | null;
       figureSlug: string | null; conditionSlugs: string[]; quoteSourceIndex: number | null;
       sources: { url: string; title: string; publisher: string; publishedDate: string | null; sourceType: string }[];
       interventions: { slug: string; context: string | null; sourceIndex: number | null }[];
     };
 
-    if (await db.story.findUnique({ where: { slug: story.slug } })) {
-      console.log(`  skipped ${story.slug} (already here)`);
+    const existing = await db.story.findUnique({ where: { slug: story.slug } });
+    if (existing) {
+      // A story that is already here is left alone — re-importing editorial text over a
+      // version an editor may have corrected on the far side would be worse than stale.
+      // The exception is the support flag: it decides whether somebody is shown a helpline,
+      // and getting that wrong is not a thing to leave until the next review.
+      const flag = story.needsSupportSignposting ?? false;
+      if (existing.needsSupportSignposting !== flag) {
+        await db.story.update({ where: { id: existing.id }, data: { needsSupportSignposting: flag } });
+        console.log(`  ${story.slug}: support signposting -> ${flag}`);
+      } else {
+        console.log(`  skipped ${story.slug} (already here)`);
+      }
       continue;
     }
     if (story.sources.length === 0) throw new Error(`${story.slug} has no source`);
@@ -97,6 +108,7 @@ async function main() {
         summary: story.summary,
         keyMomentsJson: story.keyMomentsJson as never,
         contentNote: story.contentNote,
+        needsSupportSignposting: story.needsSupportSignposting ?? false,
         communityPermissionConfirmed: story.communityPermissionConfirmed,
         draftedById: drafter.id,
         lastReviewedAt: story.lastReviewedAt ? new Date(story.lastReviewedAt) : null,

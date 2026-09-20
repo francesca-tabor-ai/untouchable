@@ -1336,3 +1336,18 @@ from NHS trust pages publishing the same number) and Maggie's centres. Maggie's 
 asks nothing — no referral, no appointment, free, in the grounds of NHS hospitals — which is the one
 that still works on a day you cannot face a phone call. Applied to breast cancer, Hodgkin lymphoma,
 brain tumour and the BRCA1 gene change.
+
+### PL-30 · The support flags never reached production
+`Condition.supportTopic` and `Story.needsSupportSignposting` were added to the schema and to the
+pages, and to neither of the scripts that move editorial content between environments. Local was
+right and production was wrong, and nothing failed: the pages rendered, they just rendered the
+crisis contacts and nothing else. No Rape Crisis on the story about childhood sexual abuse, no FRANK
+on the one about addiction.
+
+Both fields now travel. The import still leaves an existing story's text alone — re-importing over a
+correction made on the far side would be worse than stale — but it updates the support flag, because
+that one decides whether a person is shown a helpline. Importing this time repaired four stories
+that had been live without it.
+
+The lesson is narrower than "update the scripts": a safety feature that is only wired up in the
+environment you look at is not wired up. The migration had not been deployed either.
