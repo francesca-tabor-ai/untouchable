@@ -168,11 +168,226 @@ const ALCOHOL: SupportTopic = {
   ],
 };
 
+/**
+ * Checked 20 September 2026. Beat's helpline number was read from Beat's own helpline page
+ * (beateatingdisorders.org.uk) and from the NHS eating disorders page, which prints the same
+ * number — the two independent readings this list is written under.
+ *
+ * The intro does one job before any number: it says that you do not have to be thin, or
+ * diagnosed, or at some threshold of bad enough. The NHS is explicit that bulimia can affect
+ * anyone and that people with it are often an ordinary weight, and being turned away for not
+ * looking ill enough is the reason somebody stops asking. One of the stories this block sits
+ * under is about exactly that — a GP who asked whether she was anorexic, then whether she was
+ * bulimic, and on two noes said there was nothing available.
+ */
+const EATING_DISORDER: SupportTopic = {
+  key: "eating_disorder",
+  heading: "If your relationship with food is hurting you",
+  intro:
+    "You do not have to be underweight, or diagnosed, or sure what to call it. Eating disorders are treatable, and treatment works better the earlier it starts — so it is worth asking now rather than when it gets worse. If you have asked before and were turned away, you are allowed to ask again.",
+  contacts: [
+    {
+      key: "beat",
+      name: "Beat — eating disorders helpline",
+      detail:
+        "Free and confidential, for anyone affected by an eating disorder, including families. There is a one-to-one webchat as well as the phone.",
+      contact: "0808 801 0677",
+      href: "tel:08088010677",
+      external: false,
+    },
+    {
+      key: "beat-other-nations",
+      name: "Beat in Scotland, Wales and Northern Ireland",
+      detail:
+        "Beat runs a separate free number for each nation, and online support groups you can join without speaking.",
+      contact: "beateatingdisorders.org.uk",
+      href: "https://www.beateatingdisorders.org.uk/get-information-and-support/get-help-for-myself/i-need-support-now/helplines/",
+      external: true,
+    },
+    {
+      key: "nhs-eating-disorders",
+      name: "NHS — getting help",
+      detail:
+        "What to expect from a GP appointment, and what treatment for an eating disorder actually involves.",
+      contact: "nhs.uk",
+      href: "https://www.nhs.uk/mental-health/feelings-symptoms-behaviours/behaviours/eating-disorders/overview/",
+      external: true,
+    },
+  ],
+};
+
+/**
+ * Checked 20 September 2026. The Sickle Cell Society's number was read from the Society's own
+ * site and from NHS trust pages — University College London Hospitals and University Hospitals
+ * Coventry and Warwickshire both publish it for their sickle cell and thalassaemia services —
+ * and the Society is in the NHS service directory.
+ *
+ * It is a charity, and it does not sell treatment (rule 14).
+ */
+const SICKLE_CELL: SupportTopic = {
+  key: "sickle_cell",
+  heading: "If sickle cell is in your family",
+  intro:
+    "This is for people living with sickle cell, for parents and partners, and for carriers who have just found out. It is also for anyone who has been told a crisis was something else, which happens.",
+  contacts: [
+    {
+      key: "sickle-cell-society",
+      name: "Sickle Cell Society",
+      detail:
+        "Advice and support, weekdays, from the national charity. They also run local support groups and a mentoring scheme.",
+      contact: "020 8961 7795",
+      href: "tel:02089617795",
+      external: false,
+    },
+    {
+      key: "nhs-sickle-cell",
+      name: "NHS — sickle cell disease",
+      detail:
+        "What sickle cell is, what a crisis is, how it is inherited, and what having the trait does and does not mean.",
+      contact: "nhs.uk",
+      href: "https://www.nhs.uk/conditions/sickle-cell-disease/",
+      external: true,
+    },
+  ],
+};
+
+/**
+ * Checked 20 September 2026. The Spinal Injuries Association support line was read from SIA's
+ * own site and from the NHS Sussex Trauma Network service directory, which publishes the same
+ * freephone number and the hours. Back Up's details are from Back Up's own site.
+ *
+ * Neither sells treatment. SIA runs an online shop of everyday products, which is not
+ * treatment and is not what we are pointing anyone at; the support line is.
+ *
+ * Both are here for the same reason Maggie's is on the cancer block: the thing people say
+ * helped most after a spinal cord injury is talking to somebody who has one.
+ */
+const SPINAL_CORD_INJURY: SupportTopic = {
+  key: "spinal_cord_injury",
+  heading: "If you or someone close to you has a spinal cord injury",
+  intro:
+    "Nerve damage affects far more than walking, and a lot of it is hard to raise with anyone. These are free, and they are staffed largely by people who have been through it themselves — including for partners and family, who often get asked how the injured person is and never how they are.",
+  contacts: [
+    {
+      key: "sia-support-line",
+      name: "Spinal Injuries Association support line",
+      detail:
+        "Free, weekdays 10am to 4pm, for people with a spinal cord injury, their families, and health professionals.",
+      contact: "0800 980 0501",
+      href: "tel:08009800501",
+      external: false,
+    },
+    {
+      key: "back-up",
+      name: "Back Up",
+      detail:
+        "One-to-one mentoring from people living with spinal cord injury, courses, wheelchair skills, and separate mentoring for family members.",
+      contact: "backuptrust.org.uk",
+      href: "https://www.backuptrust.org.uk/",
+      external: true,
+    },
+  ],
+};
+
+/**
+ * Checked 20 September 2026. Changing Faces' support and information line was read from the
+ * charity's own page and corroborated in independent public directories; the Katie Piper
+ * Foundation's number and referral route are from the Foundation's own site, and it is a
+ * registered charity (1133313) providing rehabilitation rather than selling it.
+ *
+ * A conflict worth naming: one of the stories this block sits under is Katie Piper's, and she
+ * founded that Foundation. The page says so in our own voice rather than quietly leaving out
+ * the one national charity that exists for burn survivors (see DECISIONS.md, and PL-32 for
+ * the same handling of a commercial interest).
+ *
+ * Changing Faces is not a crisis service and says so; the crisis contacts remain on the page.
+ */
+const BURNS: SupportTopic = {
+  key: "burns",
+  heading: "If you are living with a burn, a scar or a visible difference",
+  intro:
+    "Recovery after a burn is mostly the long part, not the emergency — rehabilitation, scars that tighten, and how other people behave in the street. There is support for both halves of that, and it does not matter how long ago it happened.",
+  contacts: [
+    {
+      key: "changing-faces",
+      name: "Changing Faces — support and information line",
+      detail:
+        "For anyone with a scar, mark or condition on their face or body, and for how it is affecting you rather than how it looks. Open to anyone over 16.",
+      contact: "0300 012 0275",
+      href: "tel:03000120275",
+      external: false,
+    },
+    {
+      key: "katie-piper-foundation",
+      name: "Katie Piper Foundation",
+      detail:
+        "Rehabilitation for people with burns and traumatic scarring — physiotherapy, scar care, psychological therapy and peer support. You can refer yourself, however long ago your injury was.",
+      contact: "katiepiperfoundation.org.uk",
+      href: "https://katiepiperfoundation.org.uk/",
+      external: true,
+    },
+    {
+      key: "nhs-acid-and-chemical-burns",
+      name: "NHS — acid and chemical burns",
+      detail:
+        "What to do in the first minutes, and what happens afterwards. If it has just happened, call 999.",
+      contact: "nhs.uk",
+      href: "https://www.nhs.uk/conditions/acid-and-chemical-burns/",
+      external: true,
+    },
+  ],
+};
+
+/**
+ * Checked 20 September 2026, and the check changed what went on the page.
+ *
+ * Several NHS-adjacent and council directories still print a PANDAS telephone helpline —
+ * 0808 1961 776, 11am to 10pm. PANDAS's own site does not: its support page lists WhatsApp,
+ * a bookable callback, email and groups, and sends anyone in crisis to Samaritans or 999.
+ * The second reading is the one that counts, so no number is printed here. A number that
+ * rings out is worse than no number, particularly for somebody who had to work up to
+ * dialling it.
+ *
+ * The NHS route is first because it is the one that leads to treatment: a GP, a midwife or
+ * a health visitor can refer to a specialist perinatal mental health team.
+ */
+const PERINATAL_MENTAL_HEALTH: SupportTopic = {
+  key: "perinatal_mental_health",
+  heading: "If you are struggling in pregnancy or since the birth",
+  intro:
+    "Feeling like this does not mean you are a bad parent and it will not be taken as one. It is common, it is treatable, and saying it out loud early makes it shorter. You do not have to have worked out what is wrong first.",
+  contacts: [
+    {
+      key: "nhs-perinatal",
+      name: "NHS — depression in pregnancy and after the birth",
+      detail:
+        "What it looks like and what help there is. A GP, midwife or health visitor can refer you to a specialist perinatal mental health team, and telling them is not the same as being reported.",
+      contact: "nhs.uk",
+      href: "https://www.nhs.uk/pregnancy/mental-health-in-pregnancy-and-after-the-birth/depression/",
+      external: true,
+    },
+    {
+      key: "pandas",
+      name: "PANDAS Foundation",
+      detail:
+        "Free support for parents and partners affected by perinatal mental illness — WhatsApp on weekdays, a callback you can book for a time that suits you, email, and groups you can sit in without speaking.",
+      contact: "pandasfoundation.org.uk",
+      href: "https://pandasfoundation.org.uk/how-we-can-support-you/",
+      external: true,
+    },
+  ],
+};
+
 const TOPICS: Record<string, SupportTopic> = {
   [SEXUAL_VIOLENCE.key]: SEXUAL_VIOLENCE,
   [SUBSTANCE.key]: SUBSTANCE,
   [CANCER.key]: CANCER,
   [ALCOHOL.key]: ALCOHOL,
+  [EATING_DISORDER.key]: EATING_DISORDER,
+  [SICKLE_CELL.key]: SICKLE_CELL,
+  [SPINAL_CORD_INJURY.key]: SPINAL_CORD_INJURY,
+  [BURNS.key]: BURNS,
+  [PERINATAL_MENTAL_HEALTH.key]: PERINATAL_MENTAL_HEALTH,
 };
 
 /** The support blocks for a set of conditions, de-duplicated and in a stable order. */

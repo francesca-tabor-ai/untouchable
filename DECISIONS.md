@@ -1417,3 +1417,158 @@ page that carries the crisis contacts.
 That fail-safe worked exactly as designed and it is still the wrong outcome, because it fails
 quietly. When a topic is new, the deploy has to land before the import runs, and the page has to be
 checked afterwards rather than assumed. Checking is what found it.
+
+### PL-40 · Nine stories from one podcast, and what came off each of them
+Eight new stories, plus a rewrite of one already published. All nine sources are long, deliberate,
+first-person interviews given by the person whose health it is — except Andi Oliver's brother's
+sickle cell, which is a sister speaking publicly about someone who died thirty-five years ago, and
+which the brief allows.
+
+Cut, story by story, with the reason rather than the list:
+
+**Jamie Theakston** — every survival percentage. He recalls being told he had a ninety per cent
+chance at stage one, and quotes figures for stage two and stage three. They are a patient's memory
+of a consultation, they are not checkable, and a survival number on a health page is a claim about
+the reader as much as about him. One tabloid has already run his specialist's "nine times out of
+ten it's cancer" as "told he had a one in ten chance of survival", which is the whole argument.
+Also out: his call for a national prostate screening programme, which is a policy opinion (PL-28),
+and **his father's Alzheimer's**. His father is living and has not disclosed it. Rule 15's capacity
+exception exists for a story told *about* such a person, deliberately, to raise awareness — not for
+an incidental mention inside somebody else's story. Same call as Penny Lancaster's husband (PL-33).
+
+**Andi Oliver** — her statement that a person with sickle cell cannot be given a general anaesthetic
+"because it can kill them". Published on a health page, that could make somebody refuse an
+operation they need. What is publishable is the Cyprus story itself: a crisis taken for appendicitis
+and a doctor who recognised sickle cell and stopped the operation. Also out: her attempt at the
+biology, which she says herself she gets mixed up. And the **life expectancy of thirty** the family
+was given in the 1970s is on the page only as what they were told then, set against the NHS position
+now. A dated prognosis left to stand alone is a prognosis handed to every reader who has the
+condition today.
+
+**Trisha Goddard** — "the fitter you are, the better the outcome, and that's not just me saying it".
+It is not checkable and it tells anyone doing badly that they did not try hard enough, which is the
+exact thing she spends the rest of the interview objecting to. Her account of being in physiotherapy
+at seven in the morning stays; the generalisation goes. Also out: an unverifiable statistic about
+the proportion of men who leave a wife who is ill, her husband's first wife's illness, and her
+speculation about the circumstances of her own conception — not health information, and about
+someone who cannot answer.
+
+**Julia Bradbury** — the largest cut of the nine. A specific recurrence-risk percentage attributed
+to a named professor; a figure for how many women over fifty have dense breast tissue; the whole
+cortisol, inflammation, sugar and "tribal ancestors" thread; and the passage where she puts the
+interviewer on a plan, down to the percentage of cocoa. She sells books and walking retreats in
+this area, so the page says so (PL-32) and says in our own voice that nothing she changed is here
+as something that treated her cancer. Same handling as Ella Mills (PL-25). What survives is the
+part that matters: a lump she found herself, two scans that called it benign, dense tissue that made
+it hard to see, and an ultrasound offered as an afterthought as she stood up to leave.
+
+**Fearne Cotton** — she recovered from bulimia without counselling, by cooking. That is her account
+and it stays, with our own voice immediately after it saying it is not a route this page puts
+forward, that eating disorders are treatable, and where to go. Nothing about behaviours, no
+frequencies, no numbers.
+
+**Ed Jackson and Andi Oliver** both describe wanting to die. Both stories carry the support flag and
+a content note, and neither contains a method.
+
+**Katie Piper** — the volume and strength of the acid (rule 17 applies to more than medicines: the
+test is whether it reads as instructions), and her mother's private diary, which is read aloud in
+the source with Katie's blessing but is a living third party's own writing.
+### PL-41 · Ed Jackson was paired with the wrong condition
+The request supplied the NHS head injury and concussion page. He did hit his head — on the bottom of
+a swimming pool — but what he describes is a C6/C7 fracture-dislocation with disc fragments in the
+spinal cord and no movement below the neck. The NHS head injury page does not mention the neck or
+the spinal cord at all, and would have sent a reader looking for the wrong thing.
+
+The NHS has no A–Z page for spinal cord injury, so the condition is written from NHS trust and NHS
+spinal network pages, which is still an independent source and still not somebody selling treatment
+(rule 14).
+
+Third time a supplied condition has not matched the story (Eric Dane D-019, Delta Goodrem PL-27).
+The check is no longer occasional.
+### PL-42 · Six new conditions and five new support blocks
+Conditions: acid and chemical burns, laryngeal cancer, sickle cell disease, spinal cord injury,
+bulimia, binge eating disorder. Support blocks: `eating_disorder`, `sickle_cell`,
+`spinal_cord_injury`, `burns`, `perinatal_mental_health`.
+
+Two of them are worth the words.
+
+**`eating_disorder`.** Andi Oliver's GP asked whether she was anorexic, then whether she was
+bulimic, and on two noes told her nothing was available and put her on a diet — which was the thing
+that had been setting off the next binge for years. So the block says, before any number, that you
+do not have to be underweight or diagnosed, and that you are allowed to ask again. There is a test
+for that sentence, because it is the point of the block rather than decoration. Beat's number was
+read from Beat and from the NHS.
+
+**`perinatal_mental_health`, and a number we did not print.** Paloma Faith's story went up with the
+support flag set and no block behind it, because `postnatal-depression` had no topic — the PL-23
+failure exactly, and it had been sitting there under Alanis Morissette and Brooke Shields too.
+Writing the block turned up something better than the block: several NHS-adjacent and council
+directories still publish a PANDAS telephone helpline, and PANDAS's own support page no longer
+lists one. It runs WhatsApp, a bookable callback, email and groups, and sends anyone in crisis to
+Samaritans. So no number is printed. A helpline that rings out is worse than no helpline for
+somebody who had to work up to dialling it, and this is what the two-source rule is actually for —
+it is not a formality, it caught a dead number.
+### PL-43 · Katie Piper's own charity is on Katie Piper's page
+The `burns` block carries Changing Faces and the Katie Piper Foundation. The Foundation is the
+national charity for burns rehabilitation, and it is hers. Leaving it out to avoid the awkwardness
+would have cost a reader the most relevant service in the country; leaving it in silently would have
+been an advert. So it is in, and the story says in our own voice that she founded it — the same
+handling as Spencer Matthews and his drinks company (PL-32).
+
+The block sits on the condition, not the story, so it reaches anyone reading about acid and chemical
+burns whether or not they came via her.
+### PL-44 · Davina McCall's story ended at the anaesthetic
+It was published from a recording that runs well past the operation, and stopped as she went under.
+The same source has the part a reader facing this surgery would most want: the cyst was sitting on
+the passage short-term memories travel through, it pulled that passage out of shape as it came out,
+and she woke not knowing who or where she was. It came back over weeks.
+
+Extended rather than published again as a second story. That meant taking it down, back to draft,
+and through review and a second editor — which is what the admin screen says happens to a published
+story, and there is no shortcut for having been published once. The published date moves as a
+result. That is the design, not a side effect to route around.
+
+Two things follow from this that are worth someone else knowing. The import script deliberately
+leaves an existing story's text alone, so **this rewrite will not reach production by importing**;
+it needs doing there. And a story built from a long recording should be checked for where it stops,
+because the interesting half is often after the operation.
+### PL-45 · Photographs: press images refused again, three stories with none
+Press and agency images were supplied for most of these people — a newspaper's own CDN, a magazine's
+optimiser, a stock still. All refused, as in PL-25. The five photographs used are from Wikimedia
+Commons with the author, licence and source recorded on the figure, and each was opened and looked
+at before it went anywhere near a story, because a wrong face on a health page is not a typo.
+
+Jamie Theakston, Trisha Goddard and Ed Jackson have no photograph on Commons, so their cards fall
+back to the monogram. A missing photograph is not a reason to publish one we have no right to.
+### PL-46 · Quotes, and automatic captions
+These sources were read as YouTube's automatic captions. They are good enough to report from
+faithfully in our own words, and they are not a reliable record of anyone's exact words — they
+mis-hear names, drop clauses and invent punctuation. One quote is used in the whole wave, and only
+because it is short, plain and hard to mis-transcribe.
+
+Where a date was not corroborated elsewhere it is simply absent from the source record, rather than
+guessed to the nearest month.
+### PL-47 · Three things found by reading the pages back
+Everything above was written from the sources and checked against them. These three were only
+visible on the published page, read cold:
+
+**Andi Oliver** — the page said, in our own voice, that the diet her GP put her on "was the thing
+that had been setting off the next binge for years". That is a health claim, and it is hers to make
+rather than ours. Rewritten as what she says: that dieting was already what she had been trying, and
+that she would resolve not to eat all day and then be unable to stop once she had started.
+
+**Fearne Cotton** — the order was wrong. The page had her depression coming before the bulimia. In
+the source it comes afterwards, in her thirties, around the point her career changed shape. A
+sequence error in a mental health story is not a detail: it changes what caused what.
+
+**Julia Bradbury** — she says she was addicted to alcohol, and the story was tagged only to breast
+cancer, so it carried Macmillan and no Drinkline. A page that describes somebody stopping drinking
+is precisely the page that needs the block whose first line is the NHS warning about stopping
+suddenly. Tagged to alcohol use disorder as well.
+
+All three went down, back to draft, through review and out again with a second editor, and the
+retraction reason on each says what was wrong. That is three published dates moved for three
+sentences, and it is the right price.
+
+The lesson is the cheap one: read the page, not the draft. Two of these were invisible in the text
+and obvious on the screen.
