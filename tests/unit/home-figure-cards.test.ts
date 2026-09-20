@@ -143,9 +143,19 @@ describe("the card itself", () => {
     expect(card).toContain("Content note");
   });
 
-  it("shows tags for conditions and for medicines", () => {
+  it("shows the conditions the story is about", () => {
     expect(card).toContain("story.conditions.map");
-    expect(card).toContain("medicinesForPublishedStory");
+  });
+
+  it("carries a name and a condition, and no other prose", () => {
+    // The card is an introduction, not a summary. A name somebody recognises and what the
+    // story is about is the whole of it — the headline, and the line saying whose health it
+    // is, belong on the story itself where there is room to read them. The content note is
+    // not prose in this sense: it is a warning, and it stays.
+    const inner = card.slice(card.indexOf("function FigureCard"), card.indexOf("function PhotoCredits"));
+    expect(inner).not.toContain("story.title");
+    expect(inner).not.toContain("disclosureType");
+    expect(inner).not.toContain("line-clamp");
   });
 
   it("never queries the database directly", () => {

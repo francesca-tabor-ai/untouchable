@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { parseAttribution } from "@/components/stories/figure-portrait";
 import { Container } from "@/components/ui/container";
-import { medicinesForPublishedStory } from "@/lib/medicines/queries";
+import { Button } from "@/components/ui/button";
 import { listPublishedStories } from "@/lib/stories/queries";
 import type { StoryCard } from "@/lib/stories/queries";
 
@@ -23,6 +23,13 @@ import type { StoryCard } from "@/lib/stories/queries";
  * outcome, not a gap to fill with whatever an image search returns. See PL-16 and
  * `src/components/stories/figure-portrait.tsx`.
  *
+ * **A card carries a name, a condition, and nothing else but a warning.** Not the headline,
+ * not the line saying whose health the story is about. Twelve cards each arguing their own
+ * case is a wall of text, and the reader scans past all of it; a face and two words is a
+ * thing you can take in. The story itself is one tap away and has room for the rest. The
+ * content note is the exception and always will be — it is not a summary, it is a warning,
+ * and it travels with the card onto every surface.
+ *
  * **On the contrast of white text over a photograph.** A gradient is not a guarantee: a
  * light photograph can defeat one, and "usually dark enough" is not a standard. So the text
  * does not sit on the gradient at all. It sits on `SCRIM`, a flat 95%-opaque forest-900
@@ -39,40 +46,67 @@ import type { StoryCard } from "@/lib/stories/queries";
  */
 const SCRIM = "bg-forest-900/95";
 
-/** How many people the front page introduces. Enough to make the point, few enough to read. */
-const CARDS = 6;
+/**
+ * How many people the front page shows before somebody asks for more, and how many more each
+ * press of the button adds.
+ *
+ * Everybody with a published story is reachable from here — the grid is no longer a sample of
+ * six. It is still paged, because a phone that has to lay out forty photographs before it can
+ * show anything has already lost the person holding it.
+ */
+const PAGE = 12;
+
+/**
+ * The ceiling on one read. Far above anything the platform holds today; it exists so that this
+ * component cannot one day ask the database for an unbounded list because nobody thought about
+ * it. Raise it deliberately, not by accident.
+ */
+const MOST_WE_WILL_READ = 300;
+
+/** The smallest grid worth showing. A row of two looks like an oversight rather than a feature. */
+const FEWEST_CARDS = 3;
+
+/**
+ * How many people the page is showing, read off the URL.
+ *
+ * The button that asks for more is a link, and the answer is a number in the query string, so
+ * the whole thing works with JavaScript switched off and lands in browser history like any
+ * other page. Anything that is not a sensible number falls back to the first page — a URL
+ * somebody has typed into is not a reason to render an error.
+ */
+export function parseShown(value: string | string[] | undefined): number {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < PAGE) return PAGE;
+  return Math.min(parsed, MOST_WE_WILL_READ);
+}
 
 interface FigureCardData {
   story: StoryCard;
-  /** Conditions first, then any medicines the story links to. Plain text, never links. */
+  /** The conditions the story is about. Plain text, never links. */
   tags: string[];
 }
 
-export async function FigureStrip() {
-  const stories = await listPublishedStories({ take: 24 });
-  const figures = stories.filter((story) => story.figure !== null).slice(0, CARDS);
+export async function FigureStrip({ shown = PAGE }: { shown?: number }) {
+  const stories = await listPublishedStories({ take: MOST_WE_WILL_READ });
+  const everyone = stories.filter((story) => story.figure !== null);
 
-  // A row of two looks like an oversight rather than a feature.
-  if (figures.length < 3) return null;
+  if (everyone.length < FEWEST_CARDS) return null;
 
-  // Medicines are read through the medicines module, which checks the story is published
-  // itself rather than trusting this caller — a public read that trusts its caller is a
-  // retraction bug waiting to happen.
-  const cards: FigureCardData[] = await Promise.all(
-    figures.map(async (story) => {
-      const medicines = await medicinesForPublishedStory(story.id);
-      return {
-        story,
-        tags: [
-          ...story.conditions.map((condition) => condition.name),
-          ...medicines.map((medicine) => medicine.name),
-        ].slice(0, 4),
-      };
-    }),
-  );
+  const figures = everyone.slice(0, shown);
+  const remaining = everyone.length - figures.length;
+
+  const cards: FigureCardData[] = figures.map((story) => ({
+    story,
+    tags: story.conditions.map((condition) => condition.name).slice(0, 4),
+  }));
 
   return (
-    <section aria-labelledby="figure-strip-heading" className="border-b border-line bg-white py-16">
+    <section
+      id="people"
+      aria-labelledby="figure-strip-heading"
+      className="scroll-mt-6 border-b border-line bg-white py-16"
+    >
       <Container>
         <div className="mb-10 max-w-[34rem]">
           <h2 id="figure-strip-heading" className="text-display">
@@ -91,6 +125,34 @@ export async function FigureStrip() {
             </li>
           ))}
         </ul>
+
+        {/* The count is read out on arrival, because the button moves you down a page whose
+            length has just changed and "View more" on its own does not say what happened. */}
+        <p className="mt-8 text-small text-ink-soft" aria-live="polite" data-testid="figure-count">
+          Showing {figures.length} of {everyone.length} people.
+        </p>
+
+        {remaining > 0 ? (
+          <div className="mt-4">
+            {/*
+              A link, not a button that fetches. The next page of people is a different page,
+              so it has its own address: it works with JavaScript switched off, it goes into
+              browser history, and the back button does what a reader expects. The fragment
+              returns them to the grid rather than to the top of the page.
+
+              The label says how many more are coming. "View more" alone leaves somebody
+              deciding whether a tap is worth it with nothing to decide on.
+            */}
+            <Button asChild variant="secondary" size="lg">
+              <Link href={`/?people=${figures.length + PAGE}#people`} data-testid="view-more">
+                View more
+                <span className="text-muted">
+                  {remaining} more {remaining === 1 ? "person" : "people"}
+                </span>
+              </Link>
+            </Button>
+          </div>
+        ) : null}
 
         <PhotoCredits stories={figures} />
 
@@ -183,14 +245,8 @@ function FigureCard({ card, index }: { card: FigureCardData; index: number }) {
           {figure.name}
         </span>
 
-        <span className="mt-1 block text-small text-cream-200">
-          {story.disclosureType === "own" ? "On their own health" : "On someone they love"}
-        </span>
-
-        <span className="mt-3 line-clamp-2 block text-small text-cream-200">{story.title}</span>
-
         {tags.length > 0 ? (
-          <span className="mt-4 flex flex-wrap gap-2">
+          <span className="mt-3 flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span
                 key={tag}

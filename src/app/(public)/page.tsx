@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { FigureStrip } from "@/components/home/figure-strip";
+import { FigureStrip, parseShown } from "@/components/home/figure-strip";
 import { SearchResults } from "@/components/search/search-results";
 import { SiteSearch } from "@/components/search/site-search";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,11 @@ import { parseSearchParams } from "@/lib/search/schema";
  * revalidation. Brief 5.2, DECISIONS.md D-013.
  *
  * Search results and the grid of people are alternatives rather than a stack. Somebody who
- * has just searched for "tinnitus" is looking for an answer, and repeating the same six
- * faces immediately underneath their results is noise.
+ * has just searched for "tinnitus" is looking for an answer, and repeating the same faces
+ * immediately underneath their results is noise.
+ *
+ * The grid shows everybody with a published story, a page at a time. `?people=N` is how far
+ * down it somebody has asked to go — see `parseShown`.
  *
  * There is no donation prompt anywhere on this page, and nothing rendered here is capable of
  * producing one. `donationPromptAllowed(surface, user)` in
@@ -33,9 +36,14 @@ export default async function HomePage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { q, kind } = parseSearchParams(await searchParams);
+  const params = await searchParams;
+  const { q, kind } = parseSearchParams(params);
   const outcome = await search({ q, kind });
   const searching = outcome.query.length > 0;
+  // How far down the grid of people somebody has asked to go. A number in the URL rather
+  // than state in the browser, so "View more" works without JavaScript and the page they
+  // are looking at is the page they can share or come back to.
+  const shown = parseShown(params.people);
 
   return (
     <>
@@ -69,7 +77,7 @@ export default async function HomePage({
         </Container>
       </section>
 
-      {searching ? <SearchResults outcome={outcome} /> : <FigureStrip />}
+      {searching ? <SearchResults outcome={outcome} /> : <FigureStrip shown={shown} />}
 
       <Container className="py-20">
         <h2 className="text-display">Three things, in one place</h2>

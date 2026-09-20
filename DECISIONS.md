@@ -1445,3 +1445,395 @@ was the alternative considered.
 
 `tests/unit/site-navigation.test.tsx` now checks every header link resolves to a `page.tsx`, so the
 next item added to the navigation before its page cannot ship quietly.
+
+### PL-38 · The front page introduces everybody, twelve at a time
+The grid under the hero was a sample of six. It is now every person with a published story, shown
+twelve at a time, with a control underneath that adds the next twelve. The count above the control
+is read from the data rather than written down anywhere, because people are added most weeks and a
+number in the copy would be wrong by the following one.
+
+**That control is a link, not a button that fetches.** `?people=24` is the address of the second
+page, so it works with JavaScript switched off, it goes into browser history, the back button does
+what a reader expects, and somebody can send a friend the view they were actually looking at. A
+fetching button would have given the first of those readers a control that does nothing, on the one
+surface whose job is to explain what this platform is. `#people` on the link returns them to the
+grid rather than the top of the page, and the count above it is an `aria-live` region so that a
+screen reader hears what changed instead of being dropped into a page that silently grew.
+
+`parseShown` clamps anything unreadable back to the first page and anything enormous to a ceiling
+of 300, because `?people=99999999` is a URL anybody can type and it must not become the `take`.
+
+**One medicines read for the whole grid.** `medicinesForPublishedStories` is new beside
+`medicinesForPublishedStory`, which the grid used to call once per card. Six cards made that
+invisible; forty would not have. The batched read makes the same published check on every row
+rather than trusting the caller, for the same reason the single one does.
+
+**PL-16 is unchanged, and it is why a handful of those cards show initials rather than a face.**
+The request was that every person on the page have a photograph of them. Some are real people for
+whom Wikimedia Commons has nothing usable — Ella Mills (PL-25) and Jo Malone (PL-28) are both
+already recorded as such, and Ethan Zohn, DJ Fat Tony and Sarah Hiscox are in the same position.
+The rest are the invented people in the seed, who by definition have no photograph anywhere. The way to close the gap is to find a freely licensed
+picture and record its licence on the same row, one person at a time; it is not to relax the rule,
+and a press or agency image would put the platform in exactly the position it exists to avoid.
+
+The header lost Stories and gained Home in the same change. PL-36 arrived at the same place
+independently and from a different direction; `/stories` is still reachable from the hero button,
+from the foot of the grid, and from search.
+
+### PL-39 · No Supabase, and the reason is not Supabase
+Asked to add a Supabase database, the answer is no, and it would be no for any second database.
+
+We hold one copy of UK GDPR special category data in one Postgres, reached through one Prisma
+client. That is not an accident of how it was built, it is the thing that makes rules 6 and 8
+enforceable. Rule 6 says every aggregate query goes through `src/lib/research/aggregate.ts`, where
+consent filtering and small-group suppression are applied — a single chokepoint that a test can
+stand in front of. A second data store is a second path to the same health data that does not pass
+through it, which is structurally the thing rule 6 exists to forbid, whatever the intention behind
+adding it. Rule 8 says withdrawing consent takes effect immediately: the next query, export or
+email must already exclude that person. Across one database that is a `DELETE` and a predicate.
+Across two it is a synchronisation problem, and "immediately" becomes a promise about a job that
+might not have run. The same applies to erasure. Two hosts also means two data processing
+agreements, two sets of credentials, two sub-processors to name in the privacy notice, and two
+places that can be breached.
+
+Nothing in the product needs what a second host would add. Auth.js is built and platform-owned,
+and section 8 says not to replace it. There is no upload or object-storage code anywhere in `src/`
+— every figure image is a static file in `public/figures/`, licence recorded per row, which is what
+rule PL-16 requires. Supabase's advantage over a plain Postgres is the parts of it we are
+contractually not going to use.
+
+**The real finding is the region, and it is not fixed by changing vendor.** `.env.example` says the
+production target is a UK region. Production actually runs on Neon in `us-east-1`. That gap looks
+defaulted into rather than decided — it is where `vercel link` puts you — and for Article 9 data it
+is a transfer question somebody has to answer on the record, not a hosting detail. It is answerable:
+US hosting is not automatically unlawful, and there are transfer mechanisms that cover it. But it
+should be a decision with a name on it.
+
+Moving it needs no new vendor. Neon offers `aws-eu-west-2`, London. The fix is a project in that
+region, a migration, and a repointed Vercel environment — a cutover on live health data, which is
+the platform lead's to schedule and trigger, not an agent's to do quietly. If that migration is ever
+judged not worth doing, the DPIA should say so explicitly, because right now the repository claims
+one thing and production does another.
+
+Supabase London would also have solved the region problem. It was not chosen because swapping
+vendors moves every row of special category data across an extra boundary to reach a place the
+current vendor already offers, and buys nothing else we are allowed to use.
+
+### PL-40 · Nine stories from one podcast, and what came off each of them
+Eight new stories, plus a rewrite of one already published. All nine sources are long, deliberate,
+first-person interviews given by the person whose health it is — except Andi Oliver's brother's
+sickle cell, which is a sister speaking publicly about someone who died thirty-five years ago, and
+which the brief allows.
+
+Cut, story by story, with the reason rather than the list:
+
+**Jamie Theakston** — every survival percentage. He recalls being told he had a ninety per cent
+chance at stage one, and quotes figures for stage two and stage three. They are a patient's memory
+of a consultation, they are not checkable, and a survival number on a health page is a claim about
+the reader as much as about him. One tabloid has already run his specialist's "nine times out of
+ten it's cancer" as "told he had a one in ten chance of survival", which is the whole argument.
+Also out: his call for a national prostate screening programme, which is a policy opinion (PL-28),
+and **his father's Alzheimer's**. His father is living and has not disclosed it. Rule 15's capacity
+exception exists for a story told *about* such a person, deliberately, to raise awareness — not for
+an incidental mention inside somebody else's story. Same call as Penny Lancaster's husband (PL-33).
+
+**Andi Oliver** — her statement that a person with sickle cell cannot be given a general anaesthetic
+"because it can kill them". Published on a health page, that could make somebody refuse an
+operation they need. What is publishable is the Cyprus story itself: a crisis taken for appendicitis
+and a doctor who recognised sickle cell and stopped the operation. Also out: her attempt at the
+biology, which she says herself she gets mixed up. And the **life expectancy of thirty** the family
+was given in the 1970s is on the page only as what they were told then, set against the NHS position
+now. A dated prognosis left to stand alone is a prognosis handed to every reader who has the
+condition today.
+
+**Trisha Goddard** — "the fitter you are, the better the outcome, and that's not just me saying it".
+It is not checkable and it tells anyone doing badly that they did not try hard enough, which is the
+exact thing she spends the rest of the interview objecting to. Her account of being in physiotherapy
+at seven in the morning stays; the generalisation goes. Also out: an unverifiable statistic about
+the proportion of men who leave a wife who is ill, her husband's first wife's illness, and her
+speculation about the circumstances of her own conception — not health information, and about
+someone who cannot answer.
+
+**Julia Bradbury** — the largest cut of the nine. A specific recurrence-risk percentage attributed
+to a named professor; a figure for how many women over fifty have dense breast tissue; the whole
+cortisol, inflammation, sugar and "tribal ancestors" thread; and the passage where she puts the
+interviewer on a plan, down to the percentage of cocoa. She sells books and walking retreats in
+this area, so the page says so (PL-32) and says in our own voice that nothing she changed is here
+as something that treated her cancer. Same handling as Ella Mills (PL-25). What survives is the
+part that matters: a lump she found herself, two scans that called it benign, dense tissue that made
+it hard to see, and an ultrasound offered as an afterthought as she stood up to leave.
+
+**Fearne Cotton** — she recovered from bulimia without counselling, by cooking. That is her account
+and it stays, with our own voice immediately after it saying it is not a route this page puts
+forward, that eating disorders are treatable, and where to go. Nothing about behaviours, no
+frequencies, no numbers.
+
+**Ed Jackson and Andi Oliver** both describe wanting to die. Both stories carry the support flag and
+a content note, and neither contains a method.
+
+**Katie Piper** — the volume and strength of the acid (rule 17 applies to more than medicines: the
+test is whether it reads as instructions), and her mother's private diary, which is read aloud in
+the source with Katie's blessing but is a living third party's own writing.
+
+### PL-41 · Ed Jackson was paired with the wrong condition
+The request supplied the NHS head injury and concussion page. He did hit his head — on the bottom of
+a swimming pool — but what he describes is a C6/C7 fracture-dislocation with disc fragments in the
+spinal cord and no movement below the neck. The NHS head injury page does not mention the neck or
+the spinal cord at all, and would have sent a reader looking for the wrong thing.
+
+The NHS has no A–Z page for spinal cord injury, so the condition is written from NHS trust and NHS
+spinal network pages, which is still an independent source and still not somebody selling treatment
+(rule 14).
+
+Third time a supplied condition has not matched the story (Eric Dane D-019, Delta Goodrem PL-27).
+The check is no longer occasional.
+
+### PL-42 · Six new conditions and five new support blocks
+Conditions: acid and chemical burns, laryngeal cancer, sickle cell disease, spinal cord injury,
+bulimia, binge eating disorder. Support blocks: `eating_disorder`, `sickle_cell`,
+`spinal_cord_injury`, `burns`, `perinatal_mental_health`.
+
+Two of them are worth the words.
+
+**`eating_disorder`.** Andi Oliver's GP asked whether she was anorexic, then whether she was
+bulimic, and on two noes told her nothing was available and put her on a diet — which was the thing
+that had been setting off the next binge for years. So the block says, before any number, that you
+do not have to be underweight or diagnosed, and that you are allowed to ask again. There is a test
+for that sentence, because it is the point of the block rather than decoration. Beat's number was
+read from Beat and from the NHS.
+
+**`perinatal_mental_health`, and a number we did not print.** Paloma Faith's story went up with the
+support flag set and no block behind it, because `postnatal-depression` had no topic — the PL-23
+failure exactly, and it had been sitting there under Alanis Morissette and Brooke Shields too.
+Writing the block turned up something better than the block: several NHS-adjacent and council
+directories still publish a PANDAS telephone helpline, and PANDAS's own support page no longer
+lists one. It runs WhatsApp, a bookable callback, email and groups, and sends anyone in crisis to
+Samaritans. So no number is printed. A helpline that rings out is worse than no helpline for
+somebody who had to work up to dialling it, and this is what the two-source rule is actually for —
+it is not a formality, it caught a dead number.
+
+### PL-43 · Katie Piper's own charity is on Katie Piper's page
+The `burns` block carries Changing Faces and the Katie Piper Foundation. The Foundation is the
+national charity for burns rehabilitation, and it is hers. Leaving it out to avoid the awkwardness
+would have cost a reader the most relevant service in the country; leaving it in silently would have
+been an advert. So it is in, and the story says in our own voice that she founded it — the same
+handling as Spencer Matthews and his drinks company (PL-32).
+
+The block sits on the condition, not the story, so it reaches anyone reading about acid and chemical
+burns whether or not they came via her.
+
+### PL-44 · Davina McCall's story ended at the anaesthetic
+It was published from a recording that runs well past the operation, and stopped as she went under.
+The same source has the part a reader facing this surgery would most want: the cyst was sitting on
+the passage short-term memories travel through, it pulled that passage out of shape as it came out,
+and she woke not knowing who or where she was. It came back over weeks.
+
+Extended rather than published again as a second story. That meant taking it down, back to draft,
+and through review and a second editor — which is what the admin screen says happens to a published
+story, and there is no shortcut for having been published once. The published date moves as a
+result. That is the design, not a side effect to route around.
+
+Two things follow from this that are worth someone else knowing. The import script deliberately
+leaves an existing story's text alone, so **this rewrite will not reach production by importing**;
+it needs doing there. And a story built from a long recording should be checked for where it stops,
+because the interesting half is often after the operation.
+
+### PL-45 · Photographs: press images refused again, three stories with none
+Press and agency images were supplied for most of these people — a newspaper's own CDN, a magazine's
+optimiser, a stock still. All refused, as in PL-25. The five photographs used are from Wikimedia
+Commons with the author, licence and source recorded on the figure, and each was opened and looked
+at before it went anywhere near a story, because a wrong face on a health page is not a typo.
+
+Jamie Theakston, Trisha Goddard and Ed Jackson have no photograph on Commons, so their cards fall
+back to the monogram. A missing photograph is not a reason to publish one we have no right to.
+
+### PL-46 · Quotes, and automatic captions
+These sources were read as YouTube's automatic captions. They are good enough to report from
+faithfully in our own words, and they are not a reliable record of anyone's exact words — they
+mis-hear names, drop clauses and invent punctuation. One quote is used in the whole wave, and only
+because it is short, plain and hard to mis-transcribe.
+
+Where a date was not corroborated elsewhere it is simply absent from the source record, rather than
+guessed to the nearest month.
+
+### FA-01 · The Food Advisor is a carve-out of rule 9, and the carve-out is narrow
+AGENTS.md rule 9 says no medical advice and no AI-generated insight of any kind in the MVP, and
+the brief puts "AI-generated insights of any kind" out of scope. A condition-aware food assistant
+is that, squarely: it holds a diagnosis, translates it into food rules, and sorts dishes by risk
+against it. The conflict was raised before any of it was written, and the platform lead made the
+call to build it.
+
+What the carve-out covers: translating a condition into food rules, turning a menu into questions,
+looking up a drug–food interaction in a table, and offering a substitution. What it does not
+cover, and what the code is built to make difficult rather than merely discouraged:
+
+- **Nothing is ever declared safe.** `Verdict` in `menu.ts` has three members — worth asking
+  about, likely a problem, not enough information — and adding a fourth means editing that union
+  under the comment explaining why it has three. We hold a photograph of a menu; we do not hold
+  the fryer, the shared board, or Tuesday's recipe change.
+- **No calorie counts, no moral vocabulary about food.** Restriction tools are a known route into
+  disordered eating, and a tool that hands somebody a second reason to watch what they eat has
+  caused the harm it was built to prevent.
+- **No invented quantities.** How much potassium is in a restaurant dish is unknowable from a
+  menu. Say the category, never the figure.
+
+All three are detectors in `src/lib/food/language.ts`, in the shape `no-interpretation.ts` already
+established, and `tests/unit/food-language.test.ts` sweeps every file in the feature. The sweep
+caught four phrasings in the first draft — "dairy-free", "wheat-free", "egg-free" and a rhetorical
+"Is this gluten free?" used as an example of a bad question. All four were mine, all four were
+written while actively thinking about this rule, and that is the argument for the detector.
+
+Rule 9 still holds everywhere else, including inside this feature: the reaction log shows rows
+back and never reads them as a cause.
+
+### FA-02 · The condition profile stays on the device
+Allergies, medicines and diagnoses are special category data, and the spec asks for local storage
+by default with sync as an opt-in. Keeping it in the browser means the most sensitive thing a
+person types here never reaches us, and it means no change to `prisma/schema.prisma`, which is a
+single-writer file.
+
+The cost is real and is on the screen rather than buried: clearing the browser clears the profile,
+and it does not follow you to your phone. Syncing it is a decision about encryption at rest, and
+that belongs to the platform lead rather than to this branch.
+
+### FA-03 · Photo reading is a seam, not an implementation
+Menu and fridge photographs need a vision model. Every option means a new runtime dependency and
+`package.json` is single-writer, so `src/lib/food/vision.ts` is the interface plus a provider that
+declines — the pattern `src/lib/email/` already uses. The screen offers typing the menu out, which
+produces exactly the same questions, because it is the words that do the work and not the picture.
+
+`PhotoUnavailableProvider` throws rather than returning an empty read. An empty read is
+indistinguishable from a menu with nothing on it worth flagging, and somebody would act on it.
+
+The two rules any real provider inherits are held by the shape of `MenuRead` rather than by asking
+a provider to behave: `unreadableSections` is required, and a dish read without its description
+comes back with no description and lands in "not enough information". Never infer a dish's contents
+from its name.
+
+### FA-04 · The longest allergen name, not the first
+`namesFoundIn` originally reported the first hidden name that matched, so a chutney made with malt
+vinegar came back as "malt". True, and useless — the reader needs to know where in the dish the
+gluten is. It now reports the longest match. Found by a test asserting the reason text, not by
+reading the function.
+
+### PL-47 · Three things found by reading the pages back
+Everything above was written from the sources and checked against them. These three were only
+visible on the published page, read cold:
+
+**Andi Oliver** — the page said, in our own voice, that the diet her GP put her on "was the thing
+that had been setting off the next binge for years". That is a health claim, and it is hers to make
+rather than ours. Rewritten as what she says: that dieting was already what she had been trying, and
+that she would resolve not to eat all day and then be unable to stop once she had started.
+
+**Fearne Cotton** — the order was wrong. The page had her depression coming before the bulimia. In
+the source it comes afterwards, in her thirties, around the point her career changed shape. A
+sequence error in a mental health story is not a detail: it changes what caused what.
+
+**Julia Bradbury** — she says she was addicted to alcohol, and the story was tagged only to breast
+cancer, so it carried Macmillan and no Drinkline. A page that describes somebody stopping drinking
+is precisely the page that needs the block whose first line is the NHS warning about stopping
+suddenly. Tagged to alcohol use disorder as well.
+
+All three went down, back to draft, through review and out again with a second editor, and the
+retraction reason on each says what was wrong. That is three published dates moved for three
+sentences, and it is the right price.
+
+The lesson is the cheap one: read the page, not the draft. Two of these were invisible in the text
+and obvious on the screen.
+
+### PL-48 · The front page card is a name and a condition
+The cards under the hero carried four things: the person's name, a line saying whether the story was
+about their own health or somebody else's, the story's headline clamped to two lines, and a row of
+tags for conditions and medicines. Twelve of them down a phone is a wall of text, and a headline cut
+off mid-sentence is worse than no headline — it invites the reader to guess the ending, which on a
+page of health stories is the one thing we do not want them doing.
+
+The card now carries the name and the conditions, and nothing else. It is an introduction, not a
+summary: the premise of the grid is recognising somebody, and what the story is about is the tag.
+The headline and the disclosure line are on the story itself, where there is room to read them
+properly.
+
+Medicine tags went with them. A drug name on a card, under a face, with no context and no source
+beside it, is closer to a label on a person than to information — the medicine belongs in the story
+that explains why it was prescribed, and on the medicine's own page.
+
+The content note stays, and will. It is not prose competing for attention, it is a warning, and
+nobody should meet a story about suicide as a photograph with nothing to tell them what is behind
+it. `tests/unit/home-figure-cards.test.ts` now asserts both halves: that the card carries no other
+prose, and that the note is still there.
+
+### PL-49 · The candidate matrix is a deliberate exception to rule 9
+The symptom timeline ships with a grid of symptoms against possible explanations, with cells reading
+Fits / Partly fits / Does not fit. That is interpretation, and AGENTS.md rule 9 says the product
+never interprets or ranks. The conflict was raised before any of it was written and the product
+owner's decision was to build it as specified. This entry is the record of that, so nobody later
+reads the code and concludes the rule was simply forgotten.
+
+What the decision did not do is open the rule generally, so the exception is held in code rather
+than in copy:
+
+- **Nothing in the codebase invents a candidate.** There is no list of conditions anywhere in this
+  feature, no scoring of symptoms against one, and no path that adds a column the person did not
+  type. Every possibility on that page is one somebody has been carrying around already, usually
+  because it was said to them in a corridor.
+- **No probabilities.** `tallyLabel` builds the number and the sentence explaining what it counts as
+  one string, so the figure cannot be rendered without "a count of fit, not a likelihood" beside it.
+- **The framing paragraph is returned by `buildMatrix`**, not left to a page to remember.
+- **It never reaches a clinician.** `handover.ts` does not import the matrix and
+  `tests/unit/timeline-handover.test.ts` fails if a candidate is ever stated as a fact in either
+  script. Candidates leave as questions — "could this be X, and what would rule it out?" Handing a
+  doctor your own differential turns the appointment into a conversation about the list.
+- **A candidate with no discriminating feature and no test that would settle it is called out as
+  unusable**, because it cannot become a question and so cannot do anything for the person.
+
+The page is called "Questions to ask" rather than anything with "diagnosis" in it. Somebody
+arriving at the first is preparing for an appointment. The no-interpretation detector runs over
+every file in the feature with no exclusions, matrix included, and passes — the exception is the
+grid's cell values, not a licence for the prose around them.
+
+### PL-50 · Red flags read the words, and reassurance does not switch one off
+The engine matches on free text, not on structured fields, because nobody types "syncope" — they
+type "I went down", "my legs gave way", "she found me on the floor". A rule set that watches only
+the tidy fields watches the wrong thing, since the tidy field is filled in later by somebody who has
+already decided it was nothing.
+
+Two rules pulled against each other in the spec. "Do not treat something that has resolved as an
+active emergency" and "never let a red flag be dismissed by the user's reassurance" point opposite
+ways on an entry that says "I blacked out but it's fine now". It is resolved on **time only**:
+whether a flag is live is decided by the date on the entry and by nothing else. "It's fine now",
+"I don't want to make a fuss" and "I'm probably overreacting" are the most common sentences around
+the most serious entries and they are not evidence. Negation — "I did not pass out" — does suppress
+a flag, over a short window of words before the match, deliberately narrow.
+
+A past episode stays flagged, is stored with its tier, and is carried into the next handover. The
+entry is written **before** the flag screen is shown, not after. The earlier ordering lost the
+record of somebody who was sent to 111, told to keep a record, and came back to find it gone.
+
+### PL-51 · Contradictions are surfaced, never resolved, and nothing is deleted
+The scan runs on every write and hands back both versions with both sources and both dates. It
+proposes a winner using the precedence rule — a note written at the time, or a document, beats a
+memory, always — and stops there. Where the evidence does not decide it, and a clinic letter against
+a contemporaneous note does not, it returns no proposal at all rather than inventing a tiebreak.
+
+Resolving silently was the tempting version and it is the wrong one. A system that quietly rewrites
+somebody's account of their own illness, and is right nine times out of ten, is worse than one that
+asks, because on the tenth there is nothing left on the screen to notice it with.
+
+The losing record is marked superseded with a date and a reason and stays visible, greyed. That the
+record once said March and now says February is itself worth knowing — it is how a person notices
+their own memory has moved.
+
+### PL-52 · The handover ceilings are hard, and it says when it drops something
+150 words for the phone script, 600 for the consultation page. Fifty seconds is roughly what a
+triage call gives you before the other person needs to start asking; one side of A4 is what gets
+read to the end.
+
+Both are enforced by degrading rather than by truncating. The short script drops detail in a fixed
+order — lifestyle, then past conditions, then medicines past the first three — and the long one
+trims the chronology from the middle, keeping how it started and where it is now. Both then say out
+loud that something was left out. A document that silently omits four months reads as though nothing
+happened in them.
+
+Anything recorded from memory is marked as such in the chronology. "Examination reported as normal
+— from recollection, clinic letter not obtained" is honest and useful. "Examination normal", written
+flat, is a clinical record the person has invented, and it will be read as one.

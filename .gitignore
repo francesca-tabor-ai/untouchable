@@ -80,3 +80,6 @@ editorial-export*.json
 # development at the production database.
 .env.vercel
 .env.prod
+
+# scratch diagnostics, never committed
+/scripts/tmp/

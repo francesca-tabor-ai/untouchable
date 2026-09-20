@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Callout } from "@/components/ui/callout";
+import { FoodAdvisor } from "@/components/food/food-advisor";
 import { Container } from "@/components/ui/container";
 import { requireAdult } from "@/lib/auth/guards";
+import { WHAT_THIS_IS } from "@/lib/food/sources";
 
 export const metadata: Metadata = { title: "Food Advisor" };
 
 /**
- * Placeholder. The Food Advisor is in the navigation before it is built, so this page exists
- * to say that plainly rather than to 404 at somebody who followed a link we put there.
+ * The Food Advisor.
  *
- * Whatever is built here records what a person eats. It does not read a log back to them as a
- * cause, a ranking or a recommendation, and it never says a food helped or harmed — AGENTS.md
- * rule 9. The name in the menu is an editorial decision recorded in DECISIONS.md; the copy on
- * the page is not allowed to make the promise the name implies.
+ * This feature exists by an explicit platform-lead decision to carve it out of AGENTS.md
+ * rule 9, which otherwise forbids the platform interpreting anything about a person's
+ * health. The carve-out is recorded in DECISIONS.md FA-01 and it is narrow: this screen may
+ * translate a condition into food rules and turn a menu into questions. It may not tell
+ * anybody that a dish is all right for them, count a calorie, or read a reaction log back
+ * as a cause. Those three are held by detectors in `src/lib/food/language.ts` and scanned
+ * across every file in the feature by `tests/unit/food-language.test.ts`.
+ *
+ * The profile is held in the browser and never reaches the server, so there is no schema
+ * change behind this and no special category data added to the account. The guard still runs
+ * here, every time: a client component holding the data is not a permission check.
  */
 export default async function FoodPage() {
   await requireAdult("/food");
@@ -23,27 +28,10 @@ export default async function FoodPage() {
   return (
     <Container reading className="py-12 sm:py-16">
       <h1 className="text-display">Food Advisor</h1>
-      <p className="mt-4 text-lead text-ink-soft">This part of UnTouchable is not built yet.</p>
+      <p className="mt-4 text-lead text-ink-soft">{WHAT_THIS_IS}</p>
 
-      <Callout tone="neutral" className="mt-8" title="What it will do">
-        <p>
-          It will let you keep a record of what you eat alongside the rest of what you track, so it
-          is there when you want to look back at it or show it to your GP.
-        </p>
-        <p className="mt-3">
-          It will not tell you what to eat, and it will not tell you that a food helped or harmed
-          you. UnTouchable records and shows information. Your GP and your clinical team are the
-          people who work out what it means.
-        </p>
-      </Callout>
-
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Button asChild size="lg">
-          <Link href="/log">Go to today&rsquo;s log</Link>
-        </Button>
-        <Button asChild variant="ghost" size="lg">
-          <Link href="/check-ins">Your check-ins</Link>
-        </Button>
+      <div className="mt-10">
+        <FoodAdvisor />
       </div>
     </Container>
   );

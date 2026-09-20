@@ -224,6 +224,54 @@ export async function medicinesForPublishedStory(storyId: string): Promise<Story
   }));
 }
 
+/**
+ * The medicines several published stories are about, keyed by story id.
+ *
+ * The same read as `medicinesForPublishedStory`, for a surface that shows a list of stories
+ * rather than one — the front page grid asks for every card at once rather than opening a
+ * query per card. Six cards made a query each invisible; forty would not. The published
+ * check is still made here, on every row, rather than being taken on trust from the caller.
+ *
+ * A story with no medicines is absent from the map, not an empty array, so callers read it
+ * with `?? []` and cannot tell "nothing recorded" apart from "not asked for" by accident.
+ */
+export async function medicinesForPublishedStories(
+  storyIds: string[],
+): Promise<Map<string, StoryMedicine[]>> {
+  const byStory = new Map<string, StoryMedicine[]>();
+  if (storyIds.length === 0) return byStory;
+
+  const rows = await db.storyIntervention.findMany({
+    where: { storyId: { in: storyIds }, story: { status: "published" } },
+    select: {
+      storyId: true,
+      context: true,
+      source: { select: { id: true, url: true, title: true, publisher: true, publishedDate: true } },
+      intervention: {
+        select: { id: true, name: true, slug: true, summary: true, type: true, isSensitiveTopic: true },
+      },
+    },
+    orderBy: { intervention: { name: "asc" } },
+  });
+
+  for (const row of rows) {
+    const medicines = byStory.get(row.storyId) ?? [];
+    medicines.push({
+      id: row.intervention.id,
+      name: row.intervention.name,
+      // A medicine with no summary has no page, so there is nothing to link to.
+      slug: row.intervention.summary ? row.intervention.slug : null,
+      type: row.intervention.type,
+      isSensitiveTopic: row.intervention.isSensitiveTopic,
+      context: row.context,
+      source: row.source,
+    });
+    byStory.set(row.storyId, medicines);
+  }
+
+  return byStory;
+}
+
 /** Paths for the sitemap. Published-only, for the same reason as everything else here. */
 export async function publicMedicinePaths(): Promise<{ path: string; lastModified: Date }[]> {
   const rows = await db.intervention.findMany({

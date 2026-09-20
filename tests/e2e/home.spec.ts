@@ -51,6 +51,26 @@ const PLACEHOLDER_LICENCE = JSON.stringify({
   source: "https://example.test/an-invented-photograph",
 });
 
+/**
+ * Enough invented people to fill more than one page of the grid.
+ *
+ * The seed has four published figure stories, which all fit on the first page — so the
+ * "View more" button never appears against the seed alone and there is nothing to test.
+ * These rows exist to make a second page exist. Every one of them is invented, as rule 1
+ * requires, and they are removed again in `afterAll`.
+ *
+ * The surnames are deliberately unlike anything else in the seed, so a spec running
+ * alongside this one and searching for a real seeded word cannot match one of them.
+ */
+const PAGED_FIXTURE_PREFIX = "e2e-home-spec-paged";
+const PAGED_FIXTURE_COUNT = 10;
+
+const PAGED_FIXTURES = Array.from({ length: PAGED_FIXTURE_COUNT }, (_, index) => ({
+  id: `${PAGED_FIXTURE_PREFIX}-${index}`,
+  slug: `${PAGED_FIXTURE_PREFIX}-${index}`,
+  name: `Wendeline Postlebury the ${index + 1}`,
+}));
+
 /** A 1×1 solid white PNG. */
 const WHITE_PIXEL = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
@@ -83,7 +103,89 @@ test.beforeAll(async ({}, testInfo) => {
     where: { slug: FIGURE_SLUG },
     data: { imageUrl: PLACEHOLDER_PHOTO, imageLicence: PLACEHOLDER_LICENCE },
   });
+
+  await createPagedFixtures();
 });
+
+/**
+ * Ten more invented people with published stories, so the grid runs past its first page.
+ *
+ * Publishing is not something a fixture may shortcut. The database requires a second editor
+ * who is not the drafter and at least one source on anything published, and these rows meet
+ * both — the constraint is the rule, and a test that worked around it would be testing a
+ * database we do not ship.
+ */
+async function createPagedFixtures() {
+  const editors = await db.user.findMany({
+    where: { role: "editor" },
+    select: { id: true },
+    orderBy: { email: "asc" },
+    take: 2,
+  });
+  if (editors.length < 2) throw new Error("The seed no longer has two editors to publish with.");
+  const [drafted, verified] = editors as [{ id: string }, { id: string }];
+
+  for (const fixture of PAGED_FIXTURES) {
+    const figure = await db.publicFigure.upsert({
+      where: { slug: fixture.slug },
+      update: { name: fixture.name },
+      create: {
+        id: fixture.id,
+        slug: fixture.slug,
+        name: fixture.name,
+        shortBio: "An invented person, here only so that the grid has a second page.",
+      },
+      select: { id: true },
+    });
+
+    // Draft first, then add the source, then publish: the trigger that requires a source
+    // fires on the status change, and a story cannot be born published without one.
+    await db.story.upsert({
+      where: { slug: fixture.slug },
+      update: { status: "draft" },
+      create: {
+        id: fixture.id,
+        slug: fixture.slug,
+        type: "public_figure",
+        status: "draft",
+        disclosureType: "own",
+        publicFigureId: figure.id,
+        title: `${fixture.name} on an invented afternoon`,
+        summary: "An invented summary, written so that this card has something to show.",
+        draftedById: drafted.id,
+        verifiedById: verified.id,
+      },
+    });
+
+    await db.source.upsert({
+      where: { id: fixture.id },
+      update: { storyId: fixture.id },
+      create: {
+        id: fixture.id,
+        storyId: fixture.id,
+        url: `https://example.test/${fixture.slug}`,
+        title: "An invented interview",
+        publisher: "The Invented Programme",
+        publishedDate: new Date("2024-05-01"),
+        sourceType: "interview",
+      },
+    });
+
+    await db.story.update({
+      where: { id: fixture.id },
+      data: { status: "published", publishedAt: new Date("2024-05-01") },
+    });
+  }
+}
+
+/** Retract before deleting: the database refuses to strip the last source off a published story. */
+async function removePagedFixtures() {
+  const ids = PAGED_FIXTURES.map((fixture) => fixture.id);
+  await db.story.updateMany({ where: { id: { in: ids } }, data: { status: "draft" } });
+  await db.source.deleteMany({ where: { id: { in: ids } } });
+  await db.story.deleteMany({ where: { id: { in: ids } } });
+  await db.publicFigure.deleteMany({ where: { id: { in: ids } } });
+}
 
 test.afterAll(async ({}, testInfo) => {
   if (testInfo.project.name === FIXTURE_PROJECT) {
@@ -92,6 +194,7 @@ test.afterAll(async ({}, testInfo) => {
       where: { slug: FIGURE_SLUG },
       data: { imageUrl: null, imageLicence: null },
     });
+    await removePagedFixtures();
   }
   await db.$disconnect();
 });
@@ -406,6 +509,89 @@ test.describe("the cards under the hero", () => {
         `“${card.worst.text}” in ${card.worst.colour} over ${card.worstCase}`,
       ).toBeGreaterThanOrEqual(4.5);
     }
+  });
+});
+
+/**
+ * Everybody with a published story is reachable from the front page, a page at a time.
+ *
+ * The control that asks for the next page is a link with an address in it rather than a
+ * button that fetches, which is what these tests are really checking: the last one runs
+ * with JavaScript switched off and still expects it to work.
+ */
+test.describe("seeing everybody, a page at a time", () => {
+  /** How many published stories with a person attached the database currently holds. */
+  async function totalPeople(): Promise<number> {
+    return db.story.count({ where: { status: "published", publicFigureId: { not: null } } });
+  }
+
+  test("shows the first page, and says how many people there are altogether", async ({ page }) => {
+    await serveWhitePhotograph(page);
+    await page.goto("/");
+
+    const total = await totalPeople();
+    expect(total).toBeGreaterThan(12);
+
+    await expect(page.getByTestId("figure-card")).toHaveCount(12);
+    await expect(page.getByTestId("figure-count")).toHaveText(`Showing 12 of ${total} people.`);
+  });
+
+  test("adds the next page when the button is pressed", async ({ page }) => {
+    await serveWhitePhotograph(page);
+    await page.goto("/");
+
+    const total = await totalPeople();
+    await page.getByTestId("view-more").click();
+
+    await expect(page).toHaveURL(/people=24/);
+    await expect(page.getByTestId("figure-card")).toHaveCount(Math.min(24, total));
+  });
+
+  test("stops offering more once everybody is shown", async ({ page }) => {
+    await serveWhitePhotograph(page);
+
+    const total = await totalPeople();
+    await page.goto(`/?people=${total + 12}#people`);
+
+    await expect(page.getByTestId("figure-card")).toHaveCount(total);
+    await expect(page.getByTestId("figure-count")).toHaveText(`Showing ${total} of ${total} people.`);
+    await expect(page.getByTestId("view-more")).toHaveCount(0);
+  });
+
+  test("a nonsense number in the address shows the first page rather than an error", async ({
+    page,
+  }) => {
+    await serveWhitePhotograph(page);
+    await page.goto("/?people=banana");
+
+    await expect(page.getByTestId("figure-card")).toHaveCount(12);
+  });
+
+  test("a retracted story is not on any page of the grid", async ({ page }) => {
+    await serveWhitePhotograph(page);
+    await page.goto("/?people=300");
+
+    // Kit Marrowby's story is retracted in the seed. Paging is a new way to reach the grid,
+    // and a new way to reach a grid is a new way to leak something that was taken down.
+    await expect(page.getByTestId("figure-card").filter({ hasText: "Kit Marrowby" })).toHaveCount(
+      0,
+    );
+  });
+});
+
+test.describe("asking for more people with JavaScript switched off", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("the button is a link, so it still loads the next page", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    await serveWhitePhotograph(page);
+    await page.goto("/");
+
+    await expect(page.getByTestId("figure-card")).toHaveCount(12);
+    await page.getByTestId("view-more").click();
+
+    await expect(page).toHaveURL(/people=24/);
+    expect(await page.getByTestId("figure-card").count()).toBeGreaterThan(12);
   });
 });
 

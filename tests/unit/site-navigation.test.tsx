@@ -51,6 +51,7 @@ describe("the site header", () => {
       "Medicines",
       "Charities",
       "Symptom tracker",
+      "Your timeline",
       "Food Advisor",
     ]);
   });

@@ -13,6 +13,7 @@ const EXPLORE = [
 
 const YOUR_HEALTH = [
   { href: "/log", label: "Symptom tracker" },
+  { href: "/timeline", label: "Your timeline" },
   { href: "/food", label: "Food Advisor" },
 ];
 

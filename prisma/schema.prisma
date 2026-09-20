@@ -62,6 +62,10 @@ model User {
   dailyLogs         DailyLog[]
   sideEffectReports SideEffectReport[]
   safetyEvents      SafetyEvent[]
+  observations      Observation[]
+  timelineEvents    TimelineEvent[]
+  standingFacts     StandingFact[]
+  candidates        Candidate[]
   reminderPrefs     ReminderPreference?
   auditEntries      AuditLog[]         @relation("AuditActor")
   storiesDrafted    Story[]            @relation("StoryDrafter")
@@ -544,11 +548,25 @@ model UserSymptom {
   /// Stopping tracking a symptom keeps the history but drops it off the daily log.
   active    Boolean @default(true)
 
+  /// FREE TEXT — never exported. Where it is, in the person's words: "left temple", "lower back".
+  bodySite             String?
+  laterality           Laterality?
+  /// When it started. Null is a real answer and renders as [UNCONFIRMED] rather than a guess.
+  firstOnset           DateTime?
+  /// How sure they are of that date. An onset date is the single item most likely to be
+  /// wrong and most likely to change an appointment, so it carries its own confidence.
+  firstOnsetConfidence RecordConfidence @default(unconfirmed)
+  status               SymptomStatus    @default(active)
+  resolvedDate         DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   symptom Symptom @relation(fields: [symptomId], references: [id], onDelete: Cascade)
+
+  observations         Observation[]
+  candidateAssessments CandidateAssessment[]
 
   @@unique([userId, symptomId])
 }
@@ -831,4 +849,252 @@ model ResearchExport {
   createdAt     DateTime       @default(now())
 
   @@index([actorId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Symptom timeline and clinical handover
+// ---------------------------------------------------------------------------
+//
+// The daily log (above) answers "how bad was it today" in under thirty seconds. This section
+// answers a different question: "what has actually happened to me since March, and what do I
+// say in the eleven minutes I get with a GP."
+//
+// Two things make it different from the rest of the tracking tables and both are deliberate:
+//
+//   1. **Provenance is not optional.** Every Observation and TimelineEvent records where it
+//      came from and how sure the person is. A date remembered three weeks later and a date
+//      read off a clinic letter are not the same fact, and a handover document that presents
+//      them as the same fact is a fabricated clinical record. See src/lib/timeline/provenance.ts.
+//   2. **Nothing is ever overwritten.** When two records disagree, the losing one is marked
+//      superseded with a date and a reason. The fact that the record once said something
+//      else is itself clinically useful — it is how somebody notices their memory has moved.
+//
+// Almost every text column here is free text in the person's own words, which is the point:
+// "like a band round my head, worse lying down" is the sentence that changes an appointment.
+// It is also why every one of them is marked FREE TEXT and can never reach a research export.
+
+/// Where a record came from. Precedence when two records disagree lives in
+/// src/lib/timeline/provenance.ts: contemporaneous_note and document always beat recollection.
+enum RecordSource {
+  /// Written or recorded at the time.
+  contemporaneous_note
+  /// Letter, result, discharge summary — something with a date on it that isn't a memory.
+  document
+  /// Remembered later.
+  recollection
+  /// Somebody else told them.
+  third_party
+}
+
+enum RecordConfidence {
+  confirmed
+  probable
+  unconfirmed
+}
+
+enum SymptomStatus {
+  active
+  intermittent
+  resolved
+}
+
+enum Laterality {
+  left
+  right
+  bilateral
+  not_applicable
+}
+
+enum TimelineEventType {
+  appointment
+  test
+  medication_change
+  travel
+  injury
+  significant_life_event
+  other
+}
+
+enum StandingFactCategory {
+  allergy
+  current_medication
+  past_condition
+  lifestyle
+  /// Something that is absent and matters. Clinicians ask for these; patients rarely offer them.
+  relevant_negative
+}
+
+enum CandidateStatus {
+  live
+  ruled_down
+  excluded
+}
+
+/// How well one symptom fits one candidate. Not a probability and not a ranking —
+/// see DECISIONS.md PL-49.
+enum MatrixFit {
+  supports
+  partial
+  against
+  neutral
+  not_yet_tested
+}
+
+enum UrgentFlagTier {
+  emergency
+  same_day
+}
+
+/// One dated data point about a symptom the person is tracking.
+model Observation {
+  id            String @id @default(cuid())
+  userId        String
+  userSymptomId String
+
+  /// When it happened.
+  occurredAt DateTime
+  /// When the note was made. Routinely different from `occurredAt`, and confusing the two
+  /// corrupts the timeline, so they are two columns and never one.
+  recordedAt DateTime @default(now())
+
+  /// 0–10, the same scale as the daily log. Optional: not every episode has a number.
+  severity         Int?
+  /// FREE TEXT — never exported. The person's own words, kept as their words.
+  character        String?
+  /// FREE TEXT — never exported. "About forty minutes", "all night".
+  duration         String?
+  /// FREE TEXT — never exported.
+  triggers         String?
+  /// FREE TEXT — never exported.
+  relievingFactors String?
+
+  source     RecordSource
+  confidence RecordConfidence @default(confirmed)
+
+  /// Set when a better-sourced record replaced this one. The row stays.
+  supersededAt     DateTime?
+  supersededById   String?   @unique
+  /// FREE TEXT — never exported. Which evidence decided it.
+  supersededReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userSymptom UserSymptom @relation(fields: [userSymptomId], references: [id], onDelete: Cascade)
+
+  supersededBy Observation? @relation("ObservationSupersedes", fields: [supersededById], references: [id], onDelete: SetNull)
+  supersedes   Observation? @relation("ObservationSupersedes")
+
+  @@index([userId, occurredAt])
+  @@index([userSymptomId, occurredAt])
+}
+
+/// Something that happened which is not a symptom: an appointment, a test, a house move.
+model TimelineEvent {
+  id     String @id @default(cuid())
+  userId String
+
+  occurredAt DateTime
+  recordedAt DateTime @default(now())
+
+  type        TimelineEventType
+  /// FREE TEXT — never exported.
+  description String
+  /// FREE TEXT — never exported. Who they saw.
+  provider    String?
+  /// FREE TEXT — never exported. What came of it.
+  outcome     String?
+  /// FREE TEXT — never exported. The paperwork that would settle this, e.g. "clinic letter, not obtained".
+  documentRef String?
+
+  source     RecordSource
+  confidence RecordConfidence @default(confirmed)
+
+  /// Set when an urgent-flag rule matched what the person wrote. Recorded so the next
+  /// handover script can carry it, never used to contact anybody.
+  flaggedTier UrgentFlagTier?
+
+  supersededAt     DateTime?
+  supersededById   String?   @unique
+  /// FREE TEXT — never exported.
+  supersededReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  supersededBy TimelineEvent? @relation("TimelineEventSupersedes", fields: [supersededById], references: [id], onDelete: SetNull)
+  supersedes   TimelineEvent? @relation("TimelineEventSupersedes")
+
+  @@index([userId, occurredAt])
+}
+
+/// A fact that belongs at the top of every clinical output: allergies, current medicines,
+/// the relevant thing that is *absent*.
+model StandingFact {
+  id     String @id @default(cuid())
+  userId String
+
+  category        StandingFactCategory
+  /// FREE TEXT — never exported.
+  value           String
+  dateEstablished DateTime?
+  /// Kept rather than deleted, so "stopped taking this in June" stays visible.
+  active          Boolean              @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, category])
+}
+
+/// A possible explanation the person wants to ask a clinician about.
+///
+/// This is the person's own list, written in their own words. Nothing in this codebase
+/// generates a candidate, suggests one, or orders them by likelihood. See DECISIONS.md PL-49.
+model Candidate {
+  id     String @id @default(cuid())
+  userId String
+
+  /// FREE TEXT — never exported.
+  name                   String
+  /// FREE TEXT — never exported. What would tell this apart from its neighbours.
+  discriminatingFeatures String
+  /// FREE TEXT — never exported. What test would settle it.
+  testsThatWouldSettleIt String
+
+  status     CandidateStatus @default(live)
+  /// FREE TEXT — never exported. Why it was ruled down, and what would reopen it.
+  excludedBy String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessments CandidateAssessment[]
+
+  @@index([userId, status])
+}
+
+/// One cell of the matrix: how this symptom fits this candidate.
+model CandidateAssessment {
+  id            String @id @default(cuid())
+  candidateId   String
+  userSymptomId String
+
+  fit  MatrixFit @default(not_yet_tested)
+  /// FREE TEXT — never exported.
+  note String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  candidate   Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  userSymptom UserSymptom @relation(fields: [userSymptomId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, userSymptomId])
 }

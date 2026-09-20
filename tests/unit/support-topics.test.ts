@@ -71,6 +71,87 @@ describe("support matched to the topic", () => {
     expect(topic.intro).toMatch(/dangerous|seizure/i);
   });
 
+  it("offers Beat on an eating disorder page", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "eating_disorder" }]);
+
+    expect(topic.contacts.map((c) => c.contact)).toContain("0808 801 0677");
+  });
+
+  it("does not make somebody qualify before it offers them help", () => {
+    // Andi Oliver was asked whether she was anorexic, then whether she was bulimic, and on
+    // two noes was told there was nothing available and put on a diet. Being turned away for
+    // not being ill enough is the reason people stop asking, so the block says the opposite
+    // before it gives a number.
+    const [topic] = supportTopicsFor([{ supportTopic: "eating_disorder" }]);
+
+    expect(topic.intro).toMatch(/do not have to be underweight|not have to be diagnosed/i);
+    expect(topic.intro).toMatch(/ask again/i);
+  });
+
+  it("offers the Sickle Cell Society on a sickle cell page", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "sickle_cell" }]);
+
+    expect(topic.contacts.map((c) => c.contact)).toContain("020 8961 7795");
+  });
+
+  it("speaks to carriers as well as to people with sickle cell", () => {
+    // Sickle cell trait is found by a screening test, often in pregnancy, by someone who was
+    // not looking for it and has nobody to ask.
+    const [topic] = supportTopicsFor([{ supportTopic: "sickle_cell" }]);
+
+    expect(`${topic.intro} ${topic.contacts.map((c) => c.detail).join(" ")}`).toMatch(
+      /carrier|trait/i,
+    );
+  });
+
+  it("offers the SIA support line after a spinal cord injury", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "spinal_cord_injury" }]);
+
+    expect(topic.contacts.map((c) => c.contact)).toContain("0800 980 0501");
+  });
+
+  it("offers a spinal cord injury reader's family somewhere of their own", () => {
+    // Ed Jackson's partner went to find help without telling him. The people around an
+    // injury get asked how the injured person is and never how they are.
+    const [topic] = supportTopicsFor([{ supportTopic: "spinal_cord_injury" }]);
+
+    expect(`${topic.intro} ${topic.contacts.map((c) => c.detail).join(" ")}`).toMatch(
+      /famil|partner/i,
+    );
+  });
+
+  it("offers Changing Faces on a burns page", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "burns" }]);
+
+    expect(topic.contacts.map((c) => c.contact)).toContain("0300 012 0275");
+  });
+
+  it("tells a burn survivor it does not matter how long ago it was", () => {
+    // Scars tighten for years and people stare for longer. The emergency is the short part.
+    const [topic] = supportTopicsFor([{ supportTopic: "burns" }]);
+
+    expect(`${topic.intro} ${topic.contacts.map((c) => c.detail).join(" ")}`).toMatch(
+      /how long ago/i,
+    );
+  });
+
+  it("offers perinatal support after a birth, and does not print a dead helpline", () => {
+    // Directories still list a PANDAS phone line that PANDAS itself no longer runs. A number
+    // that rings out is worse than no number for somebody who had to work up to dialling it.
+    const [topic] = supportTopicsFor([{ supportTopic: "perinatal_mental_health" }]);
+
+    expect(topic.contacts.map((c) => c.href)).toContain(
+      "https://pandasfoundation.org.uk/how-we-can-support-you/",
+    );
+    expect(topic.contacts.every((c) => !c.href.startsWith("tel:"))).toBe(true);
+  });
+
+  it("does not imply a struggling parent is a bad one", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "perinatal_mental_health" }]);
+
+    expect(topic.intro).toMatch(/bad parent/i);
+  });
+
   it("adds nothing to a condition with no topic", () => {
     expect(supportTopicsFor([{ supportTopic: null }, {}])).toEqual([]);
   });
