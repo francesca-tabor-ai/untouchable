@@ -5,14 +5,14 @@ import Link from "next/link";
 import * as React from "react";
 
 /**
- * The Explore dropdown.
+ * A header dropdown — Explore, Your Health, and whatever else the header grows.
  *
  * Built on `<details>`/`<summary>` so it opens and closes with no JavaScript at all — a
  * navigation menu that needs a script to reveal the site's own sections is a navigation menu
  * that sometimes hides the site. The script only adds the two behaviours people expect once
  * it has loaded: Escape closes it, and so does clicking elsewhere.
  */
-export function ExploreMenu({
+export function NavMenu({
   label,
   links,
 }: {

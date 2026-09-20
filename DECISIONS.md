@@ -1417,3 +1417,31 @@ page that carries the crisis contacts.
 That fail-safe worked exactly as designed and it is still the wrong outcome, because it fails
 quietly. When a topic is new, the deploy has to land before the import runs, and the page has to be
 checked afterwards rather than assumed. Checking is what found it.
+
+### PL-36 · "Your Health" in the header, About out of it
+The header now carries Home, Explore, Your Health. About moved to the footer only, where it
+already was. Someone reads About once, if ever; the header row is worth more to the person who
+arrived at 2am wanting a condition page. Nothing was deleted — `/about` and its two children are
+untouched and still linked.
+
+Your Health holds Symptom tracker (`/log`) and Food Advisor (`/food`). These are account routes in
+a public header, so signed out they land on sign in with a `next` back. That is the page guard
+doing it, not the header: the header does not know who is reading, and must not start to.
+
+`ExploreMenu` became `NavMenu` (`nav-menu.tsx`) now that two dropdowns use it. Same component,
+honest name.
+
+### PL-37 · Food Advisor is named before it is built, and the page says so
+The feature does not exist. The alternative to a stub was a navigation item that 404s, which on a
+health site is a person who gives up rather than a person who retries, so `/food` is a real guarded
+page that says plainly it is not built yet.
+
+The name is the product owner's call, recorded here because it sits awkwardly against rule 9. An
+"advisor" promises interpretation, and nothing in this product is allowed to interpret. The stub
+copy therefore states the boundary outright — it will record what you eat, it will not tell you
+what to eat, and it will never say a food helped or harmed you. Whoever builds the feature inherits
+that sentence as a constraint, not as marketing. If the name is ever revisited, "Food and diet"
+was the alternative considered.
+
+`tests/unit/site-navigation.test.tsx` now checks every header link resolves to a `page.tsx`, so the
+next item added to the navigation before its page cannot ship quietly.

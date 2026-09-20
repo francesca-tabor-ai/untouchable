@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { ExploreMenu } from "@/components/layout/explore-menu";
+import { NavMenu } from "@/components/layout/nav-menu";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 
@@ -11,18 +11,25 @@ const EXPLORE = [
   { href: "/charities", label: "Charities" },
 ];
 
-const TOP_LEVEL = [
-  { href: "/stories", label: "Stories" },
-  { href: "/about", label: "About" },
+const YOUR_HEALTH = [
+  { href: "/log", label: "Symptom tracker" },
+  { href: "/food", label: "Food Advisor" },
 ];
 
 /**
  * Navigation is visible on every screen size.
  *
- * On a phone the links move to their own row underneath, flattened — the three things under
- * Explore are listed outright rather than hidden behind a menu inside a menu. Most people
+ * On a phone the links move to their own row underneath, flattened — the things under each
+ * dropdown are listed outright rather than hidden behind a menu inside a menu. Most people
  * meet this platform on a phone, and every tap between them and a condition page is a tap
  * they might not take.
+ *
+ * About is deliberately not here. It lives in the footer, where someone goes when they have
+ * already decided they want to know who we are. The header is for the four things people
+ * arrive wanting.
+ *
+ * Your Health points into the account area. Signed out, those links land on sign in with a
+ * `next` back to where they were going — the guard on each page does that, not this file.
  */
 export function SiteHeader() {
   return (
@@ -36,9 +43,9 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-7 md:flex">
-          <HeaderLink href="/stories">Stories</HeaderLink>
-          <ExploreMenu label="Explore" links={EXPLORE} />
-          <HeaderLink href="/about">About</HeaderLink>
+          <HeaderLink href="/">Home</HeaderLink>
+          <NavMenu label="Explore" links={EXPLORE} />
+          <NavMenu label="Your Health" links={YOUR_HEALTH} />
         </nav>
 
         <div className="flex items-center gap-2">
@@ -53,7 +60,7 @@ export function SiteHeader() {
 
       <nav aria-label="Main" className="border-t border-line md:hidden">
         <Container className="flex gap-6 overflow-x-auto py-3">
-          {[TOP_LEVEL[0], ...EXPLORE, TOP_LEVEL[1]].map((item) => (
+          {[{ href: "/", label: "Home" }, ...EXPLORE, ...YOUR_HEALTH].map((item) => (
             <HeaderLink key={item.href} href={item.href} className="whitespace-nowrap">
               {item.label}
             </HeaderLink>
