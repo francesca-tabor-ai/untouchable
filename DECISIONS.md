@@ -1190,3 +1190,24 @@ same time, and spent real effort diagnosing 14, 61 and 83 failures that were fou
 truncating one database under each other. Every one of them worked it out and re-ran in isolation
 rather than reporting a red suite, which is the right instinct — but the instruction was wrong and
 it was mine. Parallel editors need parallel databases; the env files already exist for exactly this.
+
+### PL-20 · Sarah Hiscox, and the two things we would not repeat from the source
+Published, linked to Mogadon through `StoryIntervention` — the first story to use the medicine link
+for the purpose it was built for. Two things in the source did not survive editing.
+
+**The caption calls Valium "a very very strong opioid".** It is a benzodiazepine, and the caption
+also renders the drug's name as "palium" and Mogadon as "Mogadom". Naming a drug and misstating its
+class in the same sentence, attributed to a real person, is precisely the error the platform exists
+to prevent. The story says she took pills she found in the family bathroom cabinet and does not name
+them. If a source of hers names them correctly, an editor can add it.
+
+**She describes the first tablet as "like having a big blanket wrapped around me. It was delicious."**
+True to her experience, and a sentence that reads as an advertisement for taking it. People in
+recovery read pages like this one. The story says it was the beginning of something without the
+sensory detail.
+
+The UKAT page supplied as a source is a private rehab provider (rule 14). Mogadon's summary continues
+to come from the electronic Medicines Compendium and the NHS.
+
+She has no freely licensed photograph, so her card shows initials. Two press images were supplied
+and both were refused.
