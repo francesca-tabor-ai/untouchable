@@ -1211,3 +1211,29 @@ to come from the electronic Medicines Compendium and the NHS.
 
 She has no freely licensed photograph, so her card shows initials. Two press images were supplied
 and both were refused.
+
+### PL-21 · A friend may speak for someone who has died — rule 16
+Beverley Knight's story is about Tyrone, her closest friend, who declined treatment and died in
+2003. He was not a public figure, and HIV status is among the most stigmatised health information
+there is. The brief allowed a **family or estate** to share publicly after a death. It did not cover
+the friend who was in the next room, and grief does not follow family trees.
+
+Rule 16 now permits it, with four conditions: the person has died and time has passed; the speaker
+was close to them and is telling their own story; only the name the speaker uses is published; and
+nothing is added or inferred. The rule says explicitly to apply it more strictly the more stigma the
+condition carries, because the person cannot correct us.
+
+So the story names him "Tyrone", as she does, and says on the page that he was not a public figure
+and nothing has been added to what she said. The condition page leads with the two facts stigma has
+outlived: effective treatment makes the virus untransmittable, and you cannot catch HIV from
+everyday contact.
+
+### PL-22 · What was cut from these two stories
+**Kate Nash:** a classmate who was critically ill with a heart problem is the reason her mother
+stopped attributing her palpitations to an inhaler. That is a third person's health, so the story
+says a girl at her school became critically ill and gives none of the detail the source gives.
+
+**Beverley Knight:** nothing about HIV campaigning. The chapter heading supplied with this source
+described how Tyrone's illness changed her purpose; this recording does not contain that, and a
+plausible claim is still a claim. If she has said it elsewhere, an editor can add it with that
+source.

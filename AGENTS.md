@@ -58,7 +58,20 @@ raise it instead.
     Refusing these would mean the conditions that silence people are the ones this platform
     never covers, which is the opposite of the point. But it is an exception, and it is not a
     licence to write about anyone who is unwell and famous.
-16. **Never publish a dose, a regimen, or how much of something someone took.** A story can say a
+16. **Someone close may speak about a person who has died, even if they are not family.** The
+    brief allows a family or estate to share publicly after a death. It does not cover the friend
+    who was in the next room, and grief does not follow family trees. Allowed only when all of
+    these hold:
+    - **the person has died**, and a considerable time has passed;
+    - the speaker was **close to them** and is telling **their own** story of it;
+    - **only the name the speaker uses** is published — if they say a first name, we publish a
+      first name;
+    - **nothing is added** beyond what was said, and nothing is inferred about anyone living.
+
+    Apply it more strictly the more stigma the condition carries. HIV status, addiction and mental
+    illness have all been used against people; a story that names one is a story somebody cannot
+    correct, because they are dead.
+17. **Never publish a dose, a regimen, or how much of something someone took.** A story can say a
     person was prescribed a drug, became dependent on it, and came off it. It must not be readable
     as instructions.
 
