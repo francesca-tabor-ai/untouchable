@@ -1406,3 +1406,14 @@ Also cut: the name of the private individual she thanked, and her mother's psych
 Her mother is living and did not disclose them here; the story says only that Tulisa was caring for
 a parent from a young age, which is a fact about Tulisa. The journalist and newspaper are unnamed —
 she was acquitted, and the page is about what the three years did to her health.
+
+### PL-35 · Import the data after the code, not before
+The alcohol topic went live as a `supportTopic` value on a condition row before the deploy carrying
+the `alcohol` entry in `support-topics.ts` had finished. For a few minutes production served
+Spencer Matthews's story with no alcohol support on it at all — because `supportTopicsFor` ignores a
+key it does not recognise, which is the behaviour we chose so an unknown key can never take down the
+page that carries the crisis contacts.
+
+That fail-safe worked exactly as designed and it is still the wrong outcome, because it fails
+quietly. When a topic is new, the deploy has to land before the import runs, and the page has to be
+checked afterwards rather than assumed. Checking is what found it.
