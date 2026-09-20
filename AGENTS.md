@@ -44,7 +44,21 @@ raise it instead.
     Medicines Compendium. **Never** from a company that sells treatment, however good its page is.
     A private clinic's drug page exists to find customers, and linking to it would sell the one
     thing this platform has: that nobody paid to be here.
-15. **Never publish a dose, a regimen, or how much of something someone took.** A story can say a
+15. **A family may speak for a living person who cannot speak for themselves — narrowly.** The
+    default remains self-disclosure, or a family or estate speaking publicly after a death. The
+    one exception is a condition that takes away the capacity to disclose: advanced dementia,
+    aphasia, severe brain injury. It is allowed only when **all** of these hold, and an editor
+    records that they hold:
+    - the family has made a **deliberate public statement**, in their own words, not a leak,
+      a paparazzi story, or a reporter's inference;
+    - the statement was plainly **intended to be public**, usually to raise awareness;
+    - the story is drawn **from that statement**, not from coverage of it;
+    - nothing is added about the person's current state beyond what the family said.
+
+    Refusing these would mean the conditions that silence people are the ones this platform
+    never covers, which is the opposite of the point. But it is an exception, and it is not a
+    licence to write about anyone who is unwell and famous.
+16. **Never publish a dose, a regimen, or how much of something someone took.** A story can say a
     person was prescribed a drug, became dependent on it, and came off it. It must not be readable
     as instructions.
 
