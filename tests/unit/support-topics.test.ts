@@ -53,6 +53,24 @@ describe("support matched to the topic", () => {
     expect(topics.flatMap((t) => t.contacts).map((c) => c.contact)).not.toContain("0808 808 00 00");
   });
 
+  it("offers Drinkline and AA on an alcohol page", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "alcohol" }]);
+    const numbers = topic.contacts.map((c) => c.contact);
+
+    expect(numbers).toContain("0300 123 1110");
+    expect(numbers).toContain("0800 917 7650");
+  });
+
+  it("warns about stopping suddenly before it offers a single number", () => {
+    // These blocks sit under stories about people who got sober. The NHS says stopping
+    // suddenly when you are dependent can cause seizures. A page that reads as encouragement
+    // to stop tonight, with that left out, is the thing to avoid.
+    const [topic] = supportTopicsFor([{ supportTopic: "alcohol" }]);
+
+    expect(topic.intro).toMatch(/suddenly/i);
+    expect(topic.intro).toMatch(/dangerous|seizure/i);
+  });
+
   it("adds nothing to a condition with no topic", () => {
     expect(supportTopicsFor([{ supportTopic: null }, {}])).toEqual([]);
   });

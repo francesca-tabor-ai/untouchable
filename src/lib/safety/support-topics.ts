@@ -121,10 +121,58 @@ const CANCER: SupportTopic = {
   ],
 };
 
+/**
+ * Checked 20 September 2026. Drinkline's number was read from the NHS alcohol support page
+ * and from Alcohol Change UK; the AA helpline from AA's own site and the NHS service
+ * directory. Alcohol Change UK is a link rather than a number, so there is nothing to get
+ * wrong.
+ *
+ * The intro carries a warning the other topics do not need. The NHS is explicit that it can
+ * be very dangerous to stop drinking suddenly if you are dependent, and withdrawal can mean
+ * seizures. This block sits under stories about people who stopped. Leaving that out and
+ * letting the page read as encouragement to do the same tonight is the harm here, so it goes
+ * first, before any of the numbers.
+ */
+const ALCOHOL: SupportTopic = {
+  key: "alcohol",
+  heading: "If you are worried about your drinking",
+  intro:
+    "If you are dependent on alcohol, stopping suddenly can be dangerous — the NHS says withdrawal can cause seizures, and it is not something to do on your own. See a GP or one of these first. Nobody here is going to tell you off, and none of them is selling anything.",
+  contacts: [
+    {
+      key: "drinkline",
+      name: "Drinkline",
+      detail:
+        "The national alcohol helpline. Free and confidential, weekdays 9am to 8pm and weekends 11am to 4pm. It is for people worried about someone else's drinking too.",
+      contact: "0300 123 1110",
+      href: "tel:03001231110",
+      external: false,
+    },
+    {
+      key: "alcoholics-anonymous",
+      name: "Alcoholics Anonymous",
+      detail: "A free helpline, answered by people who have been there, day and night.",
+      contact: "0800 917 7650",
+      href: "tel:08009177650",
+      external: false,
+    },
+    {
+      key: "alcohol-change-uk",
+      name: "Alcohol Change UK",
+      detail:
+        "Information, and a way to check your own drinking without telling anyone about it first.",
+      contact: "alcoholchange.org.uk",
+      href: "https://alcoholchange.org.uk/help-and-support/get-help-now",
+      external: true,
+    },
+  ],
+};
+
 const TOPICS: Record<string, SupportTopic> = {
   [SEXUAL_VIOLENCE.key]: SEXUAL_VIOLENCE,
   [SUBSTANCE.key]: SUBSTANCE,
   [CANCER.key]: CANCER,
+  [ALCOHOL.key]: ALCOHOL,
 };
 
 /** The support blocks for a set of conditions, de-duplicated and in a stable order. */

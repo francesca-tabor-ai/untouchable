@@ -1351,3 +1351,58 @@ that had been live without it.
 
 The lesson is narrower than "update the scripts": a safety feature that is only wired up in the
 environment you look at is not wired up. The migration had not been deployed either.
+
+### PL-31 · Alcohol support, and the warning that goes before the numbers
+New `alcohol` topic: Drinkline (0300 123 1110, from the NHS alcohol support page and Alcohol Change
+UK), Alcoholics Anonymous (0800 917 7650, from AA's own site and the NHS service directory), and
+Alcohol Change UK as a link.
+
+The intro carries a warning the other topics do not need, and it comes before any number. The NHS is
+explicit that stopping suddenly when you are dependent can cause seizures and can need emergency
+care. This block sits at the foot of stories about people who stopped drinking. A page that reads as
+encouragement to do the same tonight, with that left out, is the foreseeable harm.
+
+### PL-32 · Spencer Matthews sells the thing his story is about
+He founded a non-alcoholic drinks company in 2018. The story says so, in his own part of the page,
+because a reader working out what to make of a famous person describing how much better life is
+without drink should know he has a commercial interest in that conclusion. One of the two images
+supplied was from his company's shop.
+
+He also declines to present moderation as a method, and the story does not either: he says that with
+an addictive nature it stays a slippery slope, and what changed is the size of what he would lose.
+Reported as his, flagged in our own voice as not a route this page puts forward.
+
+His brother died on Everest when he was ten. He says therapists connect that to his drinking and
+that he is uncomfortable making the connection himself, because he enjoyed drinking and nobody made
+him. Both halves kept, neither resolved. Cut: allegations of negligence around the death, which are
+not health information and which name nobody who can answer them.
+
+### PL-33 · Penny Lancaster, and a husband's diagnosis left out
+Three incidents, all hers, all told by her: an assault at twelve on the way to school, a drugging
+and assault by a client during her modelling years, and an attack on the Underground. She reported
+the first the same day and was believed; she refused to identify a suspect she was not certain of,
+and he was never caught. She told nobody about the second for decades, and declined to make a
+statement when an officer told her she had just reported a crime.
+
+Her reason for stopping therapy after one session was that she was caring for her husband, who was
+seriously ill. His diagnosis is public and he is a living person who did not disclose it here, so it
+is not on this page — "seriously ill" carries her reason without publishing his health from her
+mouth. Rule 15 does not have a famous-enough exception.
+
+Cut: her account of brain development and of alcohol and drugs causing permanent damage before
+twenty-one, which is a health claim, is contested, and is not her story.
+
+### PL-34 · Tulisa, and writing a suicide attempt with nothing in it
+The source describes an attempt in full — what was taken, how much, what was searched for
+beforehand, how she was found, what colour she was. None of that is on the page, and the page says
+so rather than leaving a gap a reader might try to fill.
+
+What is published is the shape and the outcome: that she made attempts during those three years,
+that a friend worked out something was wrong and called an ambulance, that she lived, that she was
+angry to wake up, and that she thanked the person who intervened. The Samaritans media guidelines
+are the floor here, not the target.
+
+Also cut: the name of the private individual she thanked, and her mother's psychiatric diagnoses.
+Her mother is living and did not disclose them here; the story says only that Tulisa was caring for
+a parent from a young age, which is a fact about Tulisa. The journalist and newspaper are unnamed —
+she was acquitted, and the page is about what the three years did to her health.
