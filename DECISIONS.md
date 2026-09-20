@@ -972,3 +972,221 @@ Vercel and in CI, which is precisely the failure recorded in PL-5. If `git statu
 ```bash
 git checkout -- package-lock.json
 ```
+
+### D-052 · Three stories added, and the one place rule 15 was actually load-bearing
+Shania Twain (Lyme disease), Bruce Willis (frontotemporal dementia) and Alanis Morissette
+(postnatal depression). Every sentence was written from a source that was fetched and read, not
+from anyone's recollection. Where a source supported a nice line and the source I had actually read
+did not, the line came out — three of them did, including a vivid sentence about the moments after
+Shania Twain's surgery that turned out to exist only in a search-result summary of an interview I
+had not opened.
+
+**Bruce Willis is the reason rule 15 exists, and all four of its conditions were checked against the
+statement itself** rather than against anybody's report of it.
+
+1. *A deliberate public statement in the family's own words.* `theaftd.org/MNLStatement23/`, dated
+   16 February 2023, headed "A Statement from the Willis Family" and signed by seven of them. Read
+   in full through the browser; AFTD's own commentary sits on a separate page and none of it is in
+   the story.
+2. *Plainly intended to be public.* The statement asks that media attention be pointed at awareness
+   and research, names the charity twice, and asks readers with no experience of FTD to go and learn
+   about it.
+3. *Drawn from the statement, not from coverage of it.* The story cites the statement and nothing
+   else. One detail that only appears in journalism — that the March 2022 announcement was a
+   retirement — was cut from the story, even though it is true and easy to source, because the
+   statement itself only refers to having announced a diagnosis.
+4. *Nothing added about his current state.* The story says so on the page, in the content note and
+   in the closing line: the statement is from February 2023 and we have added nothing to it.
+
+The content note also says plainly that he has not spoken about this himself. A reader who does not
+know that will assume he did, and the whole justification for publishing rests on their knowing.
+
+**Third parties were cut twice.** Shania Twain described her surgeon's own cancer; Alanis Morissette
+names her children. Neither has given us a source for their own health, so neither appears.
+
+**Nothing came from an auto-generated caption track verbatim.** Two of the three stories are sourced
+to YouTube interviews, whose transcripts mangle names and medical terms. They were used to establish
+what was said and then written out in our own words. The single quote on the batch is from the
+Willis statement, which is published text: sixteen words, attributed, within the 25-word limit.
+
+### D-053 · Postnatal depression is marked sensitive, on the condition rather than the story
+The Morissette source contains intrusive thoughts and medication, and no suicidal ideation — so the
+literal trigger for the sensitive flag was not met by this story. It is set anyway, on the
+condition, because the NHS page for postnatal depression lists thoughts of harming yourself or your
+baby among its ordinary symptoms. The flag lives on the condition, so the next story tagged
+`postnatal-depression` inherits the content note and the support contacts without an editor having
+to remember. `depression` is already marked this way and the two should not disagree.
+
+The condition summary says the frightening thoughts are a symptom and a reason to ask for help, and
+that asking very rarely leads to a baby being removed. Both are on the NHS page, and the second one
+is the sentence most likely to make somebody pick up the phone. No method detail anywhere, per the
+Samaritans guidelines.
+
+### D-054 · Condition summaries, symptom links, and photographs for this batch
+**Summaries** were written from the NHS pages for each condition — `nhs.uk/conditions/lyme-disease/`,
+`/frontotemporal-dementia/` and `/post-natal-depression/` — all three read in full. PL-14's harder
+case did not arise: unlike the colloid cyst, all three have an NHS page, so no charity source was
+needed and no page that sells treatment was used.
+
+The frontotemporal dementia summary keeps the average survival figure the NHS gives. Leaving a
+number like that out reads as kindness and is closer to euphemism; a page about a dementia that
+cannot be slowed should not be vaguer than the NHS is.
+
+**Symptoms** are linked to all three new conditions, using only symptoms already in the table and
+only ones the NHS page actually describes. The PL-12 fallback means an unlinked condition no longer
+locks anyone out of onboarding, so this is an improvement rather than a fix.
+
+**Photographs** are Wikimedia Commons, downloaded to `public/figures/`, with the photographer and
+licence read from the Commons API and stored in `imageLicence` — Raph_PH under CC BY 2.0 (Twain),
+Gage Skidmore under CC BY-SA 3.0 (Willis), Raph_PH under CC BY 4.0 (Morissette). PL-16 unchanged.
+
+The Willis file carries a Commons **personality-rights** warning: the licence covers the copyright,
+not the use of someone's likeness to imply they endorse something. That is already the brief's
+no-endorsement rule (5.2) and its ban on using figures in advertising, so nothing changes here — but
+it is worth knowing that this particular image would be the wrong one to put on a marketing page,
+and that the person in it cannot object.
+
+### D-055 · Four more stories, and what each one actually rests on
+Emilia Clarke (brain aneurysm), Brooke Shields (postnatal depression), Padma Lakshmi
+(endometriosis) and Venus Williams (Sjögren's syndrome). Every sentence was written from a source
+that was fetched and read end to end, not from anybody's recollection of these people.
+
+Three of the four are the person speaking for themselves with nobody in between: Clarke's own essay
+in *The New Yorker* (21 March 2019), Williams' own video on her own YouTube channel (17 June 2022,
+channel confirmed through the oEmbed endpoint rather than assumed from the title), and Shields
+speaking at a press conference in Washington DC on 11 May 2007, carried as raw footage by AP. The
+fourth, Lakshmi, is a 2015 interview by Lola Pellegrino, first published in Lenny Letter and
+republished by the Endometriosis Foundation of America, which Lakshmi co-founded.
+
+**`WebFetch` refuses newyorker.com and nytimes.com, and the browser pane refuses nytimes.com
+outright.** The New Yorker essay came down with `curl` and a normal user agent once the right URL
+was found — the remembered one 404s, which is exactly the sort of thing that would have gone
+unnoticed if the story had been written from memory and the link pasted in afterwards. Brooke
+Shields' 2005 op-ed could not be retrieved at all, so it is not cited; what is cited is footage of
+her saying the same things two years later, which was watched.
+
+**Nothing is quoted.** Three of the five sources are auto-captioned video, and the caption track
+renders "Sjögren's" four different wrong ways in a single Venus Williams video. No quote field is
+set on any of these four stories.
+
+**Third parties are absent by design.** Clarke's essay discusses her father's death from cancer and
+Lakshmi's interview describes her mother's periods; neither has given us a source for their own
+health, so neither appears. Shields' daughter is referred to only as her daughter — she is not
+named, and nothing is said about her.
+
+### D-056 · The Clarke essay contains a passage we did not publish, and why
+Clarke writes that during the aphasia she wanted to pull the plug and asked the medical staff to let
+her die. It is one of the most honest things in the piece and it is hers to tell.
+
+It is not in our story. Publishing it would need Samaritans handling — a content note, which the
+story has, and support signposting, which `needsSupportSignposting` only produces when the
+*condition* is flagged sensitive. Flagging `brain-aneurysm` sensitive would put suicide signposting
+and a content warning on the condition page for every reader who has one, which is not what a
+ruptured vessel is, and telling a frightened reader otherwise is its own harm. Leaving the passage
+in with no signposting is the option the guidelines exist to refuse.
+
+So the story carries a content note about a life-threatening bleed and a hard recovery, says plainly
+that there were panic attacks and weeks she cannot remember, and stops there. Raising it rather than
+quietly writing around it: if the platform lead would rather the passage ran, the thing to build is
+story-level signposting independent of the condition flag, not a sensitive flag on a vascular
+condition.
+
+### D-057 · Condition pages and photographs for this batch
+**Summaries** come from `nhs.uk/conditions/brain-aneurysm/`, `/endometriosis/` and
+`/sjogrens-syndrome/`, each read in full, written out in our own words. All three exist, so PL-14's
+harder case did not arise and nothing that sells treatment was used. `postnatal-depression` already
+existed with the sensitive flag set — another editor's, per D-053 — and was left exactly as it was.
+
+Each summary ends on what the NHS itself says about getting help, attributed to the NHS rather than
+offered as our own advice: call 999 for the signs of a bleed on the brain; see a GP if endometriosis
+symptoms are affecting everyday life, work or relationships; see a GP if Sjögren's symptoms are
+affecting daily life.
+
+**Symptoms** are linked only where the NHS page names them and the symptom already exists in the
+table. Sjögren's therefore gets two, fatigue and pain, because there is no dry-eye or dry-mouth
+symptom to link and inventing one to make the list look fuller would be the wrong trade.
+
+**Photographs** are Wikimedia Commons, self-hosted in `public/figures/`, with photographer and
+licence read from the Commons API — Vengerb3rg under CC0 (Clarke), Greg2600 under CC BY-SA 2.0
+(Shields), the National Book Foundation under CC BY 3.0 (Lakshmi), Hameltion under CC BY-SA 4.0
+(Williams). PL-16 unchanged; all four were opened and looked at before being stored, because a
+correctly licensed photograph of the wrong person is still the wrong person.
+
+The obvious Brooke Shields file — the one Wikipedia uses — is a crop somebody tagged as their own
+work over a photograph that is actually Kristin Dos Santos', so the credit it would have printed
+names the wrong photographer. A different Commons file was used instead. Checking the parent file
+took one extra API call and is worth doing every time a Commons description says "cropped from".
+
+### D-055 · Four stories where the source was hard to reach: Jolie, Fox, Gomez, Gaga
+Four public figures were added — Angelina Jolie (BRCA1 and preventive surgery), Michael J. Fox
+(Parkinson's disease), Selena Gomez (lupus and a kidney transplant) and Lady Gaga (fibromyalgia).
+Every one is written from a primary self-disclosure that was actually retrieved and read. Four
+things are worth recording.
+
+**The New York Times is unreachable from this environment**, in both the fetch tool and the browser.
+Angelina Jolie's disclosure is her 2013 NYT op-ed, so for a while there was no story. What worked
+was a **licensed syndicated reprint**: the Tampa Bay Times carried the full text under her byline
+and a "© 2013 New York Times" credit, and that is what is cited, with the reprint's URL and date.
+A reprint of her own words is still her own words; a news report *about* the op-ed would not have
+been. This is worth knowing for anyone who hits the same wall — the sources that are reachable here
+are YouTube transcripts, X's own oEmbed endpoint, NHS and charity pages, and most non-US press.
+
+Lady Gaga's original disclosure is a tweet. It was retrieved from **X's own oEmbed endpoint**
+(`publish.twitter.com/oembed`), which returns the author, the date and the text of a single post
+without a login, and so is a genuine primary retrieval rather than a quote copied out of coverage.
+The 23-word quote on that story is that tweet, and it is the only verbatim quote on the four; a
+second quote, Jolie's closing line, comes from the printed op-ed. Nothing is quoted from a YouTube
+caption track — those mangle names and medical terms, and two of these four sources are captions.
+
+**A living organ donor is a third person**, and her health is not ours to publish. The Gomez story
+is written entirely from what Gomez says about herself: lupus, failing kidneys, the transplant, the
+second operation when an artery turned, the recovery. The donor is not named or described anywhere
+in our words. The TODAY headline that names her is kept intact in the source citation, because a
+citation is the publisher's title and altering it to be tactful would quietly break the one thing
+sourcing is for. We also left out what Gomez said about her lupus and arthritis after the
+transplant: that is a treatment-worked claim, and rule 9 is rule 9 even when the person said it.
+
+**The NHS has no BRCA page.** `nhs.uk/conditions/predictive-genetic-tests-cancer/` now redirects to
+a 404, and the breast cancer page mentions a faulty BRCA gene only in a list of risk factors. So the
+`brca1-gene-change` summary is written from **Breast Cancer Now**, under PL-14 — a registered
+charity whose purpose is information, with nothing to sell — with the risk figures it gives
+(roughly 65–79 in 100 for breast cancer, 40–60 in 100 for ovarian) rather than the 87 per cent and
+50 per cent Jolie's own doctors gave her, which belong in her story as her doctors' estimate for
+her. `kidney-transplant` is a condition page sourced from NHS Blood and Transplant; the other three
+are NHS condition pages. The rest are NHS pages read in full.
+
+One correction worth recording against the "ALS not MS" lesson: **secondary coverage of Jolie's
+op-ed widely says her mother died at 56. The op-ed itself says 59.** We publish neither, because her
+mother's illness is a third person's health and needs its own source — but it is a clean
+demonstration that the summary of a source and the source are not the same document.
+
+**Photographs** are Wikimedia Commons, self-hosted in `public/figures/`, licence and photographer
+read from the Commons API: Harald Krichel, CC BY-SA 4.0 (Jolie); Thomas Atilla Lewis, CC BY 2.0
+(Fox); Frank Sun / WikiPortraits, CC BY-SA 4.0 (Gomez); Carlos M. Vazquez II, CC BY 2.0 (Gaga).
+PL-16 unchanged. The first Fox portrait found — the one Wikipedia uses — was rejected on editorial
+rather than licence grounds: it is from a US election campaign event and he is wearing a campaign
+badge, which is not what a health story's card should imply about him.
+
+### PL-18 · A story can carry support contacts its condition does not imply
+Sensitivity has always lived on the condition: `depression` is flagged, so every story tagged to it
+gets a content note and support contacts. That broke on a story about a ruptured brain aneurysm. The
+person's own essay describes asking the medical staff to let her die, and the editor had two
+options — publish it with no signposting, or cut it. Marking `brain-aneurysm` a sensitive topic to
+solve it would have put suicide signposting in front of every reader who has one, which is wrong for
+them and wrong for the condition. The passage was cut.
+
+`Story.needsSupportSignposting` fixes it. The condition stays what it is, and the story carries what
+it contains. First used on Richard Bacon's ADHD story, which is substantially about drinking he has
+not stopped: ADHD is not a sensitive topic and flagging it would have put addiction signposting in
+front of every reader with ADHD.
+
+The card query was also re-deriving the content-note rule inline instead of calling the shared
+function — the exact drift the module's own comment warns about. It now goes through
+`needsContentNote` like everything else.
+
+### PL-19 · Three editors, one test database
+All three content editors were told to run their suites against `.env.test.qa`. They did, at the
+same time, and spent real effort diagnosing 14, 61 and 83 failures that were four processes
+truncating one database under each other. Every one of them worked it out and re-ran in isolation
+rather than reporting a red suite, which is the right instinct — but the instruction was wrong and
+it was mine. Parallel editors need parallel databases; the env files already exist for exactly this.

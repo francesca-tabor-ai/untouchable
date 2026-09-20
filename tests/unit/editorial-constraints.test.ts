@@ -204,3 +204,76 @@ describe("editorial rules, enforced by the database", () => {
     ).rejects.toThrow();
   });
 });
+
+/**
+ * A licence must belong to the image it is attached to.
+ *
+ * The original rule asked only whether a licence existed. Once a figure had one licensed
+ * photograph, the URL could be swapped for any other and the old credit stayed attached —
+ * which published a press photograph falsely credited to a named photographer under a
+ * Creative Commons licence he had never granted for it. That is a false statement about
+ * somebody's work, made under our name, and it is worse than having no picture.
+ */
+describe("a photograph's licence cannot outlive the photograph", () => {
+  beforeEach(resetDatabase);
+
+  const licence = JSON.stringify({
+    author: "A Photographer",
+    licence: "CC BY 2.0",
+    licenceUrl: "https://creativecommons.org/licenses/by/2.0",
+    source: "https://commons.wikimedia.org/wiki/File:Example.jpg",
+  });
+
+  async function figureWithPhotograph() {
+    return testDb.publicFigure.create({
+      data: {
+        name: "Fictional Person",
+        slug: `licensed-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        shortBio: "Invented.",
+        imageUrl: "/figures/example.jpg",
+        imageLicence: licence,
+      },
+    });
+  }
+
+  it("refuses a new image that keeps the old credit", async () => {
+    const figure = await figureWithPhotograph();
+
+    await expect(
+      testDb.publicFigure.update({
+        where: { id: figure.id },
+        data: { imageUrl: "/figures/somebody-elses.jpg" },
+      }),
+    ).rejects.toThrow();
+  });
+
+  it("allows the image and its licence to change together", async () => {
+    const figure = await figureWithPhotograph();
+
+    const updated = await testDb.publicFigure.update({
+      where: { id: figure.id },
+      data: {
+        imageUrl: "/figures/replacement.jpg",
+        imageLicence: JSON.stringify({ author: "Someone Else", licence: "CC BY-SA 4.0" }),
+      },
+    });
+
+    expect(updated.imageUrl).toBe("/figures/replacement.jpg");
+  });
+
+  it("refuses an image hosted somewhere else, licence or no licence", async () => {
+    // Hot-linking would tell that server the IP of everyone reading about a diagnosis, and
+    // a remote file is not one we can licence. Both press images offered have been remote.
+    await expect(
+      testDb.publicFigure.create({
+        data: {
+          name: "Fictional Person",
+          slug: `remote-${Date.now()}`,
+          shortBio: "Invented.",
+          imageUrl: "https://m.media-amazon.com/images/M/example.jpg",
+          imageLicence: licence,
+        },
+      }),
+    ).rejects.toThrow();
+  });
+});

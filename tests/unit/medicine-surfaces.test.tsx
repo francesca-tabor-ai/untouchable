@@ -119,6 +119,7 @@ function makeStory(overrides: Partial<PublicStory> = {}): PublicStory {
     quote: null,
     quoteSource: null,
     contentNote: null,
+    needsSupportSignposting: false,
     sources: [storySource],
     lastReviewedAt: null,
     ...overrides,

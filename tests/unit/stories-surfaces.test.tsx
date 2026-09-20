@@ -53,6 +53,7 @@ function makeStory(overrides: Partial<PublicStory> = {}): PublicStory {
     quote: "Nine invented words, said by a person who is invented.",
     quoteSource: source,
     contentNote: null,
+    needsSupportSignposting: false,
     sources: [source],
     lastReviewedAt: new Date("2025-06-01"),
     ...overrides,
@@ -284,5 +285,40 @@ describe("the sensitive-topic decision itself", () => {
 
   it("returns no note at all when none is needed", () => {
     expect(contentNoteText({ conditions: [ordinaryCondition] })).toBeNull();
+  });
+});
+
+/**
+ * A story can need support contacts its condition does not imply.
+ *
+ * Sensitivity normally belongs to the condition. But an editor writing about a ruptured
+ * brain aneurysm found a passage where the person asked to be allowed to die, and had two
+ * options: publish it with no signposting, or cut it. Marking brain aneurysms a sensitive
+ * topic to solve it would put suicide signposting in front of every reader who has one.
+ * They cut the passage. This flag is why they will not have to next time.
+ */
+describe("story-level support signposting", () => {
+  const notSensitive = [{ name: "Brain aneurysm", isSensitiveTopic: false }];
+
+  it("adds support contacts when the story asks for them", () => {
+    expect(
+      needsSupportSignposting({ conditions: notSensitive, needsSupportSignposting: true }),
+    ).toBe(true);
+  });
+
+  it("leaves the condition alone — it is the story that is sensitive, not the illness", () => {
+    expect(needsSupportSignposting({ conditions: notSensitive })).toBe(false);
+  });
+
+  it("still signposts from the condition when that is where the sensitivity lives", () => {
+    expect(
+      needsSupportSignposting({ conditions: [{ name: "Depression", isSensitiveTopic: true }] }),
+    ).toBe(true);
+  });
+
+  it("gives the story a content note too, so support is never a surprise at the end", () => {
+    expect(
+      contentNoteText({ conditions: notSensitive, needsSupportSignposting: true }),
+    ).toBeTruthy();
   });
 });

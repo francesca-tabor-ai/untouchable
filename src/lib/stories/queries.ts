@@ -1,6 +1,8 @@
 import type { Prisma } from "@/generated/prisma";
 import { db } from "@/lib/db";
 
+import { needsContentNote } from "./safety";
+
 import { parseKeyMoments, type KeyMoment } from "./key-moments";
 
 /**
@@ -22,6 +24,7 @@ const cardSelect = {
   type: true,
   disclosureType: true,
   contentNote: true,
+  needsSupportSignposting: true,
   publishedAt: true,
   publicFigure: { select: { name: true, slug: true, imageUrl: true, imageLicence: true } },
   conditions: {
@@ -57,7 +60,13 @@ function toCard(row: CardRow): StoryCard {
     figure: row.publicFigure,
     conditions,
     publishedAt: row.publishedAt,
-    needsContentNote: Boolean(row.contentNote) || conditions.some((c) => c.isSensitiveTopic),
+    // Through the shared decision, never re-derived here: a card, a condition page and a
+    // story page must never disagree about whether a warning is needed.
+    needsContentNote: needsContentNote({
+      conditions,
+      contentNote: row.contentNote,
+      needsSupportSignposting: row.needsSupportSignposting,
+    }),
   };
 }
 
@@ -118,6 +127,7 @@ export interface PublicStory extends StoryCard {
   quote: string | null;
   quoteSource: StorySource | null;
   contentNote: string | null;
+  needsSupportSignposting: boolean;
   sources: StorySource[];
   lastReviewedAt: Date | null;
 }
@@ -155,6 +165,7 @@ export async function getPublishedStory(slug: string): Promise<PublicStory | nul
     quote: row.quote,
     quoteSource: sources.find((source) => source.id === row.quoteSourceId) ?? null,
     contentNote: row.contentNote,
+    needsSupportSignposting: row.needsSupportSignposting,
     sources,
     lastReviewedAt: row.lastReviewedAt,
   };

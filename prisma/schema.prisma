@@ -237,6 +237,15 @@ model Story {
   quoteSourceId  String?
   /// Shown above the story where the subject matter needs a warning.
   contentNote    String?
+  /// Put support contacts at the foot of this story, whatever its conditions are marked as.
+  ///
+  /// Sensitivity usually belongs to the condition — depression carries it for every story
+  /// tagged to it. But a story can contain something its condition does not imply: a person
+  /// with a brain aneurysm describing asking to be allowed to die, or an ADHD story that is
+  /// mostly about addiction. Flagging the condition instead would put suicide signposting on
+  /// the condition page for every reader who has one, which is wrong for them and wrong for
+  /// the condition. So the flag lives here too.
+  needsSupportSignposting Boolean @default(false)
   /// Community stories only: written permission from the person whose story it is.
   communityPermissionConfirmed Boolean?
 
