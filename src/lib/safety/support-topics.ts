@@ -80,9 +80,51 @@ const SUBSTANCE: SupportTopic = {
   contacts: [...SUBSTANCE_SUPPORT_CONTACTS],
 };
 
+/**
+ * Checked 20 September 2026 against Macmillan's own page for the support line
+ * (macmillan.org.uk/cancer-information-and-support/get-help/emotional-help/macmillan-support-line)
+ * and against NHS trust pages that publish the same number — the two independent readings we
+ * want before a helpline goes on a health page.
+ *
+ * Maggie's is here because it asks nothing of the person: the centres sit in the grounds of
+ * NHS cancer hospitals, there is no referral and no appointment, and it is free. That is a
+ * lower bar to clear than a phone call on a day when you cannot face one.
+ *
+ * Neither of them sells treatment, which is the rule this list exists under (AGENTS.md
+ * rule 14). Nothing here recommends a treatment or suggests one works — this is who to talk
+ * to, not what to do.
+ */
+const CANCER: SupportTopic = {
+  key: "cancer",
+  heading: "If you want to talk to someone about cancer",
+  intro:
+    "You do not have to be newly diagnosed, or in treatment, or the person who is ill. These are free, and they are for whatever you have on your mind, including the parts that are not medical — money, work, or how to tell people.",
+  contacts: [
+    {
+      key: "macmillan",
+      name: "Macmillan Support Line",
+      detail:
+        "Free, 8am to 8pm every day, for anyone affected by cancer. Nurses, and advisers on money and work as well.",
+      contact: "0808 808 00 00",
+      href: "tel:08088080000",
+      external: false,
+    },
+    {
+      key: "maggies",
+      name: "Maggie's centres",
+      detail:
+        "Free drop-in support in the grounds of NHS cancer hospitals. No referral, no appointment, and family and friends can go too.",
+      contact: "Find your nearest centre",
+      href: "https://www.maggies.org/our-centres/",
+      external: true,
+    },
+  ],
+};
+
 const TOPICS: Record<string, SupportTopic> = {
   [SEXUAL_VIOLENCE.key]: SEXUAL_VIOLENCE,
   [SUBSTANCE.key]: SUBSTANCE,
+  [CANCER.key]: CANCER,
 };
 
 /** The support blocks for a set of conditions, de-duplicated and in a stable order. */

@@ -1268,3 +1268,71 @@ see written down.
 Cut: a claim made in the conversation that trauma is stored in the hips, which is folk physiology
 with nothing behind it; and a named neuroscientist she works with, who adds nothing to her account.
 The people who abused her are unnamed in the source and unnamed here.
+
+### PL-25 · Ella Mills, and reporting a sequence without endorsing it
+Her own site carries a detailed first-person account: PoTS diagnosed at twenty, a standing heart
+rate of 150–180, most of a year in bed, twenty-five medications a day, a change of diet in May 2012,
+and no medication since. The turn in that story is food, and she sells food.
+
+The story reports the sequence in the order she tells it and stops there. It says in our own voice
+that none of it is evidence that changing a diet treats PoTS, that the NHS says PoTS has no cure,
+and that anyone thinking of stopping a prescribed medicine should speak to the prescriber. Same call
+as the Selena Gomez cut (D-021): a person's account of what they did is publishable, a claim that it
+worked is not.
+
+Her own site is the source for *her account*; the NHS is the source for everything clinical. That
+split is what keeps rule 14 intact when the person telling the story has something to sell.
+
+No photograph: Wikimedia Commons has no picture of her, only a packet of her almonds. The supplied
+press image was refused, and the card falls back to the monogram.
+
+### PL-26 · Sophie Ellis-Bextor, and leaving her children out of it
+Pre-eclampsia twice, at thirty-one weeks and then nine weeks early, caught the first time because
+she read a passage in a pregnancy book the night before an appointment and recognised herself.
+
+The source also describes one child's meningitis and another's collapsed lungs and week on a
+ventilator. Both are living people who were infants at the time and have never said any of this
+themselves. Rule 13 — out, along with the birth weights, which are facts about the babies rather
+than about her. Gestational age stayed: delivery is the treatment for pre-eclampsia, so when they
+were born is part of her own clinical course.
+
+She says she was told that having had it twice does not mean you are expected to have it again. The
+NHS lists previous pre-eclampsia among the things that raise the risk. Her recollection is reported
+as hers, the NHS position is stated as the NHS's, and the page does not adjudicate between a reader
+and their consultant. The condition summary was missing that risk factor and now has it.
+
+### PL-27 · Delta Goodrem was not diagnosed with what we were told
+The request paired her with the NHS page for **non-Hodgkin** lymphoma. Her diagnosis, in July 2003
+at eighteen, was **Hodgkin** lymphoma — Wikipedia with a citation, and confirmed against NZ Herald,
+Australian Women's Weekly and Mamamia. The interview never names it at all.
+
+Tagged to the existing `hodgkin-lymphoma` condition. Second time a supplied condition has been wrong
+(Eric Dane, D-019); the check is now routine rather than occasional.
+
+### PL-28 · Jo Malone, and a treatment claim we could not check
+Her doctor told her, twenty-one years later, that standard chemotherapy would not have saved her and
+that he had put her on a then-new protocol along with a small number of other women, all of whom
+are alive. It is the emotional centre of what she wants people to take from it, and it is an
+efficacy claim we cannot verify.
+
+Kept, attributed to her twice over — her account of what her doctor told her — with our own voice
+saying plainly that the site cannot check it, that nothing described is being put forward as a
+treatment that works, and that treatment decisions belong with an oncologist.
+
+Cut: the interval and duration of the protocol, which would have made it a regimen (rule 17); the
+"jagged edges, not a round pebble" description of her scan, which reads as a way to self-assess a
+lump; competing lifetime-risk figures of one in three and one in seven, neither checkable and at
+least one wrong; and a call for routine screening at thirty-eight, which is a policy opinion that
+contradicts NHS screening ages.
+
+No photograph: Commons has Jo Malone shops and Jo Malone bottles, and no Jo Malone.
+
+### PL-29 · Cancer support was missing
+Three stories tagged to cancers and the only signposting was NHS 111, 999 and Samaritans — the
+numbers for someone in danger tonight, and not the ones a person newly diagnosed needs.
+
+`cancer` topic added: the Macmillan Support Line (0808 808 00 00, read from Macmillan's own page and
+from NHS trust pages publishing the same number) and Maggie's centres. Maggie's is there because it
+asks nothing — no referral, no appointment, free, in the grounds of NHS hospitals — which is the one
+that still works on a day you cannot face a phone call. Applied to breast cancer, Hodgkin lymphoma,
+brain tumour and the BRCA1 gene change.

@@ -33,6 +33,26 @@ describe("support matched to the topic", () => {
     expect(topic.contacts.map((c) => c.contact).join(" ")).toContain("0300 123 6600");
   });
 
+  it("offers Macmillan on a cancer page", () => {
+    const [topic] = supportTopicsFor([{ supportTopic: "cancer" }]);
+
+    expect(topic.contacts.map((c) => c.contact)).toContain("0808 808 00 00");
+  });
+
+  it("offers a cancer reader somewhere to go that is not a phone call", () => {
+    // On the day you cannot face ringing anyone, a drop-in with no referral is the one that
+    // still works. Both numbers being helplines would have missed that.
+    const [topic] = supportTopicsFor([{ supportTopic: "cancer" }]);
+
+    expect(topic.contacts.some((c) => c.external)).toBe(true);
+  });
+
+  it("does not put cancer support on a page about something else", () => {
+    const topics = supportTopicsFor([{ supportTopic: "substance" }]);
+
+    expect(topics.flatMap((t) => t.contacts).map((c) => c.contact)).not.toContain("0808 808 00 00");
+  });
+
   it("adds nothing to a condition with no topic", () => {
     expect(supportTopicsFor([{ supportTopic: null }, {}])).toEqual([]);
   });
