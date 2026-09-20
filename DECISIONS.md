@@ -1237,3 +1237,34 @@ says a girl at her school became critically ill and gives none of the detail the
 described how Tyrone's illness changed her purpose; this recording does not contain that, and a
 plausible claim is still a claim. If she has said it elsewhere, an editor can add it with that
 source.
+
+### PL-23 · Support is matched to the topic, not bolted to the medicine
+Signposting was hard-wired: the crisis contacts on every page, plus a substance block only when a
+flagged **medicine** was attached to the story. Two failures fell out of that within a day.
+
+DJ Fat Tony's story is tagged to drug addiction and has no medicine, so it showed no FRANK. And a
+story about childhood sexual abuse would have offered Samaritans and nothing else — no Rape Crisis,
+no Sexual Assault Referral Centre. Being handed only the wrong number reads as nobody having
+thought about you.
+
+`Condition.supportTopic` names a block in `src/lib/safety/support-topics.ts`, and pages render it
+alongside the crisis contacts. Adding a topic is a row of data plus an entry there; no page changes.
+Unknown keys are ignored rather than thrown — losing an extra block is bad, taking down the page
+that carries the crisis contacts is worse.
+
+Every number was read from **two independent sources** before being written down: Rape Crisis
+0808 500 2222 from the NHS page and from rapecrisis.org.uk; FRANK from talktofrank.com and the NHS.
+The sexual violence copy leads with the two facts most likely to stop someone ringing — you do not
+have to go to the police, and it does not matter how long ago it was.
+
+### PL-24 · Kimberly Wyatt, and writing less than the source gives
+She said she did not want to go into detail, and the story does not. It gives the shape — extended
+family, the same isolated house, more than once, more than one person — and no more.
+
+The centre of it is not the abuse. It is that she told someone as a child and was not believed. That
+is what the story is built around, and it is the part a reader in the same position most needs to
+see written down.
+
+Cut: a claim made in the conversation that trauma is stored in the hips, which is folk physiology
+with nothing behind it; and a named neuroscientist she works with, who adds nothing to her account.
+The people who abused her are unnamed in the source and unnamed here.

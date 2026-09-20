@@ -16,8 +16,8 @@ import { contentNoteText, needsSupportSignposting } from "@/lib/stories/safety";
  * sensitive-topic story. Brief 5.2 and 5.4.
  */
 
-const ordinaryCondition = { name: "Breast cancer", slug: "breast-cancer", isSensitiveTopic: false };
-const sensitiveCondition = { name: "Depression", slug: "depression", isSensitiveTopic: true };
+const ordinaryCondition = { name: "Breast cancer", slug: "breast-cancer", isSensitiveTopic: false, supportTopic: null };
+const sensitiveCondition = { name: "Depression", slug: "depression", isSensitiveTopic: true, supportTopic: null };
 
 function makeCard(overrides: Partial<StoryCardData> = {}): StoryCardData {
   return {

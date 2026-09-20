@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SubstanceSupport } from "@/components/medicines/medicine-safety";
+import { TopicSupport } from "@/components/safety/topic-support";
+import { supportTopicsFor } from "@/lib/safety/support-topics";
 import { StoryCharitiesSlot } from "@/components/stories/charity-slots";
 import { SaveStory } from "@/components/stories/save-story";
 import { StoryArticle } from "@/components/stories/story-article";
@@ -81,7 +83,15 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
       }
       additionalContentNote={medicineContentNoteText(medicines)}
       medicinesSlot={<StoryMedicines medicines={medicines} />}
-      medicineSupportSlot={sensitiveMedicine ? <SubstanceSupport /> : null}
+      medicineSupportSlot={
+        <>
+          {/* Specialist support for what this story is about — Rape Crisis, FRANK — shown
+              with the crisis contacts rather than instead of them. The medicine block stays
+              because a medicine can be sensitive on a story whose conditions are not. */}
+          <TopicSupport topics={supportTopicsFor(story.conditions)} />
+          {sensitiveMedicine ? <SubstanceSupport /> : null}
+        </>
+      }
     />
   );
 }

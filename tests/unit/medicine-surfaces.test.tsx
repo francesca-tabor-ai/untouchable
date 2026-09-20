@@ -111,7 +111,7 @@ function makeStory(overrides: Partial<PublicStory> = {}): PublicStory {
     disclosureType: "own",
     figure: { name: "Invented Person", slug: "invented-person", imageUrl: null, imageLicence: null },
     conditions: [
-      { name: "Invented sleeplessness", slug: "invented-sleeplessness", isSensitiveTopic: false },
+      { name: "Invented sleeplessness", slug: "invented-sleeplessness", isSensitiveTopic: false, supportTopic: null },
     ],
     publishedAt: new Date("2025-01-15"),
     needsContentNote: false,

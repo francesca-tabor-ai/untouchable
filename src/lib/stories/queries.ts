@@ -28,7 +28,7 @@ const cardSelect = {
   publishedAt: true,
   publicFigure: { select: { name: true, slug: true, imageUrl: true, imageLicence: true } },
   conditions: {
-    select: { condition: { select: { name: true, slug: true, isSensitiveTopic: true } } },
+    select: { condition: { select: { name: true, slug: true, isSensitiveTopic: true, supportTopic: true } } },
   },
 } satisfies Prisma.StorySelect;
 
@@ -42,7 +42,7 @@ export interface StoryCard {
   type: "public_figure" | "community";
   disclosureType: "own" | "loved_one";
   figure: { name: string; slug: string; imageUrl: string | null; imageLicence: string | null } | null;
-  conditions: { name: string; slug: string; isSensitiveTopic: boolean }[];
+  conditions: { name: string; slug: string; isSensitiveTopic: boolean; supportTopic: string | null }[];
   publishedAt: Date | null;
   /** True when the story carries a content note or touches a sensitive topic. */
   needsContentNote: boolean;

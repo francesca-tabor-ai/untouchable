@@ -178,6 +178,15 @@ model Condition {
   /// Suicide, self-harm and eating disorders. Drives content notes and Samaritans
   /// signposting under the Samaritans media guidelines.
   isSensitiveTopic Boolean @default(false)
+  /// Which specialist support block belongs on pages about this condition, if any —
+  /// a key into `src/lib/safety/support-topics.ts`.
+  ///
+  /// The crisis contacts (NHS 111, 999, Samaritans) are right for someone in danger now and
+  /// wrong for almost everything else. Somebody reading about childhood sexual abuse needs
+  /// Rape Crisis, who say plainly that it does not matter how long ago it happened.
+  /// Somebody reading about addiction needs FRANK. Neither of them needs to be told to call
+  /// 999, and being given only the wrong number reads as not having thought about them.
+  supportTopic String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
