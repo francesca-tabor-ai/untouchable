@@ -2007,3 +2007,81 @@ credit off. Each story page still carries its own per-image credit beside the pi
 The thumbnail is decorative: `alt=""`, because the person's name is the next thing in the card
 and "Photograph of X, X" is noise. `tests/unit/condition-portraits.test.tsx` holds all of it,
 and axe reports no violations on `/conditions/depression` with three photographs on it.
+
+### PL-56 · Correction to PL-55: there is no /about page
+PL-55 says `/about` "still carries the argument at length". It does not exist, and never has in
+git history. Production returns 404 for `/about`, `/about/editorial` and `/about/evidence`, all
+three of which are linked — the first from the home page's "Why we built this" button, all three
+from `safety-footer.tsx`. This predates PL-55; it was found smoke-testing the deploy that shipped it.
+
+It matters more after PL-55 than before it. With the two explanatory blocks gone, the "Why we built
+this" button is the home page's only route to what the platform is, and it leads nowhere. Either
+the pages get written or the links come out; a dead link is the worst of the three.
+
+### PL-57 · People with a photograph come first on the front page
+The figure strip now shows everyone with a licensed photograph before anyone shown as a monogram.
+A grid that opens on a run of monograms reads as unfinished, and the photographs are what carry the
+point that these are people you have heard of.
+
+It is a stable partition, not a ranking. Inside each group the order is exactly the order the
+stories arrive in; nobody is placed by anything but whether we hold a licensed picture of them,
+which is a fact about our records rather than a judgement about the person. The sort and the card
+ask the same function, `photographOf`, so nobody can be moved up the grid for an image the card
+would then refuse to show — an image with no readable licence counts as no image.
+
+Three people were queued with press images: Tyler Henry (an IMDb still), Kate Lawler (the Bristol
+Post's CDN) and Deja Blu (a Squarespace site). All three refused under PL-45. Wikidata and
+Wikimedia Commons were searched for each: Tyler Henry and Kate Lawler have Wikidata entries with
+no image, Commons has no file of either — its hits for "Tyler Henry" are a nineteenth-century
+gunsmith and unrelated archive scans — and Deja Blu has neither. All three will show the monogram,
+which under this ordering puts them at the end of the grid.
+
+### PL-58 · Conditions can be filtered by body system, and some are in none
+The conditions page has a row of filters for the eleven major organ systems, one word each so the
+row fits a phone. Three of the textbook names were swapped for words a frightened reader would
+recognise: "Skin" for integumentary, "Immune" for lymphatic and immune, "Urinary" for excretory.
+Selecting one shows a single plain sentence on what that system is. Each filter shows its count, so
+an empty one is visible before it is tapped. The filter is links in the query string: it works
+without JavaScript and a filtered list can be bookmarked or sent.
+
+The mapping lives in `src/lib/conditions/body-systems.ts`, keyed by condition slug, rather than as
+a column on `Condition`. That kept the single-writer schema untouched; the cost is that a new
+condition needs a line in that file to be filterable. Until it has one it is on the full list and
+under no system, which is the safe way round. If conditions are going to arrive often, a
+`bodySystems` column carried by the editorial import is the better long-term home.
+
+**Eleven conditions are deliberately in no system:** depression, postnatal depression, PTSD, ADHD,
+bulimia, binge eating disorder, alcohol use disorder, drug addiction, sexual abuse and sexual
+assault, the BRCA1 gene change, and Lyme disease. The first nine are not conditions of an organ,
+and filing depression or addiction under "Nervous" would be a clinical claim this platform does not
+get to make; a trauma is not a condition of the body at all. BRCA1 is a gene change rather than a
+disease of a system. Lyme disease can reach the skin, joints and nerves, and naming three systems
+would overstate what is known about any one person's illness. The test for these is explicit, so
+moving one into a system is a decision to record here rather than a line to add quietly.
+
+That leaves a real gap, and it is the largest one: those conditions carry more stories than any
+system does, and somebody looking for depression finds nothing under any filter. A twelfth filter
+for mental health would close it. It was not added because the request was for the eleven.
+
+Other calls made, all revisable: breast cancer is under Reproductive, because the breast is not in
+the eleven and is commonly grouped there. Brain aneurysm, PoTS and pre-eclampsia each sit under two
+systems. Tinnitus is under Nervous, as the system that carries the senses.
+
+### PL-59 · The build cache is off locally, and why builds kept failing
+Every `next build` after the first on this machine failed with "Failed to open database … invalid
+digit found in string". The cause is that this project lives on an exFAT volume, where macOS writes
+an AppleDouble sidecar (`._name`) beside every file — including inside Turbopack's on-disk build
+cache, where it produced `cache/turbopack/._v16.3.5-…`. Turbopack parses each entry name there as a
+version and fails on the sidecar. A clean build always worked; a warm one never did.
+
+Two wrong explanations came first and are worth recording so nobody chases them again: racing
+builds, and a running `next dev` sharing `.next`. Both caused real, separate errors ("another next
+build process is already running"), but neither was this one — it reproduced in a build directory
+nothing else was using.
+
+`turbopackFileSystemCacheForBuild` is now on only when `VERCEL` is set. Vercel builds on Linux, has
+no sidecars, and restores the cache between deploys, so production keeps the speed. The dev-server
+cache is untouched; it has not been seen to fail, and turning it off would slow every restart.
+`.next-verify/` — where `npm run verify` builds via `NEXT_DIST_DIR` so it never touches a running
+dev server's `.next` — is now in `.gitignore` and in the ESLint ignores beside `.next` and
+`.next-e2e`.

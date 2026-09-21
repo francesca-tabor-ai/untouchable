@@ -23,12 +23,15 @@ import type { StoryCard } from "@/lib/stories/queries";
  * outcome, not a gap to fill with whatever an image search returns. See PL-16 and
  * `src/components/stories/figure-portrait.tsx`.
  *
- * **A card carries a name, a condition, and nothing else but a warning.** Not the headline,
- * not the line saying whose health the story is about. Twelve cards each arguing their own
- * case is a wall of text, and the reader scans past all of it; a face and two words is a
- * thing you can take in. The story itself is one tap away and has room for the rest. The
- * content note is the exception and always will be — it is not a summary, it is a warning,
- * and it travels with the card onto every surface.
+ * **A card carries a name and a condition, and nothing else.** Not the headline, not the
+ * line saying whose health the story is about, and since PL-53 not the content note either —
+ * that is shown on the story page, above the story, before any of it can be read. Twelve
+ * cards each arguing their own case is a wall of text; a face and two words is a thing you
+ * can take in. The story itself is one tap away and has room for the rest.
+ *
+ * **People with a photograph come first.** A grid that opens on a run of monograms reads as
+ * unfinished, and the photographs are what make the point that these are people you have
+ * heard of. The order is otherwise unchanged — see `orderForStrip`.
  *
  * **On the contrast of white text over a photograph.** A gradient is not a guarantee: a
  * light photograph can defeat one, and "usually dark enough" is not a standard. So the text
@@ -81,6 +84,35 @@ export function parseShown(value: string | string[] | undefined): number {
   return Math.min(parsed, MOST_WE_WILL_READ);
 }
 
+/**
+ * The photograph this figure may show, or null.
+ *
+ * Never a picture we hold no licence for. The image and the credit come from one record, and
+ * one without the other counts as neither. The sort and the card both ask this function, so
+ * a card can never be moved up the grid for a photograph it then refuses to render.
+ */
+export function photographOf(
+  figure: { imageUrl: string | null; imageLicence: string | null } | null,
+): string | null {
+  if (!figure) return null;
+  return figure.imageUrl && parseAttribution(figure.imageLicence) ? figure.imageUrl : null;
+}
+
+/**
+ * People with a photograph first, everyone else after them.
+ *
+ * A stable partition, not a sort by any score: within each group the order is exactly the
+ * order the stories arrived in. Nobody is ranked by anything but whether we hold a licensed
+ * picture of them, which is a fact about our records and not a judgement about them.
+ */
+export function orderForStrip<T extends { figure: Parameters<typeof photographOf>[0] }>(
+  stories: readonly T[],
+): T[] {
+  const withPhoto = stories.filter((story) => photographOf(story.figure) !== null);
+  const without = stories.filter((story) => photographOf(story.figure) === null);
+  return [...withPhoto, ...without];
+}
+
 interface FigureCardData {
   story: StoryCard;
   /** The conditions the story is about. Plain text, never links. */
@@ -89,7 +121,7 @@ interface FigureCardData {
 
 export async function FigureStrip({ shown = PAGE }: { shown?: number }) {
   const stories = await listPublishedStories({ take: MOST_WE_WILL_READ });
-  const everyone = stories.filter((story) => story.figure !== null);
+  const everyone = orderForStrip(stories.filter((story) => story.figure !== null));
 
   if (everyone.length < FEWEST_CARDS) return null;
 
@@ -187,10 +219,7 @@ const MONOGRAM_TINTS = ["bg-forest-800", "bg-forest-700", "bg-forest-900"];
 function FigureCard({ card, index }: { card: FigureCardData; index: number }) {
   const { story, tags } = card;
   const figure = story.figure!;
-  // Never a picture we hold no licence for. The image and the credit come from one record,
-  // and one without the other counts as neither.
-  const photograph =
-    figure.imageUrl && parseAttribution(figure.imageLicence) ? figure.imageUrl : null;
+  const photograph = photographOf(figure);
 
   return (
     <Link

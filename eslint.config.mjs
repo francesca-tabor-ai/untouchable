@@ -8,6 +8,8 @@ const config = [
       ".next/**",
       // The end-to-end build output — same reason as .next, different directory.
       ".next-e2e/**",
+      // Where verify builds (NEXT_DIST_DIR), so it never touches a running dev server's .next.
+      ".next-verify/**",
       "node_modules/**",
       "next-env.d.ts",
       // macOS writes AppleDouble sidecars on exFAT, and this project lives on one. They

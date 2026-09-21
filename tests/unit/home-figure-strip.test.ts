@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { parseShown } from "@/components/home/figure-strip";
+import { orderForStrip, parseShown, photographOf } from "@/components/home/figure-strip";
 
 /**
  * The row of people on the home page is a public surface like any other, which means a
@@ -114,5 +114,44 @@ describe("parseShown", () => {
 
   it("never asks for more than the ceiling", () => {
     expect(parseShown("999999999")).toBe(300);
+  });
+});
+
+describe("who comes first", () => {
+  // Fictional people throughout — AGENTS.md rule 1.
+  const LICENCE = JSON.stringify({ author: "A. Photographer", licence: "CC BY-SA 4.0" });
+  const pictured = (name: string) => ({
+    name,
+    figure: { imageUrl: `/figures/${name}.jpg`, imageLicence: LICENCE },
+  });
+  const unpictured = (name: string) => ({ name, figure: { imageUrl: null, imageLicence: null } });
+
+  it("puts people with a photograph ahead of people without one", () => {
+    const ordered = orderForStrip([unpictured("a"), pictured("b"), unpictured("c"), pictured("d")]);
+    expect(ordered.map((row) => row.name)).toEqual(["b", "d", "a", "c"]);
+  });
+
+  it("keeps the existing order inside each group, rather than ranking anybody", () => {
+    const ordered = orderForStrip([pictured("z"), pictured("a"), unpictured("y"), unpictured("b")]);
+    expect(ordered.map((row) => row.name)).toEqual(["z", "a", "y", "b"]);
+  });
+
+  it("does not move somebody up for a photograph the card would refuse to show", () => {
+    // An image with no readable licence is no image at all, so it must not buy a place.
+    const unlicensed = { name: "x", figure: { imageUrl: "/figures/x.jpg", imageLicence: null } };
+    const garbled = { name: "y", figure: { imageUrl: "/figures/y.jpg", imageLicence: "not json" } };
+
+    expect(photographOf(unlicensed.figure)).toBeNull();
+    expect(photographOf(garbled.figure)).toBeNull();
+    expect(orderForStrip([unlicensed, pictured("p"), garbled]).map((row) => row.name)).toEqual([
+      "p",
+      "x",
+      "y",
+    ]);
+  });
+
+  it("orders before it pages, so the first page is the photographed people", () => {
+    const source = readFileSync("src/components/home/figure-strip.tsx", "utf8");
+    expect(source.indexOf("orderForStrip(")).toBeLessThan(source.indexOf("everyone.slice(0, shown)"));
   });
 });

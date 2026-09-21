@@ -4,7 +4,16 @@ const nextConfig: NextConfig = {
   // `unauthorized()` and `forbidden()` are what the role guards raise. Without this they
   // throw a 500 instead of a 401/403 — it fails closed, so it was never a hole, but a
   // signed-out visitor to an admin page deserves the right answer rather than a crash.
-  experimental: { authInterrupts: true },
+  experimental: {
+    authInterrupts: true,
+    // Turbopack's on-disk build cache is off everywhere except Vercel. This project lives on
+    // an exFAT volume, and macOS writes AppleDouble sidecars (`._*`) beside every file on
+    // one — including inside `cache/turbopack/`, where Turbopack parses each entry name as a
+    // version. It finds `._v16.3.5-…`, fails with "invalid digit found in string", and every
+    // build after the first dies until the directory is deleted. Vercel builds on Linux, has
+    // no sidecars, and restores the cache between deploys, so it keeps the speed. PL-59.
+    turbopackFileSystemCacheForBuild: Boolean(process.env.VERCEL),
+  },
 
   // End-to-end runs use their own build directory so they can start a dev server while a
   // developer's own is already running — Next locks that per directory, and the two would
