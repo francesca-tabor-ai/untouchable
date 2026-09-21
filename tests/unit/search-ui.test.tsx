@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { SearchResults } from "@/components/search/search-results";
@@ -32,20 +32,12 @@ describe("the search box works with no JavaScript", () => {
 
   it("has a real label, not a placeholder standing in for one", () => {
     render(<SiteSearch />);
-    expect(
-      screen.getByLabelText(/search conditions, medicines, charities and stories/i),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/search conditions/i)).toBeInTheDocument();
   });
 
   it("submits with a real button rather than a click handler", () => {
     render(<SiteSearch />);
     expect(screen.getByRole("button", { name: "Search" }).getAttribute("type")).toBe("submit");
-  });
-
-  it("keeps the chosen filter through a submit, without a script", () => {
-    const { container } = render(<SiteSearch query="tinnitus" kind="charities" />);
-    const hidden = container.querySelector('input[type="hidden"][name="kind"]');
-    expect(hidden?.getAttribute("value")).toBe("charities");
   });
 
   it("keeps what the person typed in the box after a search", () => {
@@ -54,60 +46,47 @@ describe("the search box works with no JavaScript", () => {
   });
 });
 
-describe("the filter chips", () => {
-  it("are links, so they work without a script too", () => {
-    render(<SiteSearch query="tinnitus" kind="all" />);
-    const chips = within(screen.getByRole("navigation", { name: /narrow the search/i }));
+describe("the search looks at conditions and nothing else", () => {
+  it("says so, rather than offering a row of things to choose between", () => {
+    render(<SiteSearch />);
 
-    expect(chips.getAllByRole("link")).toHaveLength(5);
+    expect(screen.getByText("Conditions")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: /narrow the search/i })).toBeNull();
   });
 
-  it("offer everything, conditions, medicines, charities and stories", () => {
-    render(<SiteSearch />);
-    const nav = within(screen.getByRole("navigation", { name: /narrow the search/i }));
+  it("offers no way to widen the search to medicines, charities or stories", () => {
+    render(<SiteSearch query="tinnitus" />);
 
-    for (const label of ["Everything", "Conditions", "Medicines", "Charities", "Stories"]) {
-      expect(nav.getByRole("link", { name: label })).toBeInTheDocument();
+    for (const label of ["Everything", "Medicines", "Charities", "Stories"]) {
+      expect(screen.queryByRole("link", { name: label })).toBeNull();
     }
   });
 
-  it("carry the query with them, so narrowing does not lose the search", () => {
-    render(<SiteSearch query="tinnitus" kind="all" />);
-    const nav = within(screen.getByRole("navigation", { name: /narrow the search/i }));
-
-    expect(nav.getByRole("link", { name: "Charities" }).getAttribute("href")).toBe(
-      "/?q=tinnitus&kind=charities",
+  it("sends nothing but the query, so a submit cannot widen it either", () => {
+    const { container } = render(<SiteSearch query="tinnitus" />);
+    const named = Array.from(container.querySelectorAll("form [name]")).map((node) =>
+      node.getAttribute("name"),
     );
-    // "Everything" is the absence of a filter, not a filter of its own.
-    expect(nav.getByRole("link", { name: "Everything" }).getAttribute("href")).toBe("/?q=tinnitus");
-  });
 
-  it("marks the current one for a screen reader, not only with a colour", () => {
-    render(<SiteSearch query="tinnitus" kind="medicines" />);
-    const nav = within(screen.getByRole("navigation", { name: /narrow the search/i }));
-
-    expect(nav.getByRole("link", { name: "Medicines" })).toHaveAttribute("aria-current", "true");
-    expect(nav.getByRole("link", { name: "Everything" })).not.toHaveAttribute("aria-current");
+    expect(named).toEqual(["q"]);
   });
 });
 
 describe("reading what arrives in the query string", () => {
-  it("takes a query and a kind", () => {
-    expect(parseSearchParams({ q: " tinnitus ", kind: "charities" })).toEqual({
-      q: "tinnitus",
-      kind: "charities",
-    });
+  it("takes the query, and trims it", () => {
+    expect(parseSearchParams({ q: " tinnitus " })).toEqual({ q: "tinnitus" });
   });
 
-  it("falls back to everything when the kind is not one of ours", () => {
-    expect(parseSearchParams({ q: "x", kind: "wibble" }).kind).toBe("all");
-    expect(parseSearchParams({ q: "x", kind: "../../etc/passwd" }).kind).toBe("all");
+  it("ignores a kind somebody has typed into the address bar", () => {
+    // The home page fixes the kind itself. Nothing here reads one, so nothing here can be
+    // widened by hand-editing the URL.
+    expect(parseSearchParams({ q: "x", kind: "stories" })).toEqual({ q: "x" });
+    expect(parseSearchParams({ q: "x", kind: "../../etc/passwd" })).toEqual({ q: "x" });
   });
 
   it("ignores repeated parameters rather than throwing", () => {
     expect(parseSearchParams({ q: ["a", "b"], kind: ["stories"] })).toEqual({
       q: undefined,
-      kind: "all",
     });
   });
 
@@ -171,7 +150,7 @@ describe("results", () => {
 
   it("says plainly when nothing matched, and offers somewhere to go", () => {
     render(
-      <SearchResults outcome={{ query: "zzzz", kind: "all", total: 0, groups: [] }} />,
+      <SearchResults outcome={{ query: "zzzz", kind: "conditions", total: 0, groups: [] }} />,
     );
     expect(screen.getByRole("heading", { name: /nothing matches/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "conditions" })).toBeInTheDocument();

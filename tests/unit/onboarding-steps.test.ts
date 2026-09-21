@@ -52,9 +52,10 @@ describe("the onboarding step registry", () => {
     await testDb.$disconnect();
   });
 
-  it("is the flow the brief asks for, in order", () => {
+  it("is the flow the brief asks for, in order, without the welcome step", () => {
+    // The welcome step is gone: the name it asked for is part of signing up now, and the
+    // optional details beside it live in Settings. Signing up must not be a flow.
     expect(ONBOARDING_STEPS.map((step) => step.key)).toEqual([
-      "welcome",
       "consent",
       "conditions",
       "symptoms",
@@ -82,7 +83,7 @@ describe("the onboarding step registry", () => {
     expect(progress.completedCount).toBe(0);
     expect(progress.readyCount).toBe(READY_STEPS.length);
     expect(progress.finished).toBe(false);
-    expect(progress.nextHref).toBe("/onboarding/welcome");
+    expect(progress.nextHref).toBe("/onboarding/consent");
   });
 });
 
@@ -93,6 +94,7 @@ describe("working through onboarding", () => {
     const user = await makeUser();
     const { alpha, tiredness } = await seedPicklists();
 
+    // The name is already there from sign-up, so the first thing left is consent.
     await saveProfile(user.id, {
       displayName: "Sam",
       yearOfBirth: 1974,
@@ -114,7 +116,7 @@ describe("working through onboarding", () => {
     // Nothing was held in a session: this is a fresh read of what is in the database, which
     // is what closing the tab and coming back next week actually looks like.
     const progress = await onboardingProgress(user.id);
-    expect(progress.completedCount).toBe(4);
+    expect(progress.completedCount).toBe(3);
     expect(progress.finished).toBe(false);
 
     // Whatever remains is the next step in the flow that has not been done, never one that
@@ -145,16 +147,15 @@ describe("working through onboarding", () => {
 
   it("does not count a step as done because a later one is", async () => {
     const user = await makeUser();
-    const { alpha } = await seedPicklists();
+    const { tiredness } = await seedPicklists();
 
+    // Symptoms done, conditions skipped. Being further along is not being finished.
     await giveTrackingConsent(user.id);
-    await saveUserConditions(user.id, [
-      { conditionId: alpha.id, diagnosedYear: null, selfReported: true },
-    ]);
+    await saveUserSymptoms(user.id, [tiredness.id]);
 
     const progress = await onboardingProgress(user.id);
-    expect(progress.steps.find((state) => state.step.key === "welcome")?.complete).toBe(false);
-    expect(progress.nextHref).toBe("/onboarding/welcome");
+    expect(progress.steps.find((state) => state.step.key === "conditions")?.complete).toBe(false);
+    expect(progress.nextHref).toBe("/onboarding/conditions");
   });
 
   it("reopens the consent step if tracking consent is withdrawn later", async () => {

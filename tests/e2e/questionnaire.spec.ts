@@ -20,11 +20,11 @@ function freshEmail() {
 
 async function signUpAndConsent(page: import("@playwright/test").Page) {
   await page.goto("/sign-up");
+  await page.getByLabel("What shall we call you?").fill("Sam");
   await page.getByLabel("Email address").fill(freshEmail());
   await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByLabel("I am 18 or over.").check();
   await page.getByRole("button", { name: "Create my account" }).click();
-  await page.waitForURL("**/onboarding");
+  await page.waitForURL("/");
 
   await page.goto("/onboarding/consent");
   await page.getByRole("checkbox").first().check();

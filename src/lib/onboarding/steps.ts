@@ -1,4 +1,3 @@
-import { hasProfileName } from "@/lib/profile";
 import { canTrack } from "@/lib/profile/consent";
 import { BASELINE_STEP_STATUS, hasCompletedBaseline } from "@/lib/questionnaires/onboarding-step";
 import { TREATMENTS_STEP_STATUS, hasConfirmedTreatments } from "@/lib/tracking/onboarding-step";
@@ -10,10 +9,12 @@ import { hasChosenSymptoms } from "./symptoms";
  * The onboarding flow, as data.
  *
  * Brief 7.1: welcome → consent → conditions → symptoms → current treatments → baseline
- * assessment. Two of those six are built by later milestones, so they are registered here
- * with a placeholder screen rather than left out — a later team fills in the screen and
- * flips its own status constant, and nothing about the flow, the progress display or the
- * resume logic has to be rewritten.
+ * assessment. The welcome step is no longer one of them: its only required question — what
+ * we should call you — is asked on the sign-up form itself, and the optional details that
+ * sat beside it live in Settings → Your details. Two of the rest are built by later
+ * milestones, so they are registered here with a placeholder screen rather than left out —
+ * a later team fills in the screen and flips its own status constant, and nothing about the
+ * flow, the progress display or the resume logic has to be rewritten.
  *
  * Each pending step's status and completeness live in the module owned by the team that
  * will finish it, so two teams finishing two steps never edit this file at all.
@@ -42,14 +43,6 @@ export interface OnboardingStep {
 }
 
 export const ONBOARDING_STEPS: OnboardingStep[] = [
-  {
-    key: "welcome",
-    title: "Welcome",
-    href: "/onboarding/welcome",
-    summary: "What this is, and what we should call you.",
-    status: "ready",
-    isComplete: hasProfileName,
-  },
   {
     key: "consent",
     title: "Your choices about your data",

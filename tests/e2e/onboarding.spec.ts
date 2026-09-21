@@ -17,16 +17,23 @@ function freshEmail() {
 
 async function signUp(page: import("@playwright/test").Page, email: string) {
   await page.goto("/sign-up");
+  await page.getByLabel("What shall we call you?").fill("Sam");
   await page.getByLabel("Email address").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByLabel("I am 18 or over.").check();
   await page.getByRole("button", { name: "Create my account" }).click();
-  await page.waitForURL("**/onboarding");
+
+  // Three fields and you are on the home page, signed in. There is no setup flow to get
+  // through first, and the header is where somebody sees that it worked.
+  await page.waitForURL("/");
+  await expect(page.getByRole("link", { name: "Signed in as Sam" })).toBeVisible();
 }
 
 test("a new person can get through onboarding on a small phone", async ({ page }) => {
   await signUp(page, freshEmail());
 
+  // Onboarding is not where sign-up leaves you any more. It is the optional part, and you
+  // reach it when something needs an answer — or from your own account.
+  await page.goto("/onboarding");
   await expect(page.getByRole("heading", { name: "Setting up your account" })).toBeVisible();
   // Derived, not hardcoded: the number of steps changes as milestones land.
   await expect(page.getByText(/^0 of \d+ done\.$/)).toBeVisible();
@@ -35,12 +42,6 @@ test("a new person can get through onboarding on a small phone", async ({ page }
   await expect(page.getByText(/donate/i)).toHaveCount(0);
 
   await page.getByRole("link", { name: "Start" }).click();
-
-  // Welcome.
-  await expect(page.getByRole("heading", { name: "Welcome" })).toBeVisible();
-  await page.getByLabel("What shall we call you?").fill("Sam");
-  await page.getByLabel("Year of birth").fill("1974");
-  await page.getByRole("button", { name: "Save and carry on" }).click();
 
   // Consent: five separate boxes, the optional ones all off.
   await expect(page.getByRole("heading", { name: "Your choices about your data" })).toBeVisible();
@@ -111,10 +112,10 @@ test("closing the tab loses nothing", async ({ page, context }) => {
   const email = freshEmail();
   await signUp(page, email);
 
-  await page.goto("/onboarding/welcome");
-  await page.getByLabel("What shall we call you?").fill("Sam");
-  await page.getByRole("button", { name: "Save and carry on" }).click();
-  await expect(page.getByRole("heading", { name: "Your choices about your data" })).toBeVisible();
+  await page.goto("/onboarding/consent");
+  await page.getByRole("checkbox").first().check();
+  await page.getByRole("button", { name: "Save my choices" }).click();
+  await expect(page.getByRole("heading", { name: "What you are living with" })).toBeVisible();
 
   // A new page in the same session is the same person coming back later.
   const returning = await context.newPage();
@@ -122,9 +123,7 @@ test("closing the tab loses nothing", async ({ page, context }) => {
   await returning.goto("/onboarding");
   await expect(returning.getByText(/^1 of \d+ done\.$/)).toBeVisible();
   await returning.getByRole("link", { name: "Carry on where I left off" }).click();
-  await expect(
-    returning.getByRole("heading", { name: "Your choices about your data" }),
-  ).toBeVisible();
+  await expect(returning.getByRole("heading", { name: "What you are living with" })).toBeVisible();
 });
 
 test("tracking is closed until consent is given, and closes again when it is withdrawn", async ({
@@ -154,7 +153,9 @@ test("signing in says nothing about whether an address has an account", async ({
   const email = freshEmail();
   await signUp(page, email);
   await page.goto("/sign-out");
-  await page.getByRole("button", { name: "Sign out" }).click();
+  // The header offers a sign-out too, now that it says who is signed in. This is the one
+  // on the page.
+  await page.getByRole("main").getByRole("button", { name: "Sign out" }).click();
   await page.waitForURL("**/");
 
   await page.goto("/sign-in");
@@ -176,7 +177,9 @@ test("a return path is honoured after signing in", async ({ page }) => {
   const email = freshEmail();
   await signUp(page, email);
   await page.goto("/sign-out");
-  await page.getByRole("button", { name: "Sign out" }).click();
+  // The header offers a sign-out too, now that it says who is signed in. This is the one
+  // on the page.
+  await page.getByRole("main").getByRole("button", { name: "Sign out" }).click();
   await page.waitForURL("**/");
 
   await page.goto("/settings/consent");
@@ -204,7 +207,7 @@ test("the sign-up and consent screens pass an automated accessibility scan", asy
 
   await signUp(page, freshEmail());
 
-  for (const path of ["/onboarding", "/onboarding/welcome", "/onboarding/consent"]) {
+  for (const path of ["/onboarding", "/onboarding/consent", "/settings/profile"]) {
     await page.goto(path);
     expect((await scan(page)).violations, `${path} has accessibility violations`).toEqual([]);
   }

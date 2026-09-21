@@ -14,6 +14,9 @@ const ROOT = join(__dirname, "..", "..");
 function filesUnder(directory: string): string[] {
   const entries = readdirSync(directory);
   return entries.flatMap((entry) => {
+    // AppleDouble sidecars macOS writes on exFAT. They are named after the real file, so a
+    // "._page.tsx" reads as a page with no guard in it. See DECISIONS.md PL-17.
+    if (entry.startsWith("._")) return [];
     const path = join(directory, entry);
     return statSync(path).isDirectory() ? filesUnder(path) : [path];
   });
@@ -32,8 +35,9 @@ describe("the age gate", () => {
       (path) => path.endsWith("page.tsx") && !path.endsWith(join("onboarding", "page.tsx")),
     );
 
-    // One page per step in the flow, minus the hub.
-    expect(stepPages.length).toBe(6);
+    // One page per step in the flow, minus the hub. The welcome step is not one of them any
+    // more: the name it asked for is part of signing up.
+    expect(stepPages.length).toBe(5);
     for (const path of stepPages) {
       expect(read(path), `${path} must call requireAdult`).toMatch(/requireAdult\(/);
     }

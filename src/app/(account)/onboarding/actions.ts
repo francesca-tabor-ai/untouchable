@@ -10,7 +10,6 @@ import { conditionsStepSchema, saveUserConditions } from "@/lib/onboarding/condi
 import { fieldErrorsFrom, type FormState } from "@/lib/onboarding/form-state";
 import { requireTrackingConsent } from "@/lib/onboarding/require-consent";
 import { saveUserSymptoms, symptomsStepSchema } from "@/lib/onboarding/symptoms";
-import { profileSchema, saveProfile } from "@/lib/profile";
 import { confirmAdult } from "@/lib/profile/account";
 import { recordConsentDecisions } from "@/lib/profile/consent";
 
@@ -25,25 +24,6 @@ import { recordConsentDecisions } from "@/lib/profile/consent";
 export async function confirmAdultAction(): Promise<void> {
   const user = await requireUser("/onboarding");
   await confirmAdult(user.id);
-}
-
-export async function saveWelcomeAction(
-  _state: FormState,
-  formData: FormData,
-): Promise<FormState> {
-  const user = await requireAdult("/onboarding/welcome");
-
-  const parsed = profileSchema.safeParse({
-    displayName: formData.get("displayName") ?? "",
-    yearOfBirth: formData.get("yearOfBirth") ?? "",
-    sex: formData.get("sex") ?? "",
-    region: formData.get("region") ?? "",
-  });
-
-  if (!parsed.success) return { fieldErrors: fieldErrorsFrom(parsed.error.issues) };
-
-  await saveProfile(user.id, parsed.data);
-  redirect(await nextHrefAfter(user.id, "welcome"));
 }
 
 export async function saveConsentAction(

@@ -1837,3 +1837,173 @@ happened in them.
 Anything recorded from memory is marked as such in the chronology. "Examination reported as normal
 — from recollection, clinic letter not obtained" is honest and useful. "Examination normal", written
 flat, is a clinical record the person has invented, and it will be read as one.
+
+### PL-53 · The content note comes off the front-page card
+PL-48 settled that the front-page figure card is a name and a condition, and made one exception:
+the content note stayed, on the reasoning that nobody should meet a story about suicide as a
+glamorous photograph with no warning. The product owner has since asked for it to come off. This
+entry records the reversal rather than quietly editing PL-48, which stands as written.
+
+What changed is the browse surface only. `ContentNote` still renders on the story page itself,
+above the story, under the heading "Before you read this" — so the warning still arrives before
+anything can be read, which is what the Samaritans media guidelines are actually asking for. What
+is gone is the warning on the card that links to it.
+
+Both tests that held the note onto the card now assert its absence instead of having been deleted.
+A card that is a name and a condition is easy to add a line back to, and an absence nobody is
+checking is not a decision, it is a gap.
+
+Two other surfaces still carry a note of their own wording and were left alone, because the
+instruction named the celebrity cards: `StoryCard` in a story list, and the search results row.
+If the intent is that a content note never appears on a card anywhere, those two are the rest of it.
+
+### PL-54 · Signing up is three fields, and the age tick box becomes a sentence
+The product owner asked for sign-up to be an email address, a password and a name, with the rest
+removed. It now is, and the person lands on the home page signed in rather than at the top of a
+six-step flow.
+
+Four things moved:
+
+**The name comes in at sign-up** and is written straight to the profile, so nothing has to ask for
+it again. `displayNameSchema` now lives in `src/lib/profile/display-name.ts`, shared by sign-up and
+the profile form, because neither should have to import the other.
+
+**The welcome step is gone from onboarding.** Its only required question was the name. The optional
+details beside it — year of birth, sex, region — were already editable at Settings → Your details,
+which is where they now live alone. Onboarding is five steps and is no longer where sign-up leaves
+you; you reach it when a page needs an answer, or from your own account.
+
+**The 18-or-over tick box became a statement** next to the submit button
+(`AGE_CONFIRMATION_STATEMENT`), and `ageConfirmedAt` is still stamped at creation. This is the one
+part of the change worth arguing about, so: the rule the tick box stood for is not enforced by the
+tick box. Nothing about anybody's health is written down until `requireAdult` and
+`requireTrackingConsent` have both been answered, the database still refuses a year of birth that
+would make someone under 18, and `/onboarding` still holds the explicit confirmation screen for an
+account that has none. What the tick box bought was an affirmative act; what it cost was a person
+who did not finish. An account holds an email address and a name until somebody chooses to tell us
+more. If a lawyer wants the affirmative act back, it is one field and one schema line.
+
+**The public header says who is signed in**, with a link to Settings and a way out, and hides Sign
+in and Join. Somebody who has just created an account lands on a public page, and a header still
+offering "Join" reads as though nothing happened. `SiteHeader` reads the session; `SiteHeaderView`
+is the pure component underneath it, so both states are testable without a database. It is a
+display, not a permission check — every protected page still calls its own guard.
+
+Left deliberately: consent, conditions, symptoms, treatments and the baseline are all still there
+and still required before anything they gate. Asking for them at the door was the friction; asking
+for them at all is the product.
+
+## 2026-09-20 — The front-page search
+
+### D-058 · The home page searches conditions, and only conditions
+
+The search box under the hero used to offer five chips — Everything, Conditions, Medicines,
+Charities, Stories — and defaulted to searching all four kinds at once. It now searches
+conditions, and the row says so rather than offering a choice.
+
+The front page is where somebody arrives having just been told a word by a doctor. Asking them,
+before they have typed anything, which of five drawers that word lives in is asking them to know
+the shape of our database. They do not, and they should not have to: a condition is the thing a
+person actually arrives holding, and the condition page is already the doorway to the rest — it
+carries the stories, the medicines and the charities for that condition. Searching everything at
+once was the other half of the problem, because "breast" returned three headed groups and the
+reader had to triage a results page before they could read anything.
+
+Three notes on how it is built:
+
+- **The kind is fixed by the page, not read off the URL.** `parseSearchParams` no longer parses a
+  `kind` at all, and `src/app/(public)/page.tsx` passes `kind: "conditions"` to `search()`. A
+  parameter we parsed and then ignored would be a trap for the next person; a hand-typed
+  `?kind=stories` now changes nothing, and `tests/e2e/home.spec.ts` asserts it.
+- **`src/lib/search/index.ts` is untouched.** It still knows how to search all four kinds, and
+  still reads exclusively through the public query modules — `listPublishedStories`,
+  `listPublicCharities`, `listPublicMedicines` — which is what keeps a retracted story or an
+  unverified charity out of results. Narrowing the front page is a decision about one surface,
+  not a reason to take capability out of the domain layer.
+- **The remaining chip is a label, not a control.** One pressable chip that is always already
+  current is a control that does nothing, which is worse than a plain statement of scope. So the
+  `<nav aria-label="Narrow the search">` is gone and the row reads "Searching · Conditions".
+
+What this costs: there is no longer one box that finds a charity by name from the front page.
+That is a real loss and it is accepted knowingly. `/medicines`, `/charities` and `/stories` each
+keep their own index with its own filters, all three are linked from the footer and from every
+condition page, and the empty-results copy still offers all three by name to somebody whose word
+found nothing.
+
+### The account area uses the site header, so navigation does not vanish behind sign-in
+The `(account)` layout had a header of its own: the wordmark, Settings, Sign out, and no
+navigation at all. Every page in the account group inherited it — including the three things
+the main header now offers under "Your Health": the Symptom tracker at `/log`, Your timeline
+at `/timeline`, and the Food Advisor at `/food`.
+
+So the menu you used to get there disappeared the moment you arrived. From the Food Advisor
+there was no link to the timeline, from the timeline none to the symptom tracker, and from
+any of the three no way back to conditions or charities except the browser's back button or
+the wordmark. These are the pages somebody uses repeatedly, often on a phone, often while
+unwell. They were the pages with the least navigation on the whole site.
+
+`(account)/layout.tsx` now renders the same `SiteHeader` as `(public)` and `(auth)`. Nothing
+was lost in the swap: `SiteHeader` already shows "Signed in as …" linking to `/settings` and
+already carries the sign-out button, which is everything the old header did.
+
+This also covers onboarding, settings, check-ins and treatments, which are in the same group.
+The header carries no donation prompt of any kind, so rule 5 is unaffected by showing it
+during onboarding or on a safety surface.
+
+It is still a display and not a permission check. The layout applies no guard, and every page
+inside calls `requireUser` or `requireAdult` for itself. Signed out, the "Your Health" links
+land on sign in with a `next` back — the page guard doing that, not the header.
+
+`tests/unit/site-navigation.test.tsx` now asserts that all three public-facing layouts use
+`SiteHeader`, and that the three Your Health routes are in the group that layout covers.
+
+### PL-55 · The front page stops explaining itself
+"Three things, in one place" and "Free, and staying free" are both gone from `(public)/page.tsx`,
+at the request of the person who owns the copy. What is left is the hero, the search, and the grid
+of people — a name, a face and a story, with nothing underneath it.
+
+The two blocks were doing different jobs and both are worth naming, so that whoever puts something
+back knows what was there. The three cards were a summary of the product: stories are
+self-disclosed and sourced, charities are checked and take the money directly, tracking belongs to
+the person doing it. "Free, and staying free" was the independence claim — no advertising, no
+health products sold, nothing taken from a donation.
+
+**None of what those blocks said has stopped being true, and none of it was load-bearing.** Every
+promise in them is kept somewhere a test can see: rule 12 keeps `DonationReferral` free of a user
+id, rule 11 keeps analytics off authenticated pages, `donationPromptAllowed` remains the only
+thing that can produce a donation prompt, and `/about` still carries the argument at length. The
+copy was a description of those guarantees, never the mechanism, so removing it changes what the
+page says and nothing about what the platform does.
+
+What is genuinely lost is the answer to "what is this?" above the fold for somebody who arrived
+from a search engine and has never heard of us. The hero sentence and the "Why we built this"
+button now carry that alone. If people arrive and leave without reading a story, this is the first
+thing to look at again.
+
+The `Card` import went with the markup, because nothing else on the page used it.
+
+### PL-56 · The people on a condition page have faces
+A condition page listed the people who had talked about it by name only. The front page has
+shown their photographs since PL-16; the page somebody actually lands on in the week they were
+diagnosed did not. `StoryCardGrid` now takes `portraits`, and `(public)/conditions/[slug]` turns
+it on: each card leads with a 56px photograph beside the name.
+
+**Opt-in, not everywhere.** The stories index, the related-stories block and a public figure's
+own page render the same grid and are unchanged. Turning the pictures on is a decision a page
+makes, and there was no reason to make it for surfaces nobody asked about.
+
+The licence rule is unchanged and is now asked in one place: `hasLicensedPhotograph` in
+`figure-portrait.tsx` is the single predicate, and a URL with no readable licence counts as no
+picture. Somebody without a freely licensed photograph gets their initials —
+`FigureMonogram`, cream-200 on forest-800, which clears 4.5:1 by the sum already in
+`tests/unit/home-figure-cards.test.ts`. A community story with no figure keeps its plain byline.
+
+**The credit is rendered by the grid, not by the page.** CC BY and CC BY-SA want attribution
+reasonable to the medium, and a photographer's name inside every card is not reasonable to
+anybody — so `FigurePhotoCredits` gathers them under the grid, in card order. It is wired to the
+same `portraits` flag as the pictures, so a future page cannot turn the photographs on and the
+credit off. Each story page still carries its own per-image credit beside the picture.
+
+The thumbnail is decorative: `alt=""`, because the person's name is the next thing in the card
+and "Photograph of X, X" is noise. `tests/unit/condition-portraits.test.tsx` holds all of it,
+and axe reports no violations on `/conditions/depression` with three photographs on it.

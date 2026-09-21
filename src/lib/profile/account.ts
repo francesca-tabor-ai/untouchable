@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { hashPassword, passwordProblem } from "@/lib/auth/password";
 import { db } from "@/lib/db";
+import { displayNameSchema } from "@/lib/profile/display-name";
 
 /**
  * Creating an account, and deciding where to send someone afterwards.
@@ -12,6 +13,18 @@ import { db } from "@/lib/db";
  */
 
 export const AGE_CONFIRMATION_LABEL = "I am 18 or over.";
+
+/**
+ * Shown next to the button that creates the account, so nobody can say they were not told.
+ *
+ * It used to be a tick box on the form. Three fields and a sentence get more people through
+ * the door than three fields, a tick box and a screen about it — and the rule the tick box
+ * protected is not enforced by the tick box. Nothing about anybody's health is written down
+ * until `requireAdult` and `requireTrackingConsent` have both been answered, and the
+ * database refuses a year of birth that would make someone under 18.
+ */
+export const AGE_CONFIRMATION_STATEMENT =
+  "By creating an account you confirm you are 18 or over. UnTouchable holds health information, and we hold none at all about under-18s.";
 
 /**
  * Deliberately vague, and identical whatever went wrong. Someone probing the form learns
@@ -46,9 +59,7 @@ export const signUpSchema = z.object({
     const problem = passwordProblem(value);
     if (problem) ctx.addIssue({ code: "custom", message: problem });
   }),
-  ageConfirmed: z.literal(true, {
-    message: "UnTouchable is only for adults, so we need you to confirm you are 18 or over.",
-  }),
+  displayName: displayNameSchema,
 });
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
@@ -61,10 +72,15 @@ export interface CreatedAccount {
 /**
  * Create a patient account.
  *
+ * Three things are asked for and all three are stored here: an address to sign in with, a
+ * password, and a name to call someone by. The name goes straight into the profile, so
+ * there is no first screen after sign-up whose only job is to ask for it.
+ *
  * The 18-or-over confirmation is stamped here rather than left for later: we hold no data
  * at all about under-18s, so the confirmation is a condition of having an account, not a
- * step in onboarding. Returns null when the address is already in use — the caller shows
- * SIGN_UP_PROBLEM either way.
+ * step in onboarding. It is made by the statement next to the button
+ * (AGE_CONFIRMATION_STATEMENT), not by a tick box. Returns null when the address is already
+ * in use — the caller shows SIGN_UP_PROBLEM either way.
  */
 export async function createAccount(input: SignUpInput): Promise<CreatedAccount | null> {
   const existing = await db.user.findUnique({ where: { email: input.email }, select: { id: true } });
@@ -79,6 +95,7 @@ export async function createAccount(input: SignUpInput): Promise<CreatedAccount 
         passwordHash,
         role: "patient",
         ageConfirmedAt: new Date(),
+        profile: { create: { displayName: input.displayName } },
       },
       select: { id: true, email: true },
     });

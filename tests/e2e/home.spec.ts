@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { config } from "dotenv";
 
 import { PrismaClient } from "../../src/generated/prisma";
@@ -214,13 +214,6 @@ async function serveWhitePhotograph(page: Page) {
   );
 }
 
-/** The search's own filter chips — the site header has links with the same words on them. */
-function chip(page: Page, label: string): Locator {
-  return page
-    .getByRole("navigation", { name: /narrow the search/i })
-    .getByRole("link", { name: label, exact: true });
-}
-
 function axe(page: Page) {
   return new AxeBuilder({ page }).withTags([
     "wcag2a",
@@ -234,25 +227,27 @@ function axe(page: Page) {
 /* ------------------------------------------------------------------------- */
 
 test.describe("searching from the home page", () => {
-  test("finds a condition, a charity and a story from one box", async ({ page }) => {
+  test("finds a condition from the box, and nothing but conditions", async ({ page }) => {
     await serveWhitePhotograph(page);
     await page.goto("/");
 
-    await page.getByLabel(/search conditions, medicines, charities and stories/i).fill("breast");
+    await page.getByLabel(/search conditions/i).fill("breast");
     await page.getByRole("button", { name: "Search" }).click();
 
     await expect(page).toHaveURL(/q=breast/);
     await expect(page.getByRole("heading", { name: /results for/i })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Conditions", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Charities", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Stories", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Charities", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Stories", exact: true })).toHaveCount(0);
   });
 
-  test("finds a medicine by the brand name on the packet", async ({ page }) => {
+  test("does not find a medicine, because medicines have their own index", async ({ page }) => {
+    // Nitrazepam is in the public medicine index under the brand name on the packet. The
+    // front page no longer reaches it: /medicines does, and so does every condition page.
     await page.goto("/?q=Mogadon");
 
-    const medicines = page.getByRole("region", { name: "Medicines and treatments" });
-    await expect(medicines.getByRole("link", { name: /Nitrazepam/i })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Medicines and treatments" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /nothing matches/i })).toBeVisible();
   });
 
   test("finds a condition by a word somebody would actually type", async ({ page }) => {
@@ -270,13 +265,13 @@ test.describe("searching from the home page", () => {
     await expect(conditions.getByRole("link", { name: /type 2 diabetes/i })).toBeVisible();
   });
 
-  test("narrows to one kind with a filter chip", async ({ page }) => {
-    await page.goto("/?q=breast");
-    await chip(page, "Charities").click();
+  test("cannot be widened by hand-editing the address", async ({ page }) => {
+    // The kind is fixed by the page, so a URL somebody has typed into cannot turn the front
+    // page back into a search of everything.
+    await page.goto("/?q=breast&kind=charities");
 
-    await expect(page).toHaveURL(/kind=charities/);
-    await expect(page.getByRole("heading", { name: "Charities", exact: true })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Stories", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Conditions", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Charities", exact: true })).toHaveCount(0);
   });
 
   test("says so plainly when nothing matches", async ({ page }) => {
@@ -300,16 +295,11 @@ test.describe("search never returns something that is not publicly visible", () 
     await expect(page.getByRole("link", { name: /going back on air/i })).toHaveCount(0);
   });
 
-  test("an unverified charity is not in the results", async ({ page }) => {
-    // "Kitchen Table Mental Health" is seeded with no verification at all.
+  test("a charity is not in the results at all, verified or not", async ({ page }) => {
+    // "Kitchen Table Mental Health" is seeded with no verification at all, and the front
+    // page no longer searches charities either way.
     await page.goto("/?q=Kitchen+Table");
     await expect(page.getByRole("link", { name: /Kitchen Table Mental Health/i })).toHaveCount(0);
-  });
-
-  test("a withdrawn charity is not in the results", async ({ page }) => {
-    // "Southfields Diabetes Appeal" is seeded inactive.
-    await page.goto("/?q=Southfields");
-    await expect(page.getByRole("link", { name: /Southfields/i })).toHaveCount(0);
   });
 
   test("a medicine no editor has written up is not in the results", async ({ page }) => {
@@ -337,20 +327,12 @@ test.describe("with JavaScript switched off", () => {
     await serveWhitePhotograph(page);
 
     await page.goto("/");
-    await page.getByLabel(/search conditions, medicines, charities and stories/i).fill("breast");
+    await page.getByLabel(/search conditions/i).fill("breast");
     await page.getByRole("button", { name: "Search" }).click();
 
     await expect(page).toHaveURL(/\?q=breast/);
     await expect(page.getByRole("heading", { name: /results for/i })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Stories", exact: true })).toBeVisible();
-  });
-
-  test("the filter chips still work, because they are links", async ({ page }) => {
-    await page.goto("/?q=breast");
-    await chip(page, "Charities").click();
-
-    await expect(page).toHaveURL(/kind=charities/);
-    await expect(page.getByRole("heading", { name: "Charities", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Conditions", exact: true })).toBeVisible();
   });
 
   test("the cards still render and still link to their stories", async ({ page }) => {

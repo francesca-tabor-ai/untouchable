@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { db } from "@/lib/db";
+import { displayNameSchema } from "@/lib/profile/display-name";
 
 /**
  * The profile is deliberately thin. We ask for a name to call someone by, and three
@@ -36,18 +37,14 @@ export const REGIONS = [
  */
 export const SEX_OPTIONS = ["Female", "Male", "Intersex"] as const;
 
+export { displayNameSchema };
+
 export const MINIMUM_AGE = 18;
 export const EARLIEST_YEAR_OF_BIRTH = 1900;
 
 export function latestYearOfBirth(now: Date = new Date()): number {
   return now.getUTCFullYear() - MINIMUM_AGE;
 }
-
-const displayName = z
-  .string()
-  .trim()
-  .min(1, "Please tell us what to call you.")
-  .max(60, "Please use 60 characters or fewer.");
 
 /**
  * Optional fields arrive from a form as "", which means "not answered" rather than
@@ -57,7 +54,7 @@ const blankToNull = <T extends z.ZodTypeAny>(schema: T) =>
   z.preprocess((value) => (value === "" || value === undefined ? null : value), schema);
 
 export const profileSchema = z.object({
-  displayName,
+  displayName: displayNameSchema,
   yearOfBirth: blankToNull(
     z
       .coerce
@@ -86,13 +83,4 @@ export async function saveProfile(userId: string, input: ProfileInput) {
     region: input.region,
   };
   return db.profile.upsert({ where: { userId }, create: { userId, ...data }, update: data });
-}
-
-/** The welcome step is done once we know what to call someone. */
-export async function hasProfileName(userId: string): Promise<boolean> {
-  const profile = await db.profile.findUnique({
-    where: { userId },
-    select: { displayName: true },
-  });
-  return Boolean(profile?.displayName?.trim());
 }

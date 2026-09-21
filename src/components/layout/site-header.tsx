@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { SignOutForm } from "@/components/auth/sign-out-form";
 import { NavMenu } from "@/components/layout/nav-menu";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { getCurrentUser } from "@/lib/auth/guards";
+import { getProfile } from "@/lib/profile";
 
 const EXPLORE = [
   { href: "/conditions", label: "Conditions" },
@@ -31,8 +34,28 @@ const YOUR_HEALTH = [
  *
  * Your Health points into the account area. Signed out, those links land on sign in with a
  * `next` back to where they were going — the guard on each page does that, not this file.
+ *
+ * Signed in, the buttons on the right say so by name. Somebody who has just created an
+ * account needs to see, on the page they land on, that it worked and that it is theirs —
+ * a header that still says "Sign in" reads as if nothing happened. The name comes from the
+ * profile, which is set at sign-up, and we fall back to the email address rather than to
+ * nothing if an account somehow has no name.
+ *
+ * This is a display, not a permission check. Every protected page calls its own guard.
  */
-export function SiteHeader() {
+export async function SiteHeader() {
+  const user = await getCurrentUser();
+  const profile = user ? await getProfile(user.id) : null;
+  const signedInAs = user ? profile?.displayName?.trim() || user.email : null;
+
+  return <SiteHeaderView signedInAs={signedInAs} />;
+}
+
+/**
+ * The header itself, with no idea who is asking. Split out so the navigation can be tested
+ * in both states without a database.
+ */
+export function SiteHeaderView({ signedInAs }: { signedInAs: string | null }) {
   return (
     <header className="border-b border-line bg-cream-100">
       <Container className="flex h-18 items-center justify-between gap-6">
@@ -49,14 +72,26 @@ export function SiteHeader() {
           <NavMenu label="Your Health" links={YOUR_HEALTH} />
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/sign-in">Sign in</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link href="/sign-up">Join</Link>
-          </Button>
-        </div>
+        {signedInAs ? (
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Link
+              href="/settings"
+              className="max-w-36 truncate rounded-pill px-3 py-2 text-small font-medium text-ink-soft hover:text-forest-700 sm:max-w-none"
+            >
+              Signed in as {signedInAs}
+            </Link>
+            <SignOutForm />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/sign-in">Sign in</Link>
+            </Button>
+            <Button asChild size="sm">
+              <Link href="/sign-up">Join</Link>
+            </Button>
+          </div>
+        )}
       </Container>
 
       <nav aria-label="Main" className="border-t border-line md:hidden">

@@ -30,9 +30,10 @@ describe("the home page figure strip", () => {
     expect(source).toContain("story.figure !== null");
   });
 
-  it("carries the content note through to the card", () => {
-    // Someone should not meet a story about suicide on the front page with no warning.
-    expect(source).toContain("needsContentNote");
+  it("does not carry a content note onto the front page", () => {
+    // PL-53. The note comes off the card; it stays on the story page, above the story,
+    // where `ContentNote` renders it before anything can be read.
+    expect(source).not.toContain("needsContentNote");
   });
 
   it("only ever renders a photograph when a licence is recorded with it", () => {

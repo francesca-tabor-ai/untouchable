@@ -49,8 +49,8 @@ export default async function OnboardingPage() {
       <header>
         <h1 className="text-display">Setting up your account</h1>
         <p className="mt-4 text-lead text-ink-soft">
-          Six short steps. Each one saves as you finish it, so you can stop whenever you like and
-          come back to exactly this page.
+          Your account already exists — this is the optional part. Each step saves as you finish it,
+          so you can stop whenever you like and come back to exactly this page.
         </p>
         <p className="mt-4 text-small text-muted">
           {progress.completedCount} of {progress.readyCount} done.

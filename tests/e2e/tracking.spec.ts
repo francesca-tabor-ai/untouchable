@@ -22,18 +22,15 @@ function freshEmail() {
 /** Sign up and get as far as the treatments step: consent, a condition, some symptoms. */
 async function signUpAndTrack(page: Page) {
   await page.goto("/sign-up");
+  await page.getByLabel("What shall we call you?").fill("Sam");
   await page.getByLabel("Email address").fill(freshEmail());
   await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByLabel("I am 18 or over.").check();
   await page.getByRole("button", { name: "Create my account" }).click();
-  await page.waitForURL("**/onboarding");
+  await page.waitForURL("/");
 
-  await page.getByRole("link", { name: "Start" }).click();
-  await page.waitForURL("**/onboarding/welcome");
-
-  await page.getByLabel("What shall we call you?").fill("Sam");
-  await page.getByRole("button", { name: "Save and carry on" }).click();
-  await page.waitForURL("**/onboarding/consent");
+  // Sign-up asks for three things and nothing else, so the first thing the tracking side
+  // needs — consent — is asked for here rather than at the door.
+  await page.goto("/onboarding/consent");
 
   // Core tracking only. Nothing about anybody's health is stored without it.
   await page.getByRole("checkbox").first().check();

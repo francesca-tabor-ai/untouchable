@@ -4,6 +4,7 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { authConfig } from "@/lib/auth/config";
 import { verifyPassword } from "@/lib/auth/password";
 import {
+  AGE_CONFIRMATION_STATEMENT,
   createAccount,
   safeReturnPath,
   SIGN_IN_PROBLEM,
@@ -14,11 +15,11 @@ import { resetDatabase, testDb } from "../helpers/db";
 
 const GOOD_PASSWORD = "seventeen llamas walked";
 
-function parse(input: { email?: string; password?: string; ageConfirmed?: boolean }) {
+function parse(input: { email?: string; password?: string; displayName?: string }) {
   return signUpSchema.safeParse({
     email: input.email ?? "someone@example.test",
     password: input.password ?? GOOD_PASSWORD,
-    ageConfirmed: input.ageConfirmed ?? true,
+    displayName: input.displayName ?? "Sam",
   });
 }
 
@@ -42,6 +43,36 @@ describe("signing up", () => {
     expect(await verifyPassword(stored.passwordHash!, GOOD_PASSWORD)).toBe(true);
   });
 
+  it("asks for three things and no more", () => {
+    // Signing up is an email address, a password and a name. Anything else asked for here
+    // is a person who did not finish, and this platform is no use to somebody who never
+    // got in. Everything else is asked at the moment it is needed.
+    expect(Object.keys(signUpSchema.shape).sort()).toEqual(["displayName", "email", "password"]);
+  });
+
+  it("saves the name straight onto the profile, so nothing has to ask again", async () => {
+    const parsed = parse({ email: "named@example.test", displayName: "  Sam  " });
+    if (!parsed.success) throw new Error("fixture");
+    expect(parsed.data.displayName).toBe("Sam");
+
+    const account = await createAccount(parsed.data);
+    const profile = await testDb.profile.findUniqueOrThrow({ where: { userId: account!.id } });
+    expect(profile.displayName).toBe("Sam");
+
+    // Nothing else about the person is invented at sign-up. We hold no year of birth, no
+    // sex and no region until somebody chooses to give them.
+    expect(profile.yearOfBirth).toBeNull();
+    expect(profile.sex).toBeNull();
+    expect(profile.region).toBeNull();
+  });
+
+  it("refuses an account with no name to call someone by", () => {
+    const parsed = parse({ displayName: "   " });
+    expect(parsed.success).toBe(false);
+    if (parsed.success) return;
+    expect(parsed.error.issues[0].path).toEqual(["displayName"]);
+  });
+
   it("records the 18-or-over confirmation on the account itself", async () => {
     const parsed = parse({ email: "adult@example.test" });
     if (!parsed.success) throw new Error("fixture");
@@ -54,11 +85,12 @@ describe("signing up", () => {
     expect(stored.role).toBe("patient");
   });
 
-  it("refuses to create an account without the age confirmation", () => {
-    const parsed = parse({ ageConfirmed: false });
-    expect(parsed.success).toBe(false);
-    if (parsed.success) return;
-    expect(parsed.error.issues[0].path).toEqual(["ageConfirmed"]);
+  it("tells people plainly that creating an account confirms they are 18 or over", () => {
+    // The tick box became a sentence next to the button. The rule it stood for is not
+    // enforced by a tick box — `requireAdult` and the year-of-birth constraint do that —
+    // but nobody may reach the button without being told.
+    expect(AGE_CONFIRMATION_STATEMENT).toMatch(/18 or over/i);
+    expect(AGE_CONFIRMATION_STATEMENT).toMatch(/under-18s/i);
   });
 
   it("takes its password rule from passwordProblem and adds none of its own", () => {

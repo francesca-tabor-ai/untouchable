@@ -4,7 +4,6 @@ import { FigureStrip, parseShown } from "@/components/home/figure-strip";
 import { SearchResults } from "@/components/search/search-results";
 import { SiteSearch } from "@/components/search/site-search";
 import { Button } from "@/components/ui/button";
-import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { search } from "@/lib/search";
 import { parseSearchParams } from "@/lib/search/schema";
@@ -20,6 +19,10 @@ import { parseSearchParams } from "@/lib/search/schema";
  * Search results and the grid of people are alternatives rather than a stack. Somebody who
  * has just searched for "tinnitus" is looking for an answer, and repeating the same faces
  * immediately underneath their results is noise.
+ *
+ * The box searches conditions and nothing else — see `SiteSearch` for why, and D-058.
+ * Medicines, charities and stories keep their own indexes, and every condition page leads
+ * to all three.
  *
  * The grid shows everybody with a published story, a page at a time. `?people=N` is how far
  * down it somebody has asked to go — see `parseShown`.
@@ -37,8 +40,10 @@ export default async function HomePage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const { q, kind } = parseSearchParams(params);
-  const outcome = await search({ q, kind });
+  const { q } = parseSearchParams(params);
+  // Conditions only, always. The kind is fixed here rather than read off the URL, so a
+  // hand-typed `?kind=stories` cannot widen the front-page search behind the box's back.
+  const outcome = await search({ q, kind: "conditions" });
   const searching = outcome.query.length > 0;
   // How far down the grid of people somebody has asked to go. A number in the URL rather
   // than state in the browser, so "View more" works without JavaScript and the page they
@@ -61,7 +66,7 @@ export default async function HomePage({
           </div>
 
           <div className="max-w-[44rem]">
-            <SiteSearch query={outcome.query} kind={kind} />
+            <SiteSearch query={outcome.query} />
           </div>
 
           {!searching ? (
@@ -78,47 +83,6 @@ export default async function HomePage({
       </section>
 
       {searching ? <SearchResults outcome={outcome} /> : <FigureStrip shown={shown} />}
-
-      <Container className="py-20">
-        <h2 className="text-display">Three things, in one place</h2>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          <Card>
-            <CardTitle>Stories people chose to share</CardTitle>
-            <CardBody>
-              Only what someone has said publicly themselves, in their own interview, book or
-              statement. Every story carries its sources, and anyone can ask us to correct or
-              remove one.
-            </CardBody>
-          </Card>
-          <Card>
-            <CardTitle>Charities worth your money</CardTitle>
-            <CardBody>
-              Every charity here has been checked against the official register by a person. When
-              you give, you go straight to the charity. We never hold your money and we never take
-              a penny of it.
-            </CardBody>
-          </Card>
-          <Card>
-            <CardTitle>A record of how you are doing</CardTitle>
-            <CardBody>
-              Track symptoms and treatments over time, in a form that is actually useful — to you,
-              to the conversation with your GP, and one day to research, but only if you say so.
-            </CardBody>
-          </Card>
-        </div>
-      </Container>
-
-      <section className="border-y border-line bg-white">
-        <Container reading className="py-20 text-center">
-          <h2 className="text-display">Free, and staying free</h2>
-          <p className="mt-5 text-ink-soft">
-            UnTouchable costs nothing to use and never will. We do not sell health products, we do
-            not run advertising, and we take nothing from the money you give to charity. What we
-            learn from people who choose to share their data is what pays for it — and independence
-            is the only thing that makes any of it worth having.
-          </p>
-        </Container>
-      </section>
     </>
   );
 }

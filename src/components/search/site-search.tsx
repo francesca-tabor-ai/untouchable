@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
-import { SEARCH_KINDS, type SearchKind } from "@/lib/search";
 
 /**
  * The one search box, at the top of the home page.
@@ -12,27 +11,20 @@ import { SEARCH_KINDS, type SearchKind } from "@/lib/search";
  * or kept, and the back button does what people expect. This is the same decision as the
  * story index filters, for the same reasons.
  *
- * The kind filter is a row of links rather than a `<select>`, because on a phone tapping a
- * word beats opening a picker — and because links keep working without a script too.
+ * **It searches conditions, and only conditions.** It used to offer a row of chips —
+ * everything, conditions, medicines, charities, stories — and the front page was the one
+ * place on the site asking a frightened person to decide which of five drawers the thing
+ * they are looking for lives in. A condition is the word somebody actually arrives with,
+ * and the condition page is the doorway to the rest: it carries the stories, the medicines
+ * and the charities for that condition already. Medicines, charities and stories each keep
+ * their own index, linked from the footer and from every condition page, and the
+ * empty-results copy offers all three by name.
+ *
+ * The scope is stated rather than offered, because there is nothing left to choose. It is
+ * deliberately not a chip you can press: a control that does nothing is worse than a label.
  */
 
-const CHIP_LABELS: Record<SearchKind, string> = {
-  all: "Everything",
-  conditions: "Conditions",
-  medicines: "Medicines",
-  charities: "Charities",
-  stories: "Stories",
-};
-
-function hrefFor(kind: SearchKind, query: string) {
-  const params = new URLSearchParams();
-  if (query) params.set("q", query);
-  if (kind !== "all") params.set("kind", kind);
-  const search = params.toString();
-  return search ? `/?${search}` : "/";
-}
-
-export function SiteSearch({ query = "", kind = "all" }: { query?: string; kind?: SearchKind }) {
+export function SiteSearch({ query = "" }: { query?: string }) {
   return (
     <section aria-labelledby="site-search-heading" className="mt-10">
       <h2 id="site-search-heading" className="sr-only">
@@ -40,19 +32,16 @@ export function SiteSearch({ query = "", kind = "all" }: { query?: string; kind?
       </h2>
 
       <form action="/" method="get" role="search" className="flex flex-col gap-3 sm:flex-row">
-        {/* Keeps the chosen filter when the form is submitted, with no script involved. */}
-        {kind !== "all" ? <input type="hidden" name="kind" value={kind} /> : null}
-
         <div className="flex-1">
           <label htmlFor="site-search-input" className="block text-small font-medium text-ink">
-            Search conditions, medicines, charities and stories
+            Search conditions
           </label>
           <Input
             id="site-search-input"
             type="search"
             name="q"
             defaultValue={query}
-            placeholder="A condition, a medicine, a charity, or a name"
+            placeholder="A condition, like tinnitus or endometriosis"
             className="mt-2"
           />
         </div>
@@ -67,26 +56,12 @@ export function SiteSearch({ query = "", kind = "all" }: { query?: string; kind?
         </div>
       </form>
 
-      <nav aria-label="Narrow the search" className="mt-5">
-        <ul className="flex flex-wrap gap-2">
-          {SEARCH_KINDS.map((option) => (
-            <li key={option}>
-              <Link
-                href={hrefFor(option, query)}
-                aria-current={option === kind ? "true" : undefined}
-                className={[
-                  "inline-flex min-h-11 items-center rounded-pill border px-4 text-small",
-                  option === kind
-                    ? "border-forest-800 bg-forest-800 font-medium text-white"
-                    : "border-line bg-white text-ink-soft hover:border-line-strong hover:text-forest-700",
-                ].join(" ")}
-              >
-                {CHIP_LABELS[option]}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <p className="mt-5 flex flex-wrap items-center gap-2 text-small text-ink-soft">
+        Searching
+        <span className="inline-flex items-center rounded-pill border border-forest-800 bg-forest-800 px-3 py-1 font-medium text-white">
+          Conditions
+        </span>
+      </p>
     </section>
   );
 }

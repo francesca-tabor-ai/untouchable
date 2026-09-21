@@ -76,8 +76,13 @@ export default async function ConditionPage({ params }: { params: Promise<{ slug
                 {stories.length} {stories.length === 1 ? "story" : "stories"}, each one written in
                 our own words from what the person said publicly themselves.
               </p>
+              {/* `portraits` puts each person's photograph on their card, with the credit
+                  the licence requires underneath the grid. A condition page is where
+                  somebody newly diagnosed arrives, and a face is the difference between a
+                  list of names and the thing this platform is for. Nobody without a freely
+                  licensed picture is shown one — they keep their initials. */}
               <div className="mt-8">
-                <StoryCardGrid stories={stories} />
+                <StoryCardGrid stories={stories} portraits />
               </div>
             </>
           ) : (

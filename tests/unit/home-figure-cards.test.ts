@@ -138,9 +138,15 @@ describe("the card itself", () => {
     expect(card).toContain("attribution");
   });
 
-  it("carries the content note onto the card", () => {
-    expect(card).toContain("needsContentNote");
-    expect(card).toContain("Content note");
+  it("carries no content note", () => {
+    // Removed from this card on the product owner's instruction — PL-53. The warning itself
+    // is not gone: `ContentNote` still renders above the story on the story page, before any
+    // of it can be read, and `tests/unit/stories-surfaces.test.tsx` holds that.
+    //
+    // Asserted as an absence rather than deleted, so the note cannot drift back onto a card
+    // that is meant to be a name and a condition.
+    expect(card).not.toContain("needsContentNote");
+    expect(card).not.toContain("Content note");
   });
 
   it("shows the conditions the story is about", () => {
@@ -150,8 +156,8 @@ describe("the card itself", () => {
   it("carries a name and a condition, and no other prose", () => {
     // The card is an introduction, not a summary. A name somebody recognises and what the
     // story is about is the whole of it — the headline, and the line saying whose health it
-    // is, belong on the story itself where there is room to read them. The content note is
-    // not prose in this sense: it is a warning, and it stays.
+    // is, belong on the story itself where there is room to read them. PL-48 once made an
+    // exception of the content note; PL-53 removed it, so the rule is now unqualified.
     const inner = card.slice(card.indexOf("function FigureCard"), card.indexOf("function PhotoCredits"));
     expect(inner).not.toContain("story.title");
     expect(inner).not.toContain("disclosureType");

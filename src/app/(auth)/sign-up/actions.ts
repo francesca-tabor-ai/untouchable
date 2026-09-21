@@ -10,7 +10,7 @@ export async function signUpAction(_state: FormState, formData: FormData): Promi
   const parsed = signUpSchema.safeParse({
     email: formData.get("email") ?? "",
     password: formData.get("password") ?? "",
-    ageConfirmed: formData.get("ageConfirmed") === "on",
+    displayName: formData.get("displayName") ?? "",
   });
 
   if (!parsed.success) return { fieldErrors: fieldErrorsFrom(parsed.error.issues) };
@@ -21,10 +21,14 @@ export async function signUpAction(_state: FormState, formData: FormData): Promi
   try {
     // Sign in straight away: asking someone to type the password they just chose, on the
     // next screen, is a pointless piece of friction.
+    //
+    // And then home, signed in, rather than into a setup flow. The header says whose
+    // account it is, which is the evidence somebody wants that it worked. The account area
+    // asks for consent and the rest when a page there actually needs it.
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirectTo: "/onboarding",
+      redirectTo: "/",
     });
   } catch (error) {
     // signIn signals the redirect by throwing. Only a real auth failure is ours to handle.

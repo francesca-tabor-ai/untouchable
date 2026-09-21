@@ -257,15 +257,6 @@ function FigureCard({ card, index }: { card: FigureCardData; index: number }) {
             ))}
           </span>
         ) : null}
-
-        {/* Nobody should meet a story about suicide as a glamorous photograph with no
-            warning. The note travels with the card onto every surface it appears on. */}
-        {story.needsContentNote ? (
-          <span className="mt-4 block text-legal text-clay-200">
-            Content note — this story covers a subject some people would rather choose when to
-            read.
-          </span>
-        ) : null}
       </span>
     </Link>
   );
