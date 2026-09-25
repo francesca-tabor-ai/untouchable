@@ -2085,3 +2085,26 @@ cache is untouched; it has not been seen to fail, and turning it off would slow 
 `.next-verify/` — where `npm run verify` builds via `NEXT_DIST_DIR` so it never touches a running
 dev server's `.next` — is now in `.gitignore` and in the ESLint ignores beside `.next` and
 `.next-e2e`.
+
+### PL-60 · The About pages exist
+PL-56 found `/about`, `/about/editorial` and `/about/evidence` linked and returning 404. All three
+are now written, in `(public)/about/`, rather than the links coming out: with the front page's
+explanatory blocks gone (PL-55), "Why we built this" is the only route to what the platform is.
+
+**Each page describes a guarantee; none of them is the mechanism.** Every promise on them is one
+AGENTS.md section 1 already enforces, and the copy was checked against the code that keeps it —
+the consent wording in `src/lib/consent/text.ts`, the 25-word quote limit, the `DonationReferral`
+model, the group threshold in `aggregate.ts`. If one of those changes, the page has to change
+with it.
+
+**What they deliberately do not say.** The evidence page does not mention downloading your data
+or deleting your account, because neither is built; say so the day they are. "How it is paid
+for" puts research income in the future tense, because no organisation pays us today. The
+family and friend exceptions (rules 15 and 16) are stated as narrowly as the rules themselves,
+because a reader should be able to hold us to them.
+
+None of this copy has been legally reviewed, which brief section 12 asks for before launch.
+
+`/privacy` and `/terms` are still linked from the footer and still 404. They are legal documents
+and were not written here.
+
