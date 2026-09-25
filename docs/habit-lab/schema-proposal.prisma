@@ -1,0 +1,148 @@
+// Habit Experiment Lab — proposed models for prisma/schema.prisma.
+//
+// NOT APPLIED. `prisma/schema.prisma` is a single-writer file (AGENTS.md section 3); this is a
+// draft for the platform lead to review, paste in, and migrate. `src/lib/lab/` is written
+// against exactly these shapes, so a change here means a change there.
+//
+// Three decisions worth checking before pasting (full reasoning in DECISIONS.md HL-02):
+//
+// 1. There is no `LabIntervention` table. The intervention library lives in code
+//    (`src/lib/lab/library.ts`) so every caution is reviewed in a pull request and tested, and
+//    so it cannot collide with the existing `Intervention` model, which is medicines.
+//    An experiment points at the library by `libraryKey`, or carries a custom title.
+// 2. `LabCheckIn` is its own table rather than more columns on `DailyLog`. The daily log is
+//    per-symptom and 0–10 throughout; the lab's sleep fields are minutes, counts and hours.
+// 3. Every free-text column is marked, as elsewhere. None of them may appear in a research
+//    export (rule 7). Nothing here is read by `research/aggregate.ts` at all.
+//
+// Also add to `model User`:
+//   labCheckIns    LabCheckIn[]
+//   labExperiments LabExperiment[]
+
+enum LabVariableType {
+  remove
+  add
+  shift
+}
+
+enum LabExperimentStatus {
+  planned
+  baseline
+  intervention
+  washout
+  complete
+  abandoned
+}
+
+enum LabConclusion {
+  keep
+  drop
+  retest
+}
+
+/// One Habit Lab check-in per person per UK calendar day, upserted like `DailyLog`.
+model LabCheckIn {
+  id     String   @id @default(cuid())
+  userId String
+  date   DateTime @db.Date
+
+  /// Minutes to fall asleep.
+  sleepLatencyMin       Int?
+  wakeups               Int?
+  /// Total sleep estimate, hours, one decimal place.
+  sleepHours            Decimal? @db.Decimal(3, 1)
+  /// 1–10.
+  sleepQuality          Int?
+  /// 0–10.
+  racingMind            Int?
+  /// 0–10.
+  tinnitusLoudness      Int?
+  /// 0–10.
+  tinnitusIntrusiveness Int?
+  /// 0–10.
+  dizziness             Int?
+  /// 1–10.
+  energy                Int?
+  /// 1–10.
+  mood                  Int?
+  /// 1–10.
+  stress                Int?
+
+  /// Confounder tags from `LAB_TAGS` in `src/lib/lab/checkin.ts`.
+  tags       String[] @default([])
+  /// Red-flag questions answered yes, from `RED_FLAG_QUESTIONS`. Kept so a flag can be shown
+  /// again and carried into the GP summary.
+  newSymptoms String[] @default([])
+  /// FREE TEXT — never exported for research.
+  note       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adherence LabAdherence[]
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model LabExperiment {
+  id     String @id @default(cuid())
+  userId String
+
+  /// Key into `LAB_LIBRARY`, or null for a custom variable.
+  libraryKey     String?
+  /// FREE TEXT — never exported for research. The person's name for it.
+  title          String
+  variableType   LabVariableType
+  /// FREE TEXT — never exported for research. "Glycinate, with dinner", "07:00 not 19:00".
+  variableDetail String?
+  /// FREE TEXT — never exported for research. In the person's own words.
+  hypothesis     String
+  /// Outcome keys from `OUTCOMES` in `src/lib/lab/scales.ts`. Drives the overlap warning.
+  outcomes       String[]
+
+  baselineStart     DateTime @db.Date
+  interventionStart DateTime @db.Date
+  interventionEnd   DateTime @db.Date
+  washoutDays       Int      @default(0)
+
+  status     LabExperimentStatus @default(planned)
+  /// Set when it was started despite overlapping another experiment on a shared outcome.
+  /// Never cleared: a result that was muddied stays labelled as muddied.
+  confounded Boolean             @default(false)
+
+  conclusion     LabConclusion?
+  /// FREE TEXT — never exported for research.
+  conclusionNote String?
+  concludedAt    DateTime?
+
+  /// Research Scout paper ids, for the later hand-off.
+  sourcePaperIds String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  adherence LabAdherence[]
+
+  @@index([userId, baselineStart])
+}
+
+/// Did-I-do-it, one row per experiment per check-in.
+model LabAdherence {
+  id           String  @id @default(cuid())
+  experimentId String
+  checkInId    String
+  done         Boolean
+  /// "HH:MM", 24-hour, UK local. Matters for shift experiments.
+  timeDone     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  experiment LabExperiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  checkIn    LabCheckIn    @relation(fields: [checkInId], references: [id], onDelete: Cascade)
+
+  @@unique([experimentId, checkInId])
+}

@@ -5,7 +5,7 @@ import Link from "next/link";
 import * as React from "react";
 
 /**
- * A header dropdown — Explore, Your Health, and whatever else the header grows.
+ * A header dropdown — Explore, My health, and whatever else the header grows.
  *
  * Built on `<details>`/`<summary>` so it opens and closes with no JavaScript at all — a
  * navigation menu that needs a script to reveal the site's own sections is a navigation menu
