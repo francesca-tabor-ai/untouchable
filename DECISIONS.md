@@ -2175,3 +2175,53 @@ own mail program.
 PubMed does not flag the corresponding author, so the author whose address is printed is marked as
 the contact; OpenAlex's own `is_corresponding` is used on the researcher panel where it has the paper.
 The greeting uses the name as printed — "Dr" would be a guess about somebody we know nothing of.
+
+### LC-01 · Listening courses explain the body, not the listener
+The spec (`docs/vibe-code-prompts/02-symptom-to-course-audio.md`) asks for a language model to
+read somebody's symptoms, map them to body systems, and write a course about "what might be going
+on", including the serious possibilities. That is AI-generated insight about one person's health,
+which rule 9 and the brief rule out. The conflict was raised before any code was written, and the
+narrower version was agreed: courses are chosen from body systems, written about how the body
+works, and are the same for everybody.
+
+What that keeps from the spec: the body-system map, the outline shape (four to six parts, three
+to five lessons), scripts written for the ear, a pronunciation guide, sources on every lesson,
+"how doctors think about this" framing, and the NHS's own words on which signs to get checked
+promptly. What it drops: the symptom box. Nothing a listener types reaches a course, and the
+contract's `input_symptoms` is renamed `topics` so nobody later wires one in by the field name.
+
+The rules are detectors, in `src/lib/courses/script-rules.ts`: written for the ear (no digits,
+bullets, headings, symbols, brackets or abbreviations); about the body (never "you have", never
+"nothing to worry about" — reassurance is a diagnosis too); calm (no frightening words); plus the
+existing rule 9 interpretation detector and rule 17 dose detector. Sources are held to an
+allowlist of independent hosts in `sources.ts`, rule 14 extended to the whole course.
+`tests/unit/course-scripts.test.ts` runs every script, title and summary through all of them.
+
+Courses live in code (`src/lib/courses/`) because tables need a change to `prisma/schema.prisma`,
+which is single-writer. One lesson is written, "The snail shell that hears", so the voice can be
+tuned before the other fourteen are written in it. The rest are outline, marked "not written yet".
+
+### LC-02 · No voice provider and no script writer, yet
+The spec names Higgsfield for speech and an LLM for drafting. Both are seams with a provider that
+declines (`voice.ts`, `writer.ts`), in the shape `src/lib/email/` and `src/lib/food/vision.ts` use.
+Switching either on needs a data processing agreement, a line in the privacy notice, a
+server-side key the platform lead provisions, and — for Higgsfield, a creative-media platform — a
+check that its terms suit a health service at all. None of that is a feature branch's call.
+
+Because of LC-01, a voice provider would only ever receive a chunk of a general biology lesson and
+a voice id: no user id, no symptom. That is deliberate and should stay true. The writer's system
+prompt is written down (`WRITING_RULES`) and every draft goes through `scriptProblems`; a draft that
+passes is still a draft until an editor reads it, and the model may not add sources of its own.
+
+### LC-03 · Voicing is a playlist, not a stitched file
+Long scripts are split at paragraph boundaries (then sentences, then words, never mid-word) and
+voiced one chunk at a time with retry and backoff. Joining the audio into one file needs a
+transcoder, which is a new dependency, so the player plays the chunks back to back instead. The
+cache key is a hash of what the engine hears plus the voice id, so editing one paragraph re-voices
+only the chunks it touched, and changing a pronunciation re-voices only the chunks that use it.
+
+### LC-04 · Listening progress stays on the device
+Which lessons are finished, and how far into one somebody is, is kept in the browser — the same
+trade as FA-02. No schema change and nothing held about anybody; the cost is that it does not
+follow you to another device. The chosen voice will be saved the same way once there are voices
+to choose from.
