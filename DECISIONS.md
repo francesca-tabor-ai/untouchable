@@ -2085,3 +2085,71 @@ cache is untouched; it has not been seen to fail, and turning it off would slow 
 `.next-verify/` — where `npm run verify` builds via `NEXT_DIST_DIR` so it never touches a running
 dev server's `.next` — is now in `.gitignore` and in the ESLint ignores beside `.next` and
 `.next-e2e`.
+
+### RS-01 · The Research Scout is a carve-out of rule 9, and the carve-out is narrow
+The spec (`docs/vibe-code-prompts/03-research-scout.md`) asks Claude to write plain-English summaries
+of papers, classify study types and draft emails. That is AI-generated content about health, which
+rule 9 and the brief's "AI-generated insights of any kind" put out of scope. The conflict was raised
+before any code was written, and the platform lead chose to build it with Claude, as FA-01 did for
+the Food Advisor.
+
+What the carve-out covers: saying what a paper asked, did and found, attributed to its authors and
+labelled "from the abstract"; why it matters *to the research*; where abstracts in one result set
+point in different directions, with both sides shown and no winner; rewording a trial's eligibility
+beside the registry's own text; tidying the wording of an email the person wrote. What it does not
+cover: advice, "you" about the reader's health, saying a treatment works, overstatement ("proves",
+"cure", "breakthrough"), or a dose (rule 17). Those are detectors in `src/lib/scout/language.ts`,
+run on **every Claude answer at runtime** — a summary that trips one is withheld, not reworded, and
+the card shows the authors' abstract — and swept across the feature's screens by
+`tests/unit/scout-rules.test.ts` alongside the tracking no-interpretation detector.
+
+The sweep caught three of my own sentences in the first draft: "whether you could take part" twice
+(the advice pattern) and "at most once a week" (the regimen pattern). All three were reworded rather
+than the detector loosened, because "you could" is exactly how advice is phrased.
+
+Study type comes from the indexers' publication-type tags first, then from the record's own words,
+and from Claude only when neither says anything; the card says which. The evidence level describes
+the design, never the result, and nothing ranks treatments.
+
+### RS-02 · What leaves, and to whom
+- **To PubMed, Europe PMC, OpenAlex and ClinicalTrials.gov**: the search words. Never who asked.
+  NCBI and OpenAlex receive the operator's `SCOUT_CONTACT_EMAIL`, as their terms ask, never the
+  person's.
+- **To Anthropic**: a paper's title and abstract (public), a trial's criteria (public), and — only if
+  the person presses "Ask Claude to help with the wording" — what they typed into the email form.
+  The form says so before they type. Never an account id or email address.
+- Anything sent to Claude is **looked up on the server by id**, not taken from the browser: otherwise
+  anybody signed in could put arbitrary text through a model on our key and get it back labelled as
+  a paper's summary. Each person has 60 Claude requests an hour (`limits.ts`), held in memory.
+- Claude is called over raw HTTP (`src/lib/scout/claude.ts`) because `package.json` is single-writer.
+  If the platform lead adds `@anthropic-ai/sdk`, that one file changes. With no `ANTHROPIC_API_KEY`
+  nothing is sent; summaries show as "not switched on", study types come from the index, and the email
+  is a template. Switching it on in production needs the same things LC-02 lists for Higgsfield: a
+  data processing agreement and a line in the privacy notice.
+
+### RS-03 · Reading list, notes and watched searches stay on the device
+The same trade as FA-02 and LC-04: no schema change, nothing held about anybody, and the page says
+that clearing the browser clears it. There is an export and a delete.
+
+Watched searches are therefore checked **when the page is opened**, if a week has passed — there is
+no server holding someone's health questions that could run them on a Monday. The page says this in
+those words, so nobody waits for an alert that will never come. A run where one source did not answer
+is not recorded, or half the next week's papers would be marked new.
+
+### RS-04 · Trials are a listing, not matching
+The brief puts "clinical trial matching" out of scope. This is the registry's own records, filtered by
+condition (ClinicalTrials.gov `query.cond`, not free text — a free-text "tinnitus" returns every trial
+listing tinnitus as a side effect) and by place, with the registry's eligibility text and its printed
+contacts. Nothing compares a trial with the person, and every card says only the research team can
+say who takes part. NIHR Be Part of Research has no public API, so it is a link to its own search.
+
+### RS-05 · Contact routes are printed or absent, never built
+An email address is shown only when it appears in the paper's own record (PubMed and Europe PMC put
+the corresponding author's address in the affiliation text). Otherwise the route is the researcher's
+ORCID, institution or OpenAlex page, or an honest "we found neither". Nothing constructs an address
+from a name and a domain. The app never sends email: the draft is copied or opened in the person's
+own mail program.
+
+PubMed does not flag the corresponding author, so the author whose address is printed is marked as
+the contact; OpenAlex's own `is_corresponding` is used on the researcher panel where it has the paper.
+The greeting uses the name as printed — "Dr" would be a guess about somebody we know nothing of.
