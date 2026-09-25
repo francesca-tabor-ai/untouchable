@@ -2225,3 +2225,147 @@ Which lessons are finished, and how far into one somebody is, is kept in the bro
 trade as FA-02. No schema change and nothing held about anybody; the cost is that it does not
 follow you to another device. The chosen voice will be saved the same way once there are voices
 to choose from.
+
+### PL-61 · The front-page grid can be filtered by body system too
+The row of body-system filters from the conditions page (PL-58) now sits above the grid of people on
+the front page. It is the same component, `BodySystemFilter`, so the two pages cannot drift into
+different words, orders or counts. On the front page the counts are people, not conditions.
+
+A person is under a system when any condition in their story is. Somebody whose story covers breast
+cancer and depression appears under Reproductive and on the unfiltered grid — never under a system
+on the strength of the depression, which is in none. Somebody with two conditions in one system is
+counted once.
+
+The choice is `?system=` in the address, beside `?people=`, and both are built by one function,
+`stripHref`, so choosing a system starts the grid from its first page and "View more" keeps the
+system rather than dropping it. The grid still orders photographed people first within a filter.
+
+One trap avoided: the grid hides itself below three people. Applied after filtering, that rule
+would remove the whole section — filter row included — the moment somebody chose a system with two
+people in it, leaving them no way back. It is applied to the unfiltered list, and a test holds that
+order. An empty system says so in a sentence with a link back to everybody, and the "Showing 0 of 0"
+count is not shown underneath it.
+
+### PL-62 · Two licensed photographs for stories not yet written
+Photographs for two people in the queue, found and checked the way PL-45 asks: from Wikimedia
+Commons, with the author, licence and source kept, and each opened and looked at first. The files
+are in `public/figures/`; the licence has to be written onto each figure's `imageLicence` when the
+import creates it, or the card will show the monogram — the database refuses an image without one.
+
+- **Miquita Oliver** — `miquita-oliver.jpg`, 960×960.
+  `{"author":"DavidPMaynard","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Miquita_Oliver_at_2026_SXSW_London_03.jpg"}`
+  One of three from a panel at SXSW London, June 2026. Chosen for being head and shoulders and
+  still; another caught her mid-sentence with somebody's knee in frame. Identity rests on the
+  Commons record, which names her and her podcast, not on anybody recognising a face.
+- **Bonnie Tyler** — `bonnie-tyler.jpg`, 960×1442.
+  `{"author":"Stefan Brending (2eight)","licence":"CC BY-SA 3.0 de","licenceUrl":"https://creativecommons.org/licenses/by-sa/3.0/de/deed.en","source":"https://commons.wikimedia.org/wiki/File:2016_Bonnie_Tyler_-_by_2eight_-_DSC8647.jpg"}`
+  The image her Wikidata entry (Q156491) names as her portrait, which ties the file to her rather
+  than to her name. Wikidata records her death on 8 July 2026: her figure must be created with
+  `isDeceased: true`, and her story drawn only from what she said herself.
+
+Searched and not found, so these cards stay monograms: Tyler Henry, Kate Lawler, Deja Blu and Louise
+O'Neill. The press images supplied for each (IMDb, the Bristol Post, a Squarespace site, the Irish
+Times) were refused under PL-45.
+
+### PL-63 · Two more licensed photographs, and choosing between them
+Found on Wikimedia Commons and looked at before use, as PL-45 asks. Files in `public/figures/`; the
+licence goes on each figure's `imageLicence` at import.
+
+- **Margaret Cho** — `margaret-cho.jpg`, 960×1440.
+  `{"author":"Danlev / Dan Leveille","licence":"CC BY-SA 3.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/3.0","source":"https://commons.wikimedia.org/wiki/File:Margaret_Cho_at_Los_Angeles_Pride_-_20110612.jpg"}`
+  Her Wikidata portrait is 428×568, which a card on a high-density phone would enlarge past twice
+  its size. Of the larger files, two were turned down for what was around her rather than for her:
+  one has a man cut in half at the frame's edge, the other a crowd of identifiable bystanders
+  behind her — strangers' faces do not belong on a page about addiction.
+- **Natasha Hamilton** — `natasha-hamilton.jpg`, 960×1206.
+  `{"author":"Ian G Shingler","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Natasha_Hamilton_crop.jpg"}`
+  Every recent free photograph of her is from one performance at Durham Pride in 2025. Her Wikidata
+  image is full length, which in a 4:5 card leaves her face small at the top edge. This is another
+  uploader's crop of the same set, already close to 4:5.
+
+### PL-64 · Photographs for Danny Dyer and Anastacia; Golda Rosheuvel stays a monogram
+Found on Wikimedia Commons and looked at first. Files in `public/figures/`; licence on
+`imageLicence` at import.
+
+- **Danny Dyer** — `danny-dyer.jpg`, 960×1374.
+  `{"author":"JaceMerlyn","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Danny_Dyer_at_BAFTAs_2026_02_(cropped).jpg"}`
+  His Wikidata photo is landscape with his face right of centre, and the card's centred 4:5 crop
+  would take the edge of his face. Cropping it ourselves is allowed under CC BY-SA only if the change
+  is stated, and `imageLicence` has nowhere to state it — so an existing portrait crop was used
+  instead. The sponsor's name along the top of the backdrop falls mostly outside the card.
+- **Anastacia** — `anastacia.jpg`, 960×1280.
+  `{"author":"Harald Krichel","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Anastacia-4003.jpg"}`
+  One of the images her Wikidata entry names. Chosen over a mid-panel shot in tinted glasses.
+- **Golda Rosheuvel — none.** Her Wikidata image is a low-resolution video still of her in full
+  costume as Queen Charlotte; a card for her own story should show her, not a role. Two other
+  matches are photographs of the costume wig on display. The one image of her as herself is a
+  596-pixel frame from a talk show caught mid-expression — the same softness Margaret Cho's small
+  portrait was refused for in PL-63. A missing photograph is not a reason to use a poor one.
+
+### PL-65 · Christina Applegate and Jamie-Lynn Sigler: one video, two stories
+Both have multiple sclerosis and speak about it together in one video. A story belongs to one person
+(`Story.publicFigureId`), so this is two stories citing the same source — and each is drawn only
+from what that woman says about herself. Where one describes the other's illness, that is somebody
+speaking for a living person, which rule 15 does not allow, however close they are.
+
+- **Christina Applegate** — `christina-applegate.jpg`, 960×1353.
+  `{"author":"Gage Skidmore","licence":"CC BY-SA 2.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/2.0","source":"https://commons.wikimedia.org/wiki/File:Christina_Applegate_SDCC_2014.jpg"}`
+  Her Wikidata portrait. A water bottle in the lower corner partly survives the card's crop.
+- **Jamie-Lynn Sigler — none.** Her Wikidata image is 209×282. The two large files are stills of
+  her as Meadow Soprano — a role, not her — and the last is a motion-blurred party snapshot from
+  2008, turned away mid-laugh, with a stranger cut off at the edge.
+
+### PL-66 · "Your Health" becomes "My health": Dashboard, Health tracker, Education
+The menu had one link per tool (symptom tracker, timeline, Food Advisor), so it grew with every
+tracker. It now has three fixed doors:
+
+- **Dashboard** (`/dashboard`) — what somebody has recorded, in one place: today's log and the last
+  scores they entered, current treatments, check-ins waiting, timeline counts, the GP handover and
+  saved stories. It repeats their own numbers and never compares, averages or grades them. Brief 7.7's
+  line chart with treatment markers is **not** in this change; it belongs here when it is built.
+  Followed charities are left off for now so the dashboard stays clear of the charity machinery.
+- **Health tracker** (`/tracker`) — every tracker, split into "in use" and "you could also track".
+  "In use" is read from the data (symptoms chosen, a course logged, a question written), not from a
+  new sign-up flag, so no schema change and nothing to clean up on withdrawal. "What could this be"
+  is the existing Questions to ask matrix (PL-49), described as something to take to a GP that does
+  not tell you what you have.
+- **Education** (`/learn`) — our published condition pages, stories and medicine pages, chosen by the
+  person's conditions and logged medicines. Nothing generated, nothing ranked. Links out to the NHS
+  guide to conditions for how the body works.
+
+**Not built, and listed as not built:** water, sleep, blood test results, bowel habits. Each needs a
+model in `prisma/schema.prisma`, so each is a platform-lead decision. They show on the tracker page
+with no button. "Latest research" under Education is left out: there is no independent, editorially
+checked source of it on the platform yet, and rule 9 rules out summarising it ourselves.
+
+### PL-67 · Trisha Goddard has a photograph; the five PL-16 names still do not
+Asked for photographs for the five people PL-16 records as having none — Ethan Zohn, DJ Fat Tony,
+Sarah Hiscox, Ella Mills and Jo Malone. Wikimedia Commons, Wikidata and Openverse were searched for
+each. None of the five has a usable image, and the position is unchanged:
+
+- **Ethan Zohn** — Flickr has him, but every file is CC BY-NC-ND. Non-commercial excludes a site
+  that takes donations, and no-derivatives excludes the 4:5 card crop. PL-16 asks for a licence that
+  permits commercial reuse, so these are refusals on the licence, not on the picture.
+- **Jo Malone** and **Ella Mills** — the matches are shop fronts, product bottles and the
+  Deliciously Ella range. Neither woman appears in a freely licensed photograph.
+- **DJ Fat Tony** — the "Fat Tony" photographs on Commons are Anthony Obi, the Houston rapper who
+  performs under that name. Publishing one would put a stranger's face on a story about somebody
+  else's addiction.
+- **Sarah Hiscox** — nothing.
+
+A general image search returns pictures of all five. They belong to agencies and newspapers, and
+PL-16 and PL-45 have refused that route four times now. The rule held again here.
+
+**Trisha Goddard** was not on the list and does have one — `trisha-goddard.jpg`, 479×718, opened and
+looked at before use, head and shoulders, nothing identifiable behind her.
+`{"author":"Acumen Images / The Health Hotel","licence":"CC BY 2.0","licenceUrl":"https://creativecommons.org/licenses/by/2.0","source":"https://commons.wikimedia.org/wiki/File:Trisha_Goddard,_September_2009_1_cropped.jpg"}`
+The Commons record carries the same **personality-rights** note as the Willis file (D-054): the
+licence covers the photographer's copyright, not her likeness, so the picture belongs beside her
+story and not on a marketing page. It is smaller than the 960-pixel files PL-62 and PL-63 chose;
+at a 56px thumbnail and a 4:5 card it is still above twice its displayed size, and the alternative
+was a monogram.
+
+As with PL-62 to PL-64, **the file alone renders nothing**. The licence above has to be written onto
+her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
+card stays a monogram. That write has not been made in production.
+

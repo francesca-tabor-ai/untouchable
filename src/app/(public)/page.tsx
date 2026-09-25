@@ -5,6 +5,7 @@ import { SearchResults } from "@/components/search/search-results";
 import { SiteSearch } from "@/components/search/site-search";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { parseSystem } from "@/lib/conditions/body-systems";
 import { search } from "@/lib/search";
 import { parseSearchParams } from "@/lib/search/schema";
 
@@ -49,6 +50,9 @@ export default async function HomePage({
   // than state in the browser, so "View more" works without JavaScript and the page they
   // are looking at is the page they can share or come back to.
   const shown = parseShown(params.people);
+  // Which body system the grid is narrowed to, if any. Anything that is not a system is no
+  // filter, never an error.
+  const system = parseSystem(params.system);
 
   return (
     <>
@@ -82,7 +86,7 @@ export default async function HomePage({
         </Container>
       </section>
 
-      {searching ? <SearchResults outcome={outcome} /> : <FigureStrip shown={shown} />}
+      {searching ? <SearchResults outcome={outcome} /> : <FigureStrip shown={shown} system={system} />}
     </>
   );
 }
