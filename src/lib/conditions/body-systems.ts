@@ -80,6 +80,7 @@ export const CONDITION_SYSTEMS: Record<string, readonly BodySystem[]> = {
   // clinical claim. They stay on the full list.
   adhd: [],
   "alcohol-use-disorder": [],
+  "bereavement-by-suicide": [],
   "binge-eating-disorder": [],
   bulimia: [],
   depression: [],

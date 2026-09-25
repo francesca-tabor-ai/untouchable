@@ -378,6 +378,48 @@ const PERINATAL_MENTAL_HEALTH: SupportTopic = {
   ],
 };
 
+/**
+ * Checked 25 September 2026. The Survivors of Bereavement by Suicide number was read from
+ * SOBS's own site (uksobs.com, registered charity 1098815) and from its NHS 111 Wales
+ * service listing. Cruse's helpline number and hours were read from Cruse's own helpline
+ * page (registered charity 208078) and from its NHS 111 Wales listing. Mind's page on losing
+ * someone to suicide, which the NHS grief page links to, names both.
+ *
+ * No hours are printed for SOBS: its own site gives none, and third-party directories
+ * disagree. The intro says what Mind says first, because it is the thing people bereaved by
+ * suicide most need to hear and least often do: it is not your fault.
+ *
+ * Neither organisation sells anything (rule 14). The crisis contacts stay on the page, and
+ * they matter here more than most: people bereaved by suicide can have suicidal feelings
+ * themselves.
+ */
+const SUICIDE_BEREAVEMENT: SupportTopic = {
+  key: "suicide_bereavement",
+  heading: "If you have lost someone to suicide",
+  intro:
+    "Guilt, going over what you might have said or done, anger, numbness — all of it is common, and none of it means you are to blame. It does not matter how long ago it happened. If you are having thoughts of ending your own life, the crisis numbers on this page are for you too.",
+  contacts: [
+    {
+      key: "sobs",
+      name: "Survivors of Bereavement by Suicide",
+      detail:
+        "A national helpline, local and online support groups, and email support, for adults bereaved by suicide. It is run by trained volunteers, many of whom have lost someone themselves.",
+      contact: "0300 111 5065",
+      href: "tel:03001115065",
+      external: false,
+    },
+    {
+      key: "cruse",
+      name: "Cruse Bereavement Support helpline",
+      detail:
+        "Free, for anyone who is grieving. Monday, Wednesday, Thursday and Friday 9.30am to 5pm, and Tuesday 1pm to 8pm.",
+      contact: "0808 808 1677",
+      href: "tel:08088081677",
+      external: false,
+    },
+  ],
+};
+
 const TOPICS: Record<string, SupportTopic> = {
   [SEXUAL_VIOLENCE.key]: SEXUAL_VIOLENCE,
   [SUBSTANCE.key]: SUBSTANCE,
@@ -388,6 +430,7 @@ const TOPICS: Record<string, SupportTopic> = {
   [SPINAL_CORD_INJURY.key]: SPINAL_CORD_INJURY,
   [BURNS.key]: BURNS,
   [PERINATAL_MENTAL_HEALTH.key]: PERINATAL_MENTAL_HEALTH,
+  [SUICIDE_BEREAVEMENT.key]: SUICIDE_BEREAVEMENT,
 };
 
 /** The support blocks for a set of conditions, de-duplicated and in a stable order. */

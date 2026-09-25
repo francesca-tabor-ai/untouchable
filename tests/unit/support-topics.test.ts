@@ -152,6 +152,16 @@ describe("support matched to the topic", () => {
     expect(topic.intro).toMatch(/bad parent/i);
   });
 
+  it("offers SOBS and Cruse after a suicide, and says it is not their fault", () => {
+    // Guilt is the thing Mind names first for people bereaved by suicide, and the story this
+    // block was written for is a grandson going over what he said to her that weekend.
+    const [topic] = supportTopicsFor([{ supportTopic: "suicide_bereavement" }]);
+
+    expect(topic.contacts.map((c) => c.contact)).toEqual(["0300 111 5065", "0808 808 1677"]);
+    expect(topic.intro).toMatch(/none of it means you are to blame/i);
+    expect(topic.intro).toMatch(/how long ago/i);
+  });
+
   it("adds nothing to a condition with no topic", () => {
     expect(supportTopicsFor([{ supportTopic: null }, {}])).toEqual([]);
   });
