@@ -2369,3 +2369,37 @@ As with PL-62 to PL-64, **the file alone renders nothing**. The licence above ha
 her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
 card stays a monogram. That write has not been made in production.
 
+### PL-68 · Jake Humphrey on his grandmother: what the Samaritans guidelines took out
+Published as a `loved_one` story from his Begin Again interview with Davina McCall (24 September
+2026). The passage was checked against the video's own caption track, not only the excerpt that
+was supplied. His grandmother died by suicide nearly thirty years ago; he is her family, telling
+his own part of it, and she is not named because he does not name her.
+
+**Cut, under the Samaritans media guidelines:**
+- **The method and the place.** He says where she was found and what it was. Neither is on the
+  page, and the page says so, so a reader is not left to wonder.
+- **The framing of it as love.** In the conversation, her death is called "weirdly comforting"
+  because she was with her husband, and amazing that she loved him so much. That is his grief and
+  it is sincere, but a suicide presented as a romantic reunion is precisely what the guidelines
+  ask publishers not to print.
+- **His father's health.** His father is living. The hip operation during which the conversation
+  took place, and "closed up for a few years", are a third person's health. The page says it was
+  very hard on his father and no more.
+
+**Kept:** what she said to him — that she did not think she could go on — and that he told her of
+course she could. It is the heart of what he chose to say, it is a warning sign readers should
+recognise, and it sits beside his own view that he does not think he could have changed the
+outcome, which is also what Mind tells people bereaved by suicide.
+
+No quote: the only source is a caption track (D-055).
+
+**New condition, `bereavement-by-suicide`**, sensitive, in no body system. Its summary is from
+Mind's page on losing someone to suicide, which the NHS grief page links to, attributed to Mind
+rather than said in our own voice; the GP and 999 lines are the NHS's. **New support topic,
+`suicide_bereavement`**: Survivors of Bereavement by Suicide and the Cruse helpline, each number
+read from the charity's own site and from its NHS 111 Wales listing. No SOBS hours are printed,
+because SOBS gives none and directories disagree. The intro says it is not your fault first, and
+says the crisis numbers are for the reader too.
+
+**Photograph:** Wikimedia Commons, David Cummings, CC0, cropped to portrait. The Amazon author
+image that was supplied was not used — it is a publisher's press image with no licence for us.

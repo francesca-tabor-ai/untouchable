@@ -50,6 +50,7 @@ describe("the mapping", () => {
     "alcohol-use-disorder",
     "drug-addiction",
     "sexual-abuse",
+    "bereavement-by-suicide",
   ])("keeps %s out of every system, on purpose", (slug) => {
     // Filing these under "Nervous" would be a clinical claim. Changing that is a decision
     // for DECISIONS.md, not a line to add here — PL-58.
