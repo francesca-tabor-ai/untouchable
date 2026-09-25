@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
+import { BodySystemFilter } from "@/components/conditions/body-system-filter";
 import { Container } from "@/components/ui/container";
 import {
   BODY_SYSTEMS,
@@ -59,28 +60,12 @@ export default async function ConditionsPage({
       </section>
 
       <Container className="py-12">
-        <nav aria-label="Filter by body system">
-          <ul className="flex flex-wrap gap-2">
-            <li>
-              <FilterLink
-                href="/conditions"
-                current={system === null}
-                label="All"
-                count={everything.length}
-              />
-            </li>
-            {BODY_SYSTEMS.map((entry) => (
-              <li key={entry.key}>
-                <FilterLink
-                  href={`/conditions?system=${entry.key}`}
-                  current={system === entry.key}
-                  label={entry.label}
-                  count={counts[entry.key]}
-                />
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <BodySystemFilter
+          current={system}
+          counts={counts}
+          total={everything.length}
+          hrefFor={(key) => (key ? `/conditions?system=${key}` : "/conditions")}
+        />
 
         <div className="mt-8">
           <h2 className={selected ? "text-title" : "sr-only"}>
@@ -130,38 +115,5 @@ export default async function ConditionsPage({
         ) : null}
       </Container>
     </>
-  );
-}
-
-/**
- * One filter. The chosen one is marked for a screen reader with `aria-current` and for
- * everybody else by a filled background — never by colour alone, because the filled pill
- * also changes weight and border.
- */
-function FilterLink({
-  href,
-  current,
-  label,
-  count,
-}: {
-  href: string;
-  current: boolean;
-  label: string;
-  count: number;
-}) {
-  return (
-    <Link
-      href={href}
-      scroll={false}
-      aria-current={current ? "page" : undefined}
-      className={
-        current
-          ? "inline-flex min-h-11 items-center gap-1.5 rounded-pill border border-forest-800 bg-forest-800 px-4 text-small font-semibold text-white"
-          : "inline-flex min-h-11 items-center gap-1.5 rounded-pill border border-line bg-white px-4 text-small font-medium text-ink hover:border-line-strong hover:bg-cream-50"
-      }
-    >
-      {label}
-      <span className={current ? "text-cream-200" : "text-muted"}>{count}</span>
-    </Link>
   );
 }
