@@ -86,3 +86,4 @@ editorial-export*.json
 
 # verify builds here so they never touch the dev server's .next
 /.next-verify/
+/.next-claude/

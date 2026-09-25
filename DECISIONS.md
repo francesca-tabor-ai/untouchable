@@ -2085,3 +2085,354 @@ cache is untouched; it has not been seen to fail, and turning it off would slow 
 `.next-verify/` — where `npm run verify` builds via `NEXT_DIST_DIR` so it never touches a running
 dev server's `.next` — is now in `.gitignore` and in the ESLint ignores beside `.next` and
 `.next-e2e`.
+
+### PL-60 · The About pages exist
+PL-56 found `/about`, `/about/editorial` and `/about/evidence` linked and returning 404. All three
+are now written, in `(public)/about/`, rather than the links coming out: with the front page's
+explanatory blocks gone (PL-55), "Why we built this" is the only route to what the platform is.
+
+**Each page describes a guarantee; none of them is the mechanism.** Every promise on them is one
+AGENTS.md section 1 already enforces, and the copy was checked against the code that keeps it —
+the consent wording in `src/lib/consent/text.ts`, the 25-word quote limit, the `DonationReferral`
+model, the group threshold in `aggregate.ts`. If one of those changes, the page has to change
+with it.
+
+**What they deliberately do not say.** The evidence page does not mention downloading your data
+or deleting your account, because neither is built; say so the day they are. "How it is paid
+for" puts research income in the future tense, because no organisation pays us today. The
+family and friend exceptions (rules 15 and 16) are stated as narrowly as the rules themselves,
+because a reader should be able to hold us to them.
+
+None of this copy has been legally reviewed, which brief section 12 asks for before launch.
+
+`/privacy` and `/terms` are still linked from the footer and still 404. They are legal documents
+and were not written here.
+
+### PL-61 · The front-page grid can be filtered by body system too
+The row of body-system filters from the conditions page (PL-58) now sits above the grid of people on
+the front page. It is the same component, `BodySystemFilter`, so the two pages cannot drift into
+different words, orders or counts. On the front page the counts are people, not conditions.
+
+A person is under a system when any condition in their story is. Somebody whose story covers breast
+cancer and depression appears under Reproductive and on the unfiltered grid — never under a system
+on the strength of the depression, which is in none. Somebody with two conditions in one system is
+counted once.
+
+The choice is `?system=` in the address, beside `?people=`, and both are built by one function,
+`stripHref`, so choosing a system starts the grid from its first page and "View more" keeps the
+system rather than dropping it. The grid still orders photographed people first within a filter.
+
+One trap avoided: the grid hides itself below three people. Applied after filtering, that rule
+would remove the whole section — filter row included — the moment somebody chose a system with two
+people in it, leaving them no way back. It is applied to the unfiltered list, and a test holds that
+order. An empty system says so in a sentence with a link back to everybody, and the "Showing 0 of 0"
+count is not shown underneath it.
+
+### PL-62 · Two licensed photographs for stories not yet written
+Photographs for two people in the queue, found and checked the way PL-45 asks: from Wikimedia
+Commons, with the author, licence and source kept, and each opened and looked at first. The files
+are in `public/figures/`; the licence has to be written onto each figure's `imageLicence` when the
+import creates it, or the card will show the monogram — the database refuses an image without one.
+
+- **Miquita Oliver** — `miquita-oliver.jpg`, 960×960.
+  `{"author":"DavidPMaynard","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Miquita_Oliver_at_2026_SXSW_London_03.jpg"}`
+  One of three from a panel at SXSW London, June 2026. Chosen for being head and shoulders and
+  still; another caught her mid-sentence with somebody's knee in frame. Identity rests on the
+  Commons record, which names her and her podcast, not on anybody recognising a face.
+- **Bonnie Tyler** — `bonnie-tyler.jpg`, 960×1442.
+  `{"author":"Stefan Brending (2eight)","licence":"CC BY-SA 3.0 de","licenceUrl":"https://creativecommons.org/licenses/by-sa/3.0/de/deed.en","source":"https://commons.wikimedia.org/wiki/File:2016_Bonnie_Tyler_-_by_2eight_-_DSC8647.jpg"}`
+  The image her Wikidata entry (Q156491) names as her portrait, which ties the file to her rather
+  than to her name. Wikidata records her death on 8 July 2026: her figure must be created with
+  `isDeceased: true`, and her story drawn only from what she said herself.
+
+Searched and not found, so these cards stay monograms: Tyler Henry, Kate Lawler, Deja Blu and Louise
+O'Neill. The press images supplied for each (IMDb, the Bristol Post, a Squarespace site, the Irish
+Times) were refused under PL-45.
+
+### PL-63 · Two more licensed photographs, and choosing between them
+Found on Wikimedia Commons and looked at before use, as PL-45 asks. Files in `public/figures/`; the
+licence goes on each figure's `imageLicence` at import.
+
+- **Margaret Cho** — `margaret-cho.jpg`, 960×1440.
+  `{"author":"Danlev / Dan Leveille","licence":"CC BY-SA 3.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/3.0","source":"https://commons.wikimedia.org/wiki/File:Margaret_Cho_at_Los_Angeles_Pride_-_20110612.jpg"}`
+  Her Wikidata portrait is 428×568, which a card on a high-density phone would enlarge past twice
+  its size. Of the larger files, two were turned down for what was around her rather than for her:
+  one has a man cut in half at the frame's edge, the other a crowd of identifiable bystanders
+  behind her — strangers' faces do not belong on a page about addiction.
+- **Natasha Hamilton** — `natasha-hamilton.jpg`, 960×1206.
+  `{"author":"Ian G Shingler","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Natasha_Hamilton_crop.jpg"}`
+  Every recent free photograph of her is from one performance at Durham Pride in 2025. Her Wikidata
+  image is full length, which in a 4:5 card leaves her face small at the top edge. This is another
+  uploader's crop of the same set, already close to 4:5.
+
+### PL-64 · Photographs for Danny Dyer and Anastacia; Golda Rosheuvel stays a monogram
+Found on Wikimedia Commons and looked at first. Files in `public/figures/`; licence on
+`imageLicence` at import.
+
+- **Danny Dyer** — `danny-dyer.jpg`, 960×1374.
+  `{"author":"JaceMerlyn","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Danny_Dyer_at_BAFTAs_2026_02_(cropped).jpg"}`
+  His Wikidata photo is landscape with his face right of centre, and the card's centred 4:5 crop
+  would take the edge of his face. Cropping it ourselves is allowed under CC BY-SA only if the change
+  is stated, and `imageLicence` has nowhere to state it — so an existing portrait crop was used
+  instead. The sponsor's name along the top of the backdrop falls mostly outside the card.
+- **Anastacia** — `anastacia.jpg`, 960×1280.
+  `{"author":"Harald Krichel","licence":"CC BY-SA 4.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/4.0","source":"https://commons.wikimedia.org/wiki/File:Anastacia-4003.jpg"}`
+  One of the images her Wikidata entry names. Chosen over a mid-panel shot in tinted glasses.
+- **Golda Rosheuvel — none.** Her Wikidata image is a low-resolution video still of her in full
+  costume as Queen Charlotte; a card for her own story should show her, not a role. Two other
+  matches are photographs of the costume wig on display. The one image of her as herself is a
+  596-pixel frame from a talk show caught mid-expression — the same softness Margaret Cho's small
+  portrait was refused for in PL-63. A missing photograph is not a reason to use a poor one.
+
+### PL-65 · Christina Applegate and Jamie-Lynn Sigler: one video, two stories
+Both have multiple sclerosis and speak about it together in one video. A story belongs to one person
+(`Story.publicFigureId`), so this is two stories citing the same source — and each is drawn only
+from what that woman says about herself. Where one describes the other's illness, that is somebody
+speaking for a living person, which rule 15 does not allow, however close they are.
+
+- **Christina Applegate** — `christina-applegate.jpg`, 960×1353.
+  `{"author":"Gage Skidmore","licence":"CC BY-SA 2.0","licenceUrl":"https://creativecommons.org/licenses/by-sa/2.0","source":"https://commons.wikimedia.org/wiki/File:Christina_Applegate_SDCC_2014.jpg"}`
+  Her Wikidata portrait. A water bottle in the lower corner partly survives the card's crop.
+- **Jamie-Lynn Sigler — none.** Her Wikidata image is 209×282. The two large files are stills of
+  her as Meadow Soprano — a role, not her — and the last is a motion-blurred party snapshot from
+  2008, turned away mid-laugh, with a stranger cut off at the edge.
+
+### PL-66 · "Your Health" becomes "My health": Dashboard, Health tracker, Education
+The menu had one link per tool (symptom tracker, timeline, Food Advisor), so it grew with every
+tracker. It now has three fixed doors:
+
+- **Dashboard** (`/dashboard`) — what somebody has recorded, in one place: today's log and the last
+  scores they entered, current treatments, check-ins waiting, timeline counts, the GP handover and
+  saved stories. It repeats their own numbers and never compares, averages or grades them. Brief 7.7's
+  line chart with treatment markers is **not** in this change; it belongs here when it is built.
+  Followed charities are left off for now so the dashboard stays clear of the charity machinery.
+- **Health tracker** (`/tracker`) — every tracker, split into "in use" and "you could also track".
+  "In use" is read from the data (symptoms chosen, a course logged, a question written), not from a
+  new sign-up flag, so no schema change and nothing to clean up on withdrawal. "What could this be"
+  is the existing Questions to ask matrix (PL-49), described as something to take to a GP that does
+  not tell you what you have.
+- **Education** (`/learn`) — our published condition pages, stories and medicine pages, chosen by the
+  person's conditions and logged medicines. Nothing generated, nothing ranked. Links out to the NHS
+  guide to conditions for how the body works.
+
+**Not built, and listed as not built:** water, sleep, blood test results, bowel habits. Each needs a
+model in `prisma/schema.prisma`, so each is a platform-lead decision. They show on the tracker page
+with no button. "Latest research" under Education is left out: there is no independent, editorially
+checked source of it on the platform yet, and rule 9 rules out summarising it ourselves.
+
+### LC-01 · Listening courses explain the body, not the listener
+The spec (`docs/vibe-code-prompts/02-symptom-to-course-audio.md`) asks for a language model to
+read somebody's symptoms, map them to body systems, and write a course about "what might be going
+on", including the serious possibilities. That is AI-generated insight about one person's health,
+which rule 9 and the brief rule out. The conflict was raised before any code was written, and the
+narrower version was agreed: courses are chosen from body systems, written about how the body
+works, and are the same for everybody.
+
+What that keeps from the spec: the body-system map, the outline shape (four to six parts, three
+to five lessons), scripts written for the ear, a pronunciation guide, sources on every lesson,
+"how doctors think about this" framing, and the NHS's own words on which signs to get checked
+promptly. What it drops: the symptom box. Nothing a listener types reaches a course, and the
+contract's `input_symptoms` is renamed `topics` so nobody later wires one in by the field name.
+
+The rules are detectors, in `src/lib/courses/script-rules.ts`: written for the ear (no digits,
+bullets, headings, symbols, brackets or abbreviations); about the body (never "you have", never
+"nothing to worry about" — reassurance is a diagnosis too); calm (no frightening words); plus the
+existing rule 9 interpretation detector and rule 17 dose detector. Sources are held to an
+allowlist of independent hosts in `sources.ts`, rule 14 extended to the whole course.
+`tests/unit/course-scripts.test.ts` runs every script, title and summary through all of them.
+
+Courses live in code (`src/lib/courses/`) because tables need a change to `prisma/schema.prisma`,
+which is single-writer. One lesson is written, "The snail shell that hears", so the voice can be
+tuned before the other fourteen are written in it. The rest are outline, marked "not written yet".
+
+### LC-02 · No voice provider and no script writer, yet
+The spec names Higgsfield for speech and an LLM for drafting. Both are seams with a provider that
+declines (`voice.ts`, `writer.ts`), in the shape `src/lib/email/` and `src/lib/food/vision.ts` use.
+Switching either on needs a data processing agreement, a line in the privacy notice, a
+server-side key the platform lead provisions, and — for Higgsfield, a creative-media platform — a
+check that its terms suit a health service at all. None of that is a feature branch's call.
+
+Because of LC-01, a voice provider would only ever receive a chunk of a general biology lesson and
+a voice id: no user id, no symptom. That is deliberate and should stay true. The writer's system
+prompt is written down (`WRITING_RULES`) and every draft goes through `scriptProblems`; a draft that
+passes is still a draft until an editor reads it, and the model may not add sources of its own.
+
+### LC-03 · Voicing is a playlist, not a stitched file
+Long scripts are split at paragraph boundaries (then sentences, then words, never mid-word) and
+voiced one chunk at a time with retry and backoff. Joining the audio into one file needs a
+transcoder, which is a new dependency, so the player plays the chunks back to back instead. The
+cache key is a hash of what the engine hears plus the voice id, so editing one paragraph re-voices
+only the chunks it touched, and changing a pronunciation re-voices only the chunks that use it.
+
+### LC-04 · Listening progress stays on the device
+Which lessons are finished, and how far into one somebody is, is kept in the browser — the same
+trade as FA-02. No schema change and nothing held about anybody; the cost is that it does not
+follow you to another device. The chosen voice will be saved the same way once there are voices
+to choose from.
+
+### RS-01 · The Research Scout is a carve-out of rule 9, and the carve-out is narrow
+The spec (`docs/vibe-code-prompts/03-research-scout.md`) asks Claude to write plain-English summaries
+of papers, classify study types and draft emails. That is AI-generated content about health, which
+rule 9 and the brief's "AI-generated insights of any kind" put out of scope. The conflict was raised
+before any code was written, and the platform lead chose to build it with Claude, as FA-01 did for
+the Food Advisor.
+
+What the carve-out covers: saying what a paper asked, did and found, attributed to its authors and
+labelled "from the abstract"; why it matters *to the research*; where abstracts in one result set
+point in different directions, with both sides shown and no winner; rewording a trial's eligibility
+beside the registry's own text; tidying the wording of an email the person wrote. What it does not
+cover: advice, "you" about the reader's health, saying a treatment works, overstatement ("proves",
+"cure", "breakthrough"), or a dose (rule 17). Those are detectors in `src/lib/scout/language.ts`,
+run on **every Claude answer at runtime** — a summary that trips one is withheld, not reworded, and
+the card shows the authors' abstract — and swept across the feature's screens by
+`tests/unit/scout-rules.test.ts` alongside the tracking no-interpretation detector.
+
+The sweep caught three of my own sentences in the first draft: "whether you could take part" twice
+(the advice pattern) and "at most once a week" (the regimen pattern). All three were reworded rather
+than the detector loosened, because "you could" is exactly how advice is phrased.
+
+Study type comes from the indexers' publication-type tags first, then from the record's own words,
+and from Claude only when neither says anything; the card says which. The evidence level describes
+the design, never the result, and nothing ranks treatments.
+
+### RS-02 · What leaves, and to whom
+- **To PubMed, Europe PMC, OpenAlex and ClinicalTrials.gov**: the search words. Never who asked.
+  NCBI and OpenAlex receive the operator's `SCOUT_CONTACT_EMAIL`, as their terms ask, never the
+  person's.
+- **To Anthropic**: a paper's title and abstract (public), a trial's criteria (public), and — only if
+  the person presses "Ask Claude to help with the wording" — what they typed into the email form.
+  The form says so before they type. Never an account id or email address.
+- Anything sent to Claude is **looked up on the server by id**, not taken from the browser: otherwise
+  anybody signed in could put arbitrary text through a model on our key and get it back labelled as
+  a paper's summary. Each person has 60 Claude requests an hour (`limits.ts`), held in memory.
+- Claude is called over raw HTTP (`src/lib/scout/claude.ts`) because `package.json` is single-writer.
+  If the platform lead adds `@anthropic-ai/sdk`, that one file changes. With no `ANTHROPIC_API_KEY`
+  nothing is sent; summaries show as "not switched on", study types come from the index, and the email
+  is a template. Switching it on in production needs the same things LC-02 lists for Higgsfield: a
+  data processing agreement and a line in the privacy notice.
+
+### RS-03 · Reading list, notes and watched searches stay on the device
+The same trade as FA-02 and LC-04: no schema change, nothing held about anybody, and the page says
+that clearing the browser clears it. There is an export and a delete.
+
+Watched searches are therefore checked **when the page is opened**, if a week has passed — there is
+no server holding someone's health questions that could run them on a Monday. The page says this in
+those words, so nobody waits for an alert that will never come. A run where one source did not answer
+is not recorded, or half the next week's papers would be marked new.
+
+### RS-04 · Trials are a listing, not matching
+The brief puts "clinical trial matching" out of scope. This is the registry's own records, filtered by
+condition (ClinicalTrials.gov `query.cond`, not free text — a free-text "tinnitus" returns every trial
+listing tinnitus as a side effect) and by place, with the registry's eligibility text and its printed
+contacts. Nothing compares a trial with the person, and every card says only the research team can
+say who takes part. NIHR Be Part of Research has no public API, so it is a link to its own search.
+
+### RS-05 · Contact routes are printed or absent, never built
+An email address is shown only when it appears in the paper's own record (PubMed and Europe PMC put
+the corresponding author's address in the affiliation text). Otherwise the route is the researcher's
+ORCID, institution or OpenAlex page, or an honest "we found neither". Nothing constructs an address
+from a name and a domain. The app never sends email: the draft is copied or opened in the person's
+own mail program.
+
+PubMed does not flag the corresponding author, so the author whose address is printed is marked as
+the contact; OpenAlex's own `is_corresponding` is used on the researcher panel where it has the paper.
+The greeting uses the name as printed — "Dr" would be a guess about somebody we know nothing of.
+
+### PL-67 · Trisha Goddard has a photograph; the five PL-16 names still do not
+Asked for photographs for the five people PL-16 records as having none — Ethan Zohn, DJ Fat Tony,
+Sarah Hiscox, Ella Mills and Jo Malone. Wikimedia Commons, Wikidata and Openverse were searched for
+each. None of the five has a usable image, and the position is unchanged:
+
+- **Ethan Zohn** — Flickr has him, but every file is CC BY-NC-ND. Non-commercial excludes a site
+  that takes donations, and no-derivatives excludes the 4:5 card crop. PL-16 asks for a licence that
+  permits commercial reuse, so these are refusals on the licence, not on the picture.
+- **Jo Malone** and **Ella Mills** — the matches are shop fronts, product bottles and the
+  Deliciously Ella range. Neither woman appears in a freely licensed photograph.
+- **DJ Fat Tony** — the "Fat Tony" photographs on Commons are Anthony Obi, the Houston rapper who
+  performs under that name. Publishing one would put a stranger's face on a story about somebody
+  else's addiction.
+- **Sarah Hiscox** — nothing.
+
+A general image search returns pictures of all five. They belong to agencies and newspapers, and
+PL-16 and PL-45 have refused that route four times now. The rule held again here.
+
+**Trisha Goddard** was not on the list and does have one — `trisha-goddard.jpg`, 479×718, opened and
+looked at before use, head and shoulders, nothing identifiable behind her.
+`{"author":"Acumen Images / The Health Hotel","licence":"CC BY 2.0","licenceUrl":"https://creativecommons.org/licenses/by/2.0","source":"https://commons.wikimedia.org/wiki/File:Trisha_Goddard,_September_2009_1_cropped.jpg"}`
+The Commons record carries the same **personality-rights** note as the Willis file (D-054): the
+licence covers the photographer's copyright, not her likeness, so the picture belongs beside her
+story and not on a marketing page. It is smaller than the 960-pixel files PL-62 and PL-63 chose;
+at a 56px thumbnail and a 4:5 card it is still above twice its displayed size, and the alternative
+was a monogram.
+
+As with PL-62 to PL-64, **the file alone renders nothing**. The licence above has to be written onto
+her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
+card stays a monogram. That write has not been made in production.
+
+### HL-01 · The Habit Experiment Lab is a product-owner exception to rule 9
+The spec (`docs/vibe-code-prompts/01-habit-experiment-lab.md`) asks for three things rule 9 forbids:
+a suggestion engine that picks the next experiment from what helped, evidence-strength grades on
+each intervention, and a results view with an effect size and a keep / drop / retest conclusion.
+The conflict was raised before any code was written, alongside a narrower alternative (suggest only
+untried items, no grades, no effect size). The product owner chose to build it as specified. This
+entry is the record of that, so nobody later reads `src/lib/lab/` and concludes the rule was
+forgotten.
+
+What the decision did not do is open the rule generally. The exception is held in code:
+
+- **One suggestion or none.** `suggestNext` returns a single entry, never a list, and returns
+  "finish this one first" while anything is planned or running. One change at a time is the method.
+- **Only from the reviewed library.** No path suggests a medicine. The library holds no amounts,
+  every supplement carries the pharmacist-or-GP caution, magnesium names kidney problems, and the
+  only sources are NHS pages (rule 14). `tests/unit/lab-library.test.ts`.
+- **The reasons are shown**, as the sentences that decided it, so a person can disagree with the
+  reasoning rather than with a verdict. A confounded "keep" never feeds the scoring.
+- **Evidence grades describe research in people generally**, never a forecast for the reader.
+- **Caveats travel with the numbers.** `analyseExperiment` returns the caveats in the same object
+  as the difference — small sample, adherence percentage, logged confounders, overlap, a run shorter
+  than a fair go — and the last caveat, "not medical proof", is always there.
+- **Every sentence says "in your data so far"** and the conclusion is the person's, labelled as
+  theirs, including in the GP summary.
+- **A detector**, `src/lib/lab/language.ts`, reuses the Research Scout's overstatement and dose
+  patterns and adds the personal ones ("it worked", "will help", "statistically significant").
+  `tests/unit/lab-language.test.ts` sweeps every string literal in `src/lib/lab/`. It caught
+  "settles" and "settle" in my first draft — the former in the red-flag banner, "please do not wait
+  to see if it settles", which reads innocently and is exactly the sort of reassurance a sudden
+  hearing loss sentence must not contain.
+
+`no-interpretation.ts` is deliberately not run over the lab: this feature is allowed to say "lower"
+and "higher", and its red-flag questions must be able to say "much worse than usual".
+
+### HL-02 · Three tables, proposed not applied; the library lives in code
+`prisma/schema.prisma` is a single-writer file. The product owner chose database storage over the
+on-device pattern of FA-02 and will add the models, so the proposal is in
+`docs/habit-lab/schema-proposal.prisma` and `src/lib/lab/` is built to it as pure functions over
+plain records (`types.ts`). Nothing in the lab queries the database yet, which is why the routes do
+not exist yet either (HL-03).
+
+- **No `LabIntervention` table.** The spec lists an `interventions` table. The library is in
+  `library.ts` instead, so every caution goes through review and a test, and so it cannot be
+  confused with `Intervention`, which is medicines. Experiments point at it by `libraryKey`.
+- **`LabCheckIn` is separate from `DailyLog`.** The daily log is per-symptom and 0–10 throughout;
+  sleep latency is minutes, wake-ups a count and sleep hours a decimal.
+- **Unanswered is null, never zero.** "I did not answer" and "none at all" are different facts and
+  an average would quietly treat one as the other.
+- **`confounded` is never cleared**, and starting an overlapping experiment labels the earlier one
+  too. Overlap means shared days *and* a shared outcome, washout included; shared days alone are not
+  muddying.
+- **Nothing in the lab is read by `research/aggregate.ts`.** Every free-text column is marked, and
+  none may appear in a research export (rule 7). The person's own CSV and JSON include their notes,
+  as `timeline/export.ts` does; the GP summary leaves notes and hypotheses out.
+
+### HL-03 · Red flags: tick boxes, the note, and the person's own usual
+The spec's red flags — sudden hearing loss, one-sided or pulsing tinnitus, new or worsening
+dizziness, facial weakness or numbness, severe headache — are asked as tick boxes on every check-in
+because the note is the first thing skipped. The note is read as well, by the timeline's engine
+with its ear and headache overlays plus two patterns it lacks (pulsing, one-sided). Dizziness is
+also checked against the median of the person's last seven scores: severe and at least three above
+their own usual. Median, so one bad day last week does not raise the bar for noticing this one.
+
+Facial weakness is 999. Sudden hearing loss is same-day, with "please do not wait", because it is
+treated on a clock. One-sided or pulsing tinnitus is the GP within days. Nothing names a condition.
+When a flag fires the route must record a `SafetyEvent` and suppress donation prompts (rule 5).
+That wiring belongs to the routes, which wait on the tables.
