@@ -2106,3 +2106,74 @@ pages carry no content note. That is revisable if the editorial team would rathe
 Brand names appear only where the source itself names them. Durations are words ("several
 years"), never numbers, and every summary passes the dose detector and the no-effect,
 no-claim checks that nitrazepam's does, now run over every entry.
+
+### D-062 · Real charities for every condition, imported unverified
+Every condition now has at least one real UK charity linked to it — 58 charities, from
+`scripts/condition-charities.ts`, added by `scripts/add-condition-charities.ts`. This does not
+reverse D-005. The seed stays fictional; these come in through a separate script, and **every one
+arrives with no verification**, so rule 4 keeps all of them off the public site until an editor
+checks each against the official register and verifies it in the charity admin.
+
+The numbers were checked on 2026-09-26 against the findthatcharity.uk mirror of the registers and
+each charity's own footer. That check caught eleven wrong or missing numbers in the first draft,
+including numbers that belonged to unrelated charities — which is the case for keeping the
+editor's check rather than trusting the list. Two to look at closely: LUPUS UK re-registered as a
+CIO (1200671; the old 1051610 is inactive), and PTSD UK is registered in Scotland only (OSCR
+SC045995). Some donate pages blocked automated requests and were taken from the charity's own
+homepage links or search results; the editor should open each one.
+
+The script creates what is missing and adds missing condition links. It never edits an existing
+listing, matched by slug or by register number, because an editor's correction or verification
+outranks this file. Stiff person syndrome and colloid cyst have no UK charity of their own; they
+are linked to the Brain & Spine Foundation, whose nurse helpline covers rare neurological
+conditions. Laryngeal cancer is linked to The Swallows rather than the National Association of
+Laryngectomee Clubs, which fits more closely but has no way to donate.
+
+### SG-01 · The "Ask us where" guide is a fixed map of the site, not an AI
+The request was for a conversational AI chatbot in the bottom-right corner to help people find
+their way around. What shipped looks like a chat but has no model behind it. The brief puts
+"AI-generated insights of any kind" out of scope for the MVP, rule 9 forbids medical advice, and
+a free-text box that looks like a chat is where somebody types a diagnosis — sending that to a
+model provider would put special category data with a third party. None of that is a call a
+feature can make on its own; it needs the platform lead and a DPIA.
+
+So `src/lib/guide/answer.ts` reads what was typed, looks for words it knows, and replies with a
+sentence we wrote and the pages it is about. Every reply it can give is in that one file. The
+order is fixed: crisis words get NHS 111, 999 and Samaritans and nothing else (never a charity);
+then anything asking us to judge a treatment or a dose gets "I can't answer that" and who can;
+then navigation topics; then an offer to search the site. It runs in the browser, and what is
+typed is never sent, logged or stored — not even in browser storage, because phones get shared.
+`tests/unit/site-guide.test.tsx` holds all of this, including a check that the two guide files
+never grow a network call, a storage call or a server import.
+
+It is on every public and signed-in page, not on admin or auth pages. The footer gained bottom
+padding so the fixed button does not sit over its last line. Replacing the matcher with a model
+later is a change to `answerGuide` alone, but it is a decision to record here first.
+
+### D-061 · Personalised medicine, starting with women's health
+Explore now has a Personalised medicine section at `/personalised-medicine`, in the header
+dropdown, the phone row, the footer, the sitemap and the "Ask us where" guide. It has one page
+so far, `/personalised-medicine/womens-health`, covering four questions: how cycles and hormones
+change things, what women are more likely to get, how symptoms can show up differently, and why
+treatment can differ.
+
+"Personalised" here means how who you are changes what is known about you as part of a group.
+Nothing on these pages reads anyone's records or is tailored to them, and a fixed callout says
+so. The hub lists only pages that exist; there are no "coming soon" cards.
+
+The words live in `src/lib/personalised-medicine/womens-health.ts`. Every point names an NHS or
+UK Government page beside it (rule 14, applied beyond medicines), read on 26 September 2026.
+Numbers are left out on purpose: "more women than men get lupus" is what the NHS says, and a
+ratio invites someone to read a group figure as their own odds. Where a point gives a safety
+instruction — checking before taking a medicine in pregnancy, not stopping epilepsy medicine
+alone — it is attributed to the NHS, not said in our voice.
+
+Two things were deliberately left out for lack of an NHS source saying them: that heart attack
+symptoms differ in women, and that some medicines are cleared from the body differently by sex.
+Both are widely reported; neither is on a page we could cite. The NHS has also renamed PCOS to
+polyendocrine metabolic ovarian syndrome (PMOS), and the page uses the new name with the old one
+beside it.
+
+The page also says plainly that it uses "women" because the sources do, and that it applies to
+trans men and non-binary people with the same organs. `tests/unit/personalised-medicine.test.tsx`
+checks the sources, the dose detector, a list of claim words, and the absence of percentages.
