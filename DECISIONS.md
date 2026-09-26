@@ -2369,3 +2369,25 @@ As with PL-62 to PL-64, **the file alone renders nothing**. The licence above ha
 her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
 card stays a monogram. That write has not been made in production.
 
+
+### D-062 · Real charities for every condition, imported unverified
+Every condition now has at least one real UK charity linked to it — 58 charities, from
+`scripts/condition-charities.ts`, added by `scripts/add-condition-charities.ts`. This does not
+reverse D-005. The seed stays fictional; these come in through a separate script, and **every one
+arrives with no verification**, so rule 4 keeps all of them off the public site until an editor
+checks each against the official register and verifies it in the charity admin.
+
+The numbers were checked on 2026-09-26 against the findthatcharity.uk mirror of the registers and
+each charity's own footer. That check caught eleven wrong or missing numbers in the first draft,
+including numbers that belonged to unrelated charities — which is the case for keeping the
+editor's check rather than trusting the list. Two to look at closely: LUPUS UK re-registered as a
+CIO (1200671; the old 1051610 is inactive), and PTSD UK is registered in Scotland only (OSCR
+SC045995). Some donate pages blocked automated requests and were taken from the charity's own
+homepage links or search results; the editor should open each one.
+
+The script creates what is missing and adds missing condition links. It never edits an existing
+listing, matched by slug or by register number, because an editor's correction or verification
+outranks this file. Stiff person syndrome and colloid cyst have no UK charity of their own; they
+are linked to the Brain & Spine Foundation, whose nurse helpline covers rare neurological
+conditions. Laryngeal cancer is linked to The Swallows rather than the National Association of
+Laryngectomee Clubs, which fits more closely but has no way to donate.
