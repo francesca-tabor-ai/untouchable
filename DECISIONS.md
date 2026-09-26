@@ -2369,3 +2369,24 @@ As with PL-62 to PL-64, **the file alone renders nothing**. The licence above ha
 her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
 card stays a monogram. That write has not been made in production.
 
+
+### D-059 · Eleven more medicines have pages, each written from its NHS page
+`prisma/seed/medicines.ts` now ships twelve medicines instead of one: diazepam, zopiclone, codeine
+and pregabalin, which are marked as dependence topics, and sertraline, fluoxetine, tamoxifen,
+letrozole, metformin, gliclazide and paracetamol, which are not. The last seven are the ones
+`core.ts` already puts in the treatment picker; they keep the exact name they have there, so the
+seed fills in the existing row instead of creating a second "Sertraline" beside it.
+
+Ten descriptions are written in our own words from the drug's NHS medicines A–Z page, checked on
+26 September 2026. The NHS has no tamoxifen page (it returns a 404), so that one is written from
+the Nolvadex licence on the electronic Medicines Compendium. Each entry names its source in a
+comment, and a test fails if one does not.
+
+The dependence flag follows what the NHS says, not our own view: an entry is flagged when its NHS
+page says people can become addicted to it. The NHS pages for sertraline and fluoxetine describe
+withdrawal symptoms on stopping suddenly but not addiction, so those two are not flagged and their
+pages carry no content note. That is revisable if the editorial team would rather show the note.
+
+Brand names appear only where the source itself names them. Durations are words ("several
+years"), never numbers, and every summary passes the dose detector and the no-effect,
+no-claim checks that nitrazepam's does, now run over every entry.
