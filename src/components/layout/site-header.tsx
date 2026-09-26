@@ -11,12 +11,14 @@ import { getProfile } from "@/lib/profile";
 const EXPLORE = [
   { href: "/conditions", label: "Conditions" },
   { href: "/medicines", label: "Medicines" },
+  { href: "/personalised-medicine", label: "Personalised medicine" },
   { href: "/charities", label: "Charities" },
 ];
 
 const YOUR_HEALTH = [
   { href: "/log", label: "Symptom tracker" },
   { href: "/timeline", label: "Your timeline" },
+  { href: "/trackers", label: "Health trackers" },
   { href: "/food", label: "Food Advisor" },
 ];
 

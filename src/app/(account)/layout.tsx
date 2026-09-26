@@ -1,3 +1,4 @@
+import { SiteGuide } from "@/components/guide/site-guide";
 import { SafetyFooter } from "@/components/layout/safety-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 
@@ -24,6 +25,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       <SiteHeader />
       <main id="main">{children}</main>
       <SafetyFooter />
+      <SiteGuide />
     </>
   );
 }

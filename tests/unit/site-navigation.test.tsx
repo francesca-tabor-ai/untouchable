@@ -66,9 +66,11 @@ describe("the site header", () => {
       "Home",
       "Conditions",
       "Medicines",
+      "Personalised medicine",
       "Charities",
       "Symptom tracker",
       "Your timeline",
+      "Health trackers",
       "Food Advisor",
     ]);
   });
