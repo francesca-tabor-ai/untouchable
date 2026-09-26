@@ -17,6 +17,7 @@ const EXPLORE = [
 const YOUR_HEALTH = [
   { href: "/log", label: "Symptom tracker" },
   { href: "/timeline", label: "Your timeline" },
+  { href: "/trackers", label: "Health trackers" },
   { href: "/food", label: "Food Advisor" },
 ];
 

@@ -2085,3 +2085,56 @@ cache is untouched; it has not been seen to fail, and turning it off would slow 
 `.next-verify/` — where `npm run verify` builds via `NEXT_DIST_DIR` so it never touches a running
 dev server's `.next` — is now in `.gitignore` and in the ESLint ignores beside `.next` and
 `.next-e2e`.
+
+### HT-01 · Water, sleep, blood results and bowel habits are kept on the device
+Four everyday trackers now live under `/trackers`, linked from Your Health as "Health trackers":
+water, sleep, blood test results, and bowel habits. Their records are held in the browser's local
+storage and never reach the server, the same call the Food Advisor made in FA-02 and for the same
+reasons: blood results and bowel habits are special category data, keeping them off our servers is
+the safest default, and it needs no change to `prisma/schema.prisma`, which is single-writer.
+
+The costs are on every screen rather than buried. The records are not in the account, so they are
+not in "download my data" or deleted with the account; each tracker offers its own download and a
+confirmed delete-all instead. They do not follow somebody to a second device, and clearing the
+browser clears them. They are never used for research, so rule 6 and rule 8 do not arise. If they
+move into the account, that needs tables, encryption at rest, and a decision on whether research
+consent reaches them — all the platform lead's.
+
+What each tracker refuses to do, held by `tests/unit/trackers.test.tsx`: water has no daily target
+(some people are told to drink less, not more); sleep has no recommended hours; a blood result is
+kept as text exactly as written ("<0.5" is a result, not a number), and the range printed beside it
+is shown as printed and never compared with anything — no high, no low, no colour; no type on the
+Bristol stool chart is marked as the one to aim for. The pages call `requireAdult` like the Food
+Advisor rather than `requireTrackingConsent`, because nothing is stored with us. The existing
+"poor sleep" tag in the daily log is untouched; the sleep tracker sits beside it rather than
+replacing it.
+
+### HT-02 · Wearables come in as a file, read on the device; direct connections are not built
+The brief puts wearable integrations out of the MVP and into a later phase. What `/trackers/wearables`
+offers today is an import: the person exports a file from their own app — Apple Health's
+`export.xml`, a Fitbit sleep CSV, or any spreadsheet with a date column and sleep or water — and it
+is read in the browser, line by line (an Apple export can be hundreds of megabytes), shown as a
+preview, and added only when they say yes. It is never uploaded. Only sleep and water are taken
+out; heart rate and everything else in the file is passed over.
+
+Choices in the parser (`src/lib/trackers/wearable-import.ts`), all revisable: a night belongs to
+the date it began, and sleep that began between midnight and noon belongs to the evening before.
+Overlapping sleep from a phone and a watch is merged, not added, or a night would count double.
+Slashed dates are read day-first unless only month-first is possible. An import never overwrites a
+night or day that already has a record, so a typed entry always wins over a watch and importing the
+same file twice adds nothing.
+
+Direct, always-on connections (Health Connect, Garmin, Oura, Withings, and a live Apple or Fitbit
+link) are listed as "not yet" rather than shown as buttons that go nowhere. Building them needs
+server-side storage, an agreement with each maker, and OAuth credentials — none of which this branch
+can decide. The page states in advance what a direct connection would and would never read, and
+that it would be opt-in per device, stoppable in one tap, and outside research unless the person
+has said yes. Those are commitments the platform lead should confirm or change before the feature
+is built.
+
+### HT-03 · Blood in poo brings up NHS signposting at once
+Ticking "there was blood, or it was black and sticky" on the bowel tracker shows a short signpost
+straight away, before saving: get it checked with a GP or NHS 111, and 999 or A&E if bleeding will
+not stop or the person feels faint. It links the NHS page on blood in poo. It says who to ask, never
+what it might be, and like every safety surface it carries no donation prompt. It is not recorded as
+a `SafetyEvent`, because the record it responds to never reaches the server.
