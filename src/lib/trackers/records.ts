@@ -122,34 +122,9 @@ export type BowelEntry = z.infer<typeof bowelEntrySchema>;
 
 // ─── Everything together ───────────────────────────────────────────────────────────────────
 
-export const TRACKERS = [
-  {
-    key: "water",
-    href: "/trackers/water",
-    name: "Water",
-    about: "How much you drink in a day.",
-  },
-  {
-    key: "sleep",
-    href: "/trackers/sleep",
-    name: "Sleep",
-    about: "How long and how well you slept.",
-  },
-  {
-    key: "blood",
-    href: "/trackers/blood-tests",
-    name: "Blood test results",
-    about: "Your results, written down with the date and where they came from.",
-  },
-  {
-    key: "bowel",
-    href: "/trackers/bowel",
-    name: "Bowel habits (poo)",
-    about: "How often, and what it was like.",
-  },
-] as const;
-
-export type TrackerKey = (typeof TRACKERS)[number]["key"];
+/** The four trackers, as their records are keyed on the device. The catalogue that lists them
+ * for people is `src/lib/my-health/trackers.ts`. */
+export type TrackerKey = "water" | "sleep" | "blood" | "bowel";
 
 /** A fresh id for a new record. */
 export function newId(): string {

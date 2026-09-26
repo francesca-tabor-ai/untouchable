@@ -25,8 +25,8 @@ export default async function WearablesPage() {
   return (
     <Container reading className="py-12 sm:py-16">
       <p className="text-small">
-        <Link href="/trackers" className="text-forest-700 underline underline-offset-2">
-          Health trackers
+        <Link href="/tracker" className="text-forest-700 underline underline-offset-2">
+          Health tracker
         </Link>
       </p>
       <h1 className="mt-2 text-display">Connect a wearable</h1>

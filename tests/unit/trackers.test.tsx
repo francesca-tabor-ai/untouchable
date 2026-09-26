@@ -205,8 +205,8 @@ describe("records stay on this device", () => {
 describe("every trackers page guards itself", () => {
   const PAGES = filesUnder(ROUTE).filter((path) => path.endsWith("page.tsx"));
 
-  it("has the hub, four trackers and the wearables page", () => {
-    expect(PAGES).toHaveLength(6);
+  it("has the four trackers and the wearables page", () => {
+    expect(PAGES).toHaveLength(5);
   });
 
   it.each(PAGES.map(relative))("%s calls requireAdult", (path) => {

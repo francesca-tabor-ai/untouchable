@@ -42,20 +42,28 @@ function headerLinks() {
 }
 
 describe("the site header", () => {
-  it("offers Your Health after Explore, with the symptom tracker and the Food Advisor", () => {
+  it("offers My health after Explore, with the dashboard, the tracker and education", () => {
     render(<SiteHeaderView signedInAs={null} />);
 
     const desktop = screen.getAllByRole("navigation", { name: "Main" })[0];
-    const menus = within(desktop).getAllByText(/^(Explore|Your Health)$/);
-    expect(menus.map((node) => node.textContent)).toEqual(["Explore", "Your Health"]);
+    const menus = within(desktop).getAllByText(/^(Explore|My health)$/);
+    expect(menus.map((node) => node.textContent)).toEqual(["Explore", "My health"]);
 
-    const tracker = within(desktop).getAllByRole("link", { name: "Symptom tracker" });
-    const food = within(desktop).getAllByRole("link", { name: "Food Advisor" });
-    expect(tracker[0]).toHaveAttribute("href", "/log");
-    expect(food[0]).toHaveAttribute("href", "/food");
+    expect(within(desktop).getByRole("link", { name: "Dashboard" })).toHaveAttribute(
+      "href",
+      "/dashboard",
+    );
+    expect(within(desktop).getByRole("link", { name: "Health tracker" })).toHaveAttribute(
+      "href",
+      "/tracker",
+    );
+    expect(within(desktop).getByRole("link", { name: "Education" })).toHaveAttribute(
+      "href",
+      "/learn",
+    );
   });
 
-  it("lists Your Health outright on a phone, where there is no dropdown to open", () => {
+  it("lists My health outright on a phone, where there is no dropdown to open", () => {
     render(<SiteHeaderView signedInAs={null} />);
 
     const phone = screen.getAllByRole("navigation", { name: "Main" })[1];
@@ -67,10 +75,9 @@ describe("the site header", () => {
       "Conditions",
       "Medicines",
       "Charities",
-      "Symptom tracker",
-      "Your timeline",
-      "Health trackers",
-      "Food Advisor",
+      "Dashboard",
+      "Health tracker",
+      "Education",
     ]);
   });
 
@@ -137,10 +144,10 @@ describe("the header on every area of the site", () => {
     expect(source).toContain("SiteHeader");
   });
 
-  it("reaches the Food Advisor, the timeline and the symptom tracker without losing it", () => {
-    // All three live in the account area. If one ever moves, this says so rather than the
+  it("reaches My health, and every tracker behind it, without losing it", () => {
+    // All of these live in the account area. If one ever moves, this says so rather than the
     // navigation quietly disappearing on that page alone.
-    for (const route of ["food", "timeline", "log"]) {
+    for (const route of ["dashboard", "tracker", "learn", "food", "timeline", "log"]) {
       expect(existsSync(join(process.cwd(), "src/app/(account)", route, "page.tsx"))).toBe(true);
     }
   });
