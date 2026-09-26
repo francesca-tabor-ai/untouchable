@@ -2369,3 +2369,23 @@ As with PL-62 to PL-64, **the file alone renders nothing**. The licence above ha
 her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
 card stays a monogram. That write has not been made in production.
 
+### SG-01 · The "Ask us where" guide is a fixed map of the site, not an AI
+The request was for a conversational AI chatbot in the bottom-right corner to help people find
+their way around. What shipped looks like a chat but has no model behind it. The brief puts
+"AI-generated insights of any kind" out of scope for the MVP, rule 9 forbids medical advice, and
+a free-text box that looks like a chat is where somebody types a diagnosis — sending that to a
+model provider would put special category data with a third party. None of that is a call a
+feature can make on its own; it needs the platform lead and a DPIA.
+
+So `src/lib/guide/answer.ts` reads what was typed, looks for words it knows, and replies with a
+sentence we wrote and the pages it is about. Every reply it can give is in that one file. The
+order is fixed: crisis words get NHS 111, 999 and Samaritans and nothing else (never a charity);
+then anything asking us to judge a treatment or a dose gets "I can't answer that" and who can;
+then navigation topics; then an offer to search the site. It runs in the browser, and what is
+typed is never sent, logged or stored — not even in browser storage, because phones get shared.
+`tests/unit/site-guide.test.tsx` holds all of this, including a check that the two guide files
+never grow a network call, a storage call or a server import.
+
+It is on every public and signed-in page, not on admin or auth pages. The footer gained bottom
+padding so the fixed button does not sit over its last line. Replacing the matcher with a model
+later is a change to `answerGuide` alone, but it is a decision to record here first.
