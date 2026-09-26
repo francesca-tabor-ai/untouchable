@@ -8,12 +8,23 @@ import { db } from "@/lib/db";
  * down. That keeps one source of truth — the data itself — and it means there is nothing to
  * tidy up when somebody withdraws consent or deletes their account.
  *
- * The four trackers under `PLANNED` do not exist yet. Each needs somewhere to keep its
- * readings, which is a schema change and a platform-lead decision (DECISIONS.md PL-66). They
- * are listed honestly as not built, not offered as a sign-up that does nothing.
+ * Water, sleep, blood test results and bowel habits keep their records on the device rather
+ * than in the account, as the Food Advisor does — DECISIONS.md HT-01 — so, like it, whether
+ * they are in use is something we cannot know. `PLANNED` is where a tracker goes when it is
+ * announced before it works; it is empty while everything announced has been built.
  */
 
-export type TrackerKey = "symptoms" | "condition" | "medication" | "check-ins" | "questions" | "food";
+export type TrackerKey =
+  | "symptoms"
+  | "condition"
+  | "medication"
+  | "check-ins"
+  | "questions"
+  | "food"
+  | "water"
+  | "sleep"
+  | "blood"
+  | "bowel";
 
 export interface Tracker {
   key: TrackerKey;
@@ -68,6 +79,34 @@ export const TRACKERS: Tracker[] = [
     href: "/food",
     startHref: "/food",
   },
+  {
+    key: "water",
+    name: "Water",
+    what: "How much you drink in a day. What you enter stays on this device.",
+    href: "/trackers/water",
+    startHref: "/trackers/water",
+  },
+  {
+    key: "sleep",
+    name: "Sleep",
+    what: "How long and how well you slept. What you enter stays on this device.",
+    href: "/trackers/sleep",
+    startHref: "/trackers/sleep",
+  },
+  {
+    key: "blood",
+    name: "Blood test results",
+    what: "Your results, written down with the date and where they came from. What you enter stays on this device.",
+    href: "/trackers/blood-tests",
+    startHref: "/trackers/blood-tests",
+  },
+  {
+    key: "bowel",
+    name: "Bowel habits (poo)",
+    what: "How often, and what it was like. What you enter stays on this device.",
+    href: "/trackers/bowel",
+    startHref: "/trackers/bowel",
+  },
 ];
 
 export interface PlannedTracker {
@@ -75,15 +114,7 @@ export interface PlannedTracker {
   what: string;
 }
 
-export const PLANNED: PlannedTracker[] = [
-  { name: "Water", what: "How much you drink in a day." },
-  {
-    name: "Sleep",
-    what: "How long and how well you slept. For now, you can tag a night of poor sleep in the daily symptom log.",
-  },
-  { name: "Blood test results", what: "Your results, written down with the date and where they came from." },
-  { name: "Bowel habits (poo)", what: "How often, and what it was like." },
-];
+export const PLANNED: PlannedTracker[] = [];
 
 /** Whether a tracker has anything in it. `null` means we cannot know: the data never reaches us. */
 export type TrackerUsage = Record<TrackerKey, boolean | null>;
@@ -104,8 +135,12 @@ export async function trackerUsage(userId: string): Promise<TrackerUsage> {
     medication: courses > 0,
     "check-ins": checkIns > 0,
     questions: candidates > 0,
-    // The Food Advisor keeps its profile in the browser. We do not know, and do not ask.
+    // These keep their records in the browser. We do not know, and do not ask.
     food: null,
+    water: null,
+    sleep: null,
+    blood: null,
+    bowel: null,
   };
 }
 

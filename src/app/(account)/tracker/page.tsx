@@ -45,27 +45,44 @@ export default async function TrackerPage() {
         inUse={false}
       />
 
-      <section className="mt-14" aria-labelledby="planned">
-        <h2 id="planned" className="text-title">
-          Not built yet
+      <section className="mt-14" aria-labelledby="wearables">
+        <h2 id="wearables" className="text-title">
+          Phones and watches
         </h2>
-        <p className="mt-2 text-small text-ink-soft">
-          We plan to add these. There is nothing to sign up to until they work.
+        <p className="mt-2 max-w-2xl text-small text-ink-soft">
+          Bring in sleep and water from Apple Health, Fitbit or a spreadsheet. The file is read
+          on this device and never uploaded.
         </p>
-        <ul className="mt-5 grid gap-4 md:grid-cols-2">
-          {PLANNED.map((tracker) => (
-            <li key={tracker.name}>
-              <Card className="h-full bg-cream-50">
-                <div className="flex flex-wrap items-center gap-3">
-                  <CardTitle>{tracker.name}</CardTitle>
-                  <Badge>Not built yet</Badge>
-                </div>
-                <p className="mt-2 text-small text-ink-soft">{tracker.what}</p>
-              </Card>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-5">
+          <Button asChild variant="secondary" size="sm">
+            <Link href="/trackers/wearables">Connect a wearable</Link>
+          </Button>
+        </div>
       </section>
+
+      {PLANNED.length > 0 ? (
+        <section className="mt-14" aria-labelledby="planned">
+          <h2 id="planned" className="text-title">
+            Not built yet
+          </h2>
+          <p className="mt-2 text-small text-ink-soft">
+            We plan to add these. There is nothing to sign up to until they work.
+          </p>
+          <ul className="mt-5 grid gap-4 md:grid-cols-2">
+            {PLANNED.map((tracker) => (
+              <li key={tracker.name}>
+                <Card className="h-full bg-cream-50">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <CardTitle>{tracker.name}</CardTitle>
+                    <Badge>Not built yet</Badge>
+                  </div>
+                  <p className="mt-2 text-small text-ink-soft">{tracker.what}</p>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </Container>
   );
 }
