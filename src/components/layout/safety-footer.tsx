@@ -34,6 +34,7 @@ export function SafetyFooter() {
               { href: "/stories", label: "Stories" },
               { href: "/conditions", label: "Conditions" },
               { href: "/medicines", label: "Medicines" },
+              { href: "/personalised-medicine", label: "Personalised medicine" },
               { href: "/charities", label: "Charities" },
             ]}
           />

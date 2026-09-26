@@ -2369,3 +2369,30 @@ As with PL-62 to PL-64, **the file alone renders nothing**. The licence above ha
 her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
 card stays a monogram. That write has not been made in production.
 
+### D-061 · Personalised medicine, starting with women's health
+Explore now has a Personalised medicine section at `/personalised-medicine`, in the header
+dropdown, the phone row, the footer and the sitemap. It has one page
+so far, `/personalised-medicine/womens-health`, covering four questions: how cycles and hormones
+change things, what women are more likely to get, how symptoms can show up differently, and why
+treatment can differ.
+
+"Personalised" here means how who you are changes what is known about you as part of a group.
+Nothing on these pages reads anyone's records or is tailored to them, and a fixed callout says
+so. The hub lists only pages that exist; there are no "coming soon" cards.
+
+The words live in `src/lib/personalised-medicine/womens-health.ts`. Every point names an NHS or
+UK Government page beside it (rule 14, applied beyond medicines), read on 26 September 2026.
+Numbers are left out on purpose: "more women than men get lupus" is what the NHS says, and a
+ratio invites someone to read a group figure as their own odds. Where a point gives a safety
+instruction — checking before taking a medicine in pregnancy, not stopping epilepsy medicine
+alone — it is attributed to the NHS, not said in our voice.
+
+Two things were deliberately left out for lack of an NHS source saying them: that heart attack
+symptoms differ in women, and that some medicines are cleared from the body differently by sex.
+Both are widely reported; neither is on a page we could cite. The NHS has also renamed PCOS to
+polyendocrine metabolic ovarian syndrome (PMOS), and the page uses the new name with the old one
+beside it.
+
+The page also says plainly that it uses "women" because the sources do, and that it applies to
+trans men and non-binary people with the same organs. `tests/unit/personalised-medicine.test.tsx`
+checks the sources, the dose detector, a list of claim words, and the absence of percentages.

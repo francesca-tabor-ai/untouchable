@@ -27,6 +27,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/stories",
     "/conditions",
     "/medicines",
+    "/personalised-medicine",
+    "/personalised-medicine/womens-health",
     "/corrections",
     "/about",
     "/about/editorial",

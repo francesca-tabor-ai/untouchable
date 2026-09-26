@@ -74,6 +74,7 @@ describe("the site header", () => {
       "Home",
       "Conditions",
       "Medicines",
+      "Personalised medicine",
       "Charities",
       "Dashboard",
       "Health tracker",
