@@ -10,7 +10,9 @@ import { Container } from "@/components/ui/container";
 export function SafetyFooter() {
   return (
     <footer className="mt-20 border-t border-line bg-cream-50">
-      <Container className="py-12">
+      {/* The extra room at the bottom is for the "Ask us where" button, fixed over the
+          bottom-right corner — without it the last line of this footer sits under it. */}
+      <Container className="pt-12 pb-28">
         <div className="rounded-card border border-forest-200 bg-forest-50 p-6">
           <h2 className="text-title">If you need help now</h2>
           <p className="mt-2 text-ink-soft">
