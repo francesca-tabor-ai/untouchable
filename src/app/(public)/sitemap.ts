@@ -22,7 +22,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
   const paths = [...storyPaths, ...medicinePaths];
 
-  const fixed = ["/", "/stories", "/conditions", "/medicines", "/corrections"].map((path) => ({
+  const fixed = [
+    "/",
+    "/stories",
+    "/conditions",
+    "/medicines",
+    "/corrections",
+    "/about",
+    "/about/editorial",
+    "/about/evidence",
+  ].map((path) => ({
     url: `${BASE_URL}${path}`,
     lastModified: new Date(),
   }));

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { orderForStrip, parseShown, photographOf } from "@/components/home/figure-strip";
+import { orderForStrip, parseShown, photographOf, stripHref } from "@/components/home/figure-strip";
 
 /**
  * The row of people on the home page is a public surface like any other, which means a
@@ -72,7 +72,9 @@ describe("asking for more people", () => {
   });
 
   it("asks for the next page with a link, so it works without JavaScript", () => {
-    expect(source).toContain("?people=");
+    // The address is built by `stripHref`; what matters is that it is an address.
+    expect(stripHref(null, 24)).toContain("?people=24");
+    expect(source).toContain("<Link href={stripHref(system, figures.length + PAGE)}");
     // A link, not a client component holding state.
     expect(source).not.toContain('"use client"');
     expect(source).not.toContain("useState");
@@ -153,5 +155,43 @@ describe("who comes first", () => {
   it("orders before it pages, so the first page is the photographed people", () => {
     const source = readFileSync("src/components/home/figure-strip.tsx", "utf8");
     expect(source.indexOf("orderForStrip(")).toBeLessThan(source.indexOf("everyone.slice(0, shown)"));
+  });
+});
+
+describe("the body-system filter on the front page", () => {
+  const source = readFileSync("src/components/home/figure-strip.tsx", "utf8");
+
+  it("builds every address in one place, returning the reader to the grid", () => {
+    expect(stripHref(null)).toBe("/#people");
+    expect(stripHref("nervous")).toBe("/?system=nervous#people");
+  });
+
+  it("keeps the chosen system when somebody asks for more people", () => {
+    expect(stripHref("nervous", 24)).toBe("/?system=nervous&people=24#people");
+    expect(source).toContain("stripHref(system, figures.length + PAGE)");
+  });
+
+  it("leaves the unfiltered View more address as it was", () => {
+    expect(stripHref(null, 24)).toBe("/?people=24#people");
+  });
+
+  it("applies the smallest-grid rule before filtering, so a filter can never hide itself", () => {
+    // After filtering, a system with two people in it would remove the whole section,
+    // filter row included, leaving no way back to everybody.
+    const guard = source.indexOf("allPeople.length < FEWEST_CARDS");
+    expect(guard).toBeGreaterThan(-1);
+    expect(guard).toBeLessThan(source.indexOf("filterStoriesBySystem(allPeople, system)"));
+    expect(source).not.toContain("everyone.length < FEWEST_CARDS");
+  });
+
+  it("says so, with a way back, when a system has nobody in it", () => {
+    expect(source).toContain("figure-strip-empty");
+    expect(source).toContain("See everybody");
+  });
+
+  it("reads the system from the URL on the home page, never erroring on a bad one", () => {
+    const home = readFileSync("src/app/(public)/page.tsx", "utf8");
+    expect(home).toContain("parseSystem(params.system)");
+    expect(home).toContain("system={system}");
   });
 });

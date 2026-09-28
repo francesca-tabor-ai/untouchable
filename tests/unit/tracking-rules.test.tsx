@@ -8,10 +8,7 @@ import { describe, expect, it } from "vitest";
 import { TreatmentSummary } from "@/components/tracking/treatment-summary";
 import { YellowCardNote } from "@/components/tracking/yellow-card-note";
 import { CONTEXT_TAGS } from "@/lib/tracking/context-tags";
-import {
-  givingLanguageProblem,
-  interpretationProblem,
-} from "@/lib/tracking/no-interpretation";
+import { givingLanguageProblem, interpretationProblem } from "@/lib/tracking/no-interpretation";
 import { INTERVENTION_TYPES } from "@/lib/tracking/interventions";
 import { SEVERITY_OPTIONS } from "@/lib/tracking/side-effects";
 import { STOP_REASONS } from "@/lib/tracking/treatments";
@@ -27,10 +24,13 @@ import { STOP_REASONS } from "@/lib/tracking/treatments";
 const ROOT = join(__dirname, "..", "..");
 
 function filesUnder(directory: string): string[] {
-  return readdirSync(directory).flatMap((entry) => {
-    const path = join(directory, entry);
-    return statSync(path).isDirectory() ? filesUnder(path) : [path];
-  });
+  // `._name` files are macOS metadata written beside every file on a non-APFS drive.
+  return readdirSync(directory)
+    .filter((entry) => !entry.startsWith("._"))
+    .flatMap((entry) => {
+      const path = join(directory, entry);
+      return statSync(path).isDirectory() ? filesUnder(path) : [path];
+    });
 }
 
 const read = (path: string) => readFileSync(path, "utf8");
@@ -49,6 +49,8 @@ const TRACKING_ROUTES = [
   join(ROOT, "src/app/(account)/log"),
   join(ROOT, "src/app/(account)/treatments"),
   join(ROOT, "src/app/(account)/onboarding/treatments"),
+  join(ROOT, "src/app/(account)/dashboard"),
+  join(ROOT, "src/app/(account)/tracker"),
 ];
 
 const TRACKING_COMPONENTS = join(ROOT, "src/components/tracking");
@@ -152,7 +154,9 @@ describe("the Yellow Card signpost cannot go missing", () => {
 
     expect(section).toContain("<YellowCardNote />");
     // Not wrapped in a "if there are any reports" condition.
-    expect(section).not.toMatch(/sideEffectReports\.length > 0 \? \(\s*<div[^>]*>\s*<YellowCardNote/);
+    expect(section).not.toMatch(
+      /sideEffectReports\.length > 0 \? \(\s*<div[^>]*>\s*<YellowCardNote/,
+    );
   });
 
   it("stamps the record in the same write that creates the report", () => {
@@ -220,7 +224,9 @@ describe("every tracking screen is guarded", () => {
     const sideEffects = read(join(TRACKING_LIB, "side-effects.ts"));
 
     // Every read and write of a course is scoped to (id, userId).
-    const unscoped = treatments.match(/treatmentCourse\.(findFirst|findUnique)\(\{\s*where: \{ id(?!, userId)/g);
+    const unscoped = treatments.match(
+      /treatmentCourse\.(findFirst|findUnique)\(\{\s*where: \{ id(?!, userId)/g,
+    );
     expect(unscoped).toBeNull();
     expect(sideEffects).toMatch(/where: \{ id: treatmentCourseId, userId \}/);
   });
@@ -237,9 +243,9 @@ describe("no third-party anything on a signed-in health page", () => {
   });
 
   it("links out only to the MHRA, and then with no referrer", () => {
-    const externalLinks = ALL_TRACKING_FILES.flatMap((path) => [
-      ...read(path).matchAll(/https?:\/\/[^\s"'`)]+/g),
-    ].map((match) => match[0]));
+    const externalLinks = ALL_TRACKING_FILES.flatMap((path) =>
+      [...read(path).matchAll(/https?:\/\/[^\s"'`)]+/g)].map((match) => match[0]),
+    );
 
     for (const link of externalLinks) {
       expect(link, `unexpected external link: ${link}`).toMatch(/yellowcard\.mhra\.gov\.uk/);

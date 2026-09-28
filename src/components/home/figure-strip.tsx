@@ -1,9 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { BodySystemFilter } from "@/components/conditions/body-system-filter";
 import { parseAttribution } from "@/components/stories/figure-portrait";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import {
+  BODY_SYSTEMS,
+  countStoriesBySystem,
+  filterStoriesBySystem,
+  type BodySystem,
+} from "@/lib/conditions/body-systems";
 import { listPublishedStories } from "@/lib/stories/queries";
 import type { StoryCard } from "@/lib/stories/queries";
 
@@ -119,11 +126,38 @@ interface FigureCardData {
   tags: string[];
 }
 
-export async function FigureStrip({ shown = PAGE }: { shown?: number }) {
-  const stories = await listPublishedStories({ take: MOST_WE_WILL_READ });
-  const everyone = orderForStrip(stories.filter((story) => story.figure !== null));
+/**
+ * The address of the front page for a system and a depth into the grid. One function, so
+ * the filter, "View more" and the fragment that returns somebody to the grid always agree.
+ * Choosing a system starts the grid again from the first page.
+ */
+export function stripHref(system: BodySystem | null, people?: number): string {
+  const params = new URLSearchParams();
+  if (system) params.set("system", system);
+  if (people) params.set("people", String(people));
+  const query = params.toString();
+  return `/${query ? `?${query}` : ""}#people`;
+}
 
-  if (everyone.length < FEWEST_CARDS) return null;
+export async function FigureStrip({
+  shown = PAGE,
+  system = null,
+}: {
+  shown?: number;
+  /** A body system to narrow the grid to, or null for everybody. */
+  system?: BodySystem | null;
+}) {
+  const stories = await listPublishedStories({ take: MOST_WE_WILL_READ });
+  const allPeople = stories.filter((story) => story.figure !== null);
+
+  // The smallest-grid rule is about the platform, not the filter. Applied after filtering it
+  // would hide the whole section — the filter row included — the moment somebody chose a
+  // system with two people in it, leaving them no way back.
+  if (allPeople.length < FEWEST_CARDS) return null;
+
+  const everyone = orderForStrip(filterStoriesBySystem(allPeople, system));
+  const counts = countStoriesBySystem(allPeople);
+  const selected = BODY_SYSTEMS.find((entry) => entry.key === system) ?? null;
 
   const figures = everyone.slice(0, shown);
   const remaining = everyone.length - figures.length;
@@ -150,6 +184,33 @@ export async function FigureStrip({ shown = PAGE }: { shown?: number }) {
           </p>
         </div>
 
+        <div className="mb-8">
+          <BodySystemFilter
+            current={system}
+            counts={counts}
+            total={allPeople.length}
+            hrefFor={(key) => stripHref(key)}
+            label="Filter people by body system"
+          />
+          {selected ? (
+            <p className="mt-4 text-small text-ink-soft">
+              <span className="font-semibold text-ink">{selected.label} system.</span>{" "}
+              {selected.about}
+            </p>
+          ) : null}
+        </div>
+
+        {everyone.length === 0 ? (
+          <p className="text-ink-soft" data-testid="figure-strip-empty">
+            Nobody here has talked about a condition in the {selected?.label.toLowerCase()}{" "}
+            system yet.{" "}
+            <Link href={stripHref(null)} className="text-forest-600 underline underline-offset-4">
+              See everybody
+            </Link>
+            .
+          </p>
+        ) : null}
+
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card, index) => (
             <li key={card.story.id}>
@@ -160,9 +221,14 @@ export async function FigureStrip({ shown = PAGE }: { shown?: number }) {
 
         {/* The count is read out on arrival, because the button moves you down a page whose
             length has just changed and "View more" on its own does not say what happened. */}
-        <p className="mt-8 text-small text-ink-soft" aria-live="polite" data-testid="figure-count">
-          Showing {figures.length} of {everyone.length} people.
-        </p>
+        {/* Not shown when a filter is empty: the sentence above already says there is nobody,
+            and "Showing 0 of 0" underneath it only repeats that less kindly. */}
+        {everyone.length > 0 ? (
+          <p className="mt-8 text-small text-ink-soft" aria-live="polite" data-testid="figure-count">
+            Showing {figures.length} of {everyone.length} people
+            {selected ? ` under ${selected.label.toLowerCase()}` : ""}.
+          </p>
+        ) : null}
 
         {remaining > 0 ? (
           <div className="mt-4">
@@ -176,7 +242,7 @@ export async function FigureStrip({ shown = PAGE }: { shown?: number }) {
               deciding whether a tap is worth it with nothing to decide on.
             */}
             <Button asChild variant="secondary" size="lg">
-              <Link href={`/?people=${figures.length + PAGE}#people`} data-testid="view-more">
+              <Link href={stripHref(system, figures.length + PAGE)} data-testid="view-more">
                 View more
                 <span className="text-muted">
                   {remaining} more {remaining === 1 ? "person" : "people"}

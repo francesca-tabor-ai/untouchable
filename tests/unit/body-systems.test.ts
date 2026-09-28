@@ -6,7 +6,9 @@ import {
   BODY_SYSTEMS,
   CONDITION_SYSTEMS,
   countBySystem,
+  countStoriesBySystem,
   filterBySystem,
+  filterStoriesBySystem,
   parseSystem,
   systemsFor,
 } from "@/lib/conditions/body-systems";
@@ -127,11 +129,46 @@ describe("the conditions page", () => {
     expect(page).not.toContain('"use client"');
   });
 
-  it("marks the chosen filter for a screen reader, not only by colour", () => {
-    expect(page).toContain("aria-current");
+  it("uses the shared filter, which marks the choice for a screen reader, not only by colour", () => {
+    const filter = readFileSync("src/components/conditions/body-system-filter.tsx", "utf8");
+    expect(page).toContain("<BodySystemFilter");
+    expect(filter).toContain("aria-current");
+    expect(filter).toContain("font-semibold");
   });
 
   it("is still one list for everybody when no filter is chosen", () => {
     expect(page).toContain("filterBySystem(everything, system)");
+  });
+});
+
+describe("stories, for the front page", () => {
+  const story = (name: string, ...slugs: string[]) => ({
+    name,
+    conditions: slugs.map((slug) => ({ slug })),
+  });
+  const people = [
+    story("a", "breast-cancer", "depression"),
+    story("b", "svt", "pots"),
+    story("c", "depression"),
+    story("d"),
+  ];
+
+  it("puts a story under a system when any of its conditions is in it", () => {
+    expect(filterStoriesBySystem(people, "reproductive").map((row) => row.name)).toEqual(["a"]);
+  });
+
+  it("never puts a story under a system on the strength of a condition that is in none", () => {
+    for (const key of KEYS) {
+      expect(filterStoriesBySystem(people, key).map((row) => row.name)).not.toContain("c");
+    }
+  });
+
+  it("counts a person once per system, even with two conditions in it", () => {
+    // svt and PoTS are both circulatory; that is one person, not two.
+    expect(countStoriesBySystem(people).circulatory).toBe(1);
+  });
+
+  it("shows everybody when no system is chosen", () => {
+    expect(filterStoriesBySystem(people, null)).toHaveLength(4);
   });
 });

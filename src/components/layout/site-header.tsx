@@ -14,10 +14,10 @@ const EXPLORE = [
   { href: "/charities", label: "Charities" },
 ];
 
-const YOUR_HEALTH = [
-  { href: "/log", label: "Symptom tracker" },
-  { href: "/timeline", label: "Your timeline" },
-  { href: "/food", label: "Food Advisor" },
+const MY_HEALTH = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/tracker", label: "Health tracker" },
+  { href: "/learn", label: "Education" },
 ];
 
 /**
@@ -32,7 +32,10 @@ const YOUR_HEALTH = [
  * already decided they want to know who we are. The header is for the four things people
  * arrive wanting.
  *
- * Your Health points into the account area. Signed out, those links land on sign in with a
+ * My health points into the account area. It has three doors, not one per tool: the
+ * dashboard (what you have recorded), the health tracker (every tracker, and which you use)
+ * and education. The symptom log, timeline, treatments and Food Advisor are all one tap in
+ * from the tracker, so the menu stays three items long however many trackers we add. Signed out, those links land on sign in with a
  * `next` back to where they were going — the guard on each page does that, not this file.
  *
  * Signed in, the buttons on the right say so by name. Somebody who has just created an
@@ -69,7 +72,7 @@ export function SiteHeaderView({ signedInAs }: { signedInAs: string | null }) {
         <nav aria-label="Main" className="hidden items-center gap-7 md:flex">
           <HeaderLink href="/">Home</HeaderLink>
           <NavMenu label="Explore" links={EXPLORE} />
-          <NavMenu label="Your Health" links={YOUR_HEALTH} />
+          <NavMenu label="My health" links={MY_HEALTH} />
         </nav>
 
         {signedInAs ? (
@@ -96,7 +99,7 @@ export function SiteHeaderView({ signedInAs }: { signedInAs: string | null }) {
 
       <nav aria-label="Main" className="border-t border-line md:hidden">
         <Container className="flex gap-6 overflow-x-auto py-3">
-          {[{ href: "/", label: "Home" }, ...EXPLORE, ...YOUR_HEALTH].map((item) => (
+          {[{ href: "/", label: "Home" }, ...EXPLORE, ...MY_HEALTH].map((item) => (
             <HeaderLink key={item.href} href={item.href} className="whitespace-nowrap">
               {item.label}
             </HeaderLink>

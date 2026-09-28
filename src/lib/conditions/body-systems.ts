@@ -123,3 +123,36 @@ export function countBySystem(conditions: readonly { slug: string }[]): Record<B
   }
   return counts;
 }
+
+/**
+ * Stories, rather than conditions.
+ *
+ * A story is in a system when any of its conditions is. Somebody whose story covers both
+ * breast cancer and depression appears under Reproductive, and on the unfiltered grid — and
+ * never under a system on the strength of the depression, which is in none.
+ */
+export function storySystems(story: { conditions: readonly { slug: string }[] }): Set<BodySystem> {
+  return new Set(story.conditions.flatMap((condition) => systemsFor(condition.slug)));
+}
+
+export function filterStoriesBySystem<T extends { conditions: readonly { slug: string }[] }>(
+  stories: readonly T[],
+  system: BodySystem | null,
+): T[] {
+  if (system === null) return [...stories];
+  return stories.filter((story) => storySystems(story).has(system));
+}
+
+/** How many stories each system would show. A story with two conditions in one system counts once. */
+export function countStoriesBySystem(
+  stories: readonly { conditions: readonly { slug: string }[] }[],
+): Record<BodySystem, number> {
+  const counts = Object.fromEntries(BODY_SYSTEMS.map((system) => [system.key, 0])) as Record<
+    BodySystem,
+    number
+  >;
+  for (const story of stories) {
+    for (const system of storySystems(story)) counts[system] += 1;
+  }
+  return counts;
+}
