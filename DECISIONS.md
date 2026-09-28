@@ -2085,3 +2085,20 @@ cache is untouched; it has not been seen to fail, and turning it off would slow 
 `.next-verify/` — where `npm run verify` builds via `NEXT_DIST_DIR` so it never touches a running
 dev server's `.next` — is now in `.gitignore` and in the ESLint ignores beside `.next` and
 `.next-e2e`.
+
+### D-060 · Menopause and perimenopause have their own symptoms
+
+The "Menopause and perimenopause" condition was added by an editor with no symptoms linked, so
+anyone choosing it was offered the whole list — seizures, thirst, trouble swallowing. The core
+seed now links it by slug, and skips the link where the condition does not exist yet.
+
+- **Existing symptoms reused** where they already say the thing: hot flushes, night sweats,
+  trouble sleeping, brain fog, memory problems, low mood, anxiety, fatigue, headaches, itchy skin.
+- **Seven added**, from the NHS list: changes to periods, racing or pounding heart, joint or
+  muscle aches, mood swings, vaginal dryness or discomfort, lower sex drive, needing to wee
+  more often. Named the way someone would say them — "racing or pounding heart", not
+  "palpitations".
+- **Weight gain left out.** A daily 0–10 score is the wrong shape for it, and a slider for it
+  would read as a judgement.
+- **One condition, not two.** Perimenopause shares the menopause entry; the symptoms are the
+  same, and changes to periods is the one that marks the difference.
