@@ -2369,3 +2369,19 @@ As with PL-62 to PL-64, **the file alone renders nothing**. The licence above ha
 her `imageLicence` in the same write that sets `imageUrl`, or the database refuses the row and the
 card stays a monogram. That write has not been made in production.
 
+### D-060 · Menopause and perimenopause have their own symptoms
+
+The "Menopause and perimenopause" condition was added by an editor with no symptoms linked, so
+anyone choosing it was offered the whole list — seizures, thirst, trouble swallowing. The core
+seed now links it by slug, and skips the link where the condition does not exist yet.
+
+- **Existing symptoms reused** where they already say the thing: hot flushes, night sweats,
+  trouble sleeping, brain fog, memory problems, low mood, anxiety, fatigue, headaches, itchy skin.
+- **Seven added**, from the NHS list: changes to periods, racing or pounding heart, joint or
+  muscle aches, mood swings, vaginal dryness or discomfort, lower sex drive, needing to wee
+  more often. Named the way someone would say them — "racing or pounding heart", not
+  "palpitations".
+- **Weight gain left out.** A daily 0–10 score is the wrong shape for it, and a slider for it
+  would read as a judgement.
+- **One condition, not two.** Perimenopause shares the menopause entry; the symptoms are the
+  same, and changes to periods is the one that marks the difference.
